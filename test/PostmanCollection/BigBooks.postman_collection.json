@@ -39,6 +39,37 @@
 			"response": []
 		},
 		{
+			"name": "GET User",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:{{portNumber}}/api/user/5",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "{{portNumber}}",
+					"path": [
+						"api",
+						"user",
+						"5"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "GET BooksByGenreMultiple",
 			"request": {
 				"auth": {
@@ -69,6 +100,43 @@
 						{
 							"key": "name",
 							"value": "childrens"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET BooksByGenreEmpty",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:{{portNumber}}/api/book/genre?name=romance",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "{{portNumber}}",
+					"path": [
+						"api",
+						"book",
+						"genre"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "romance"
 						}
 					]
 				}
@@ -192,7 +260,7 @@
 			"response": []
 		},
 		{
-			"name": "POST AuthenticationRequest",
+			"name": "POST AuthenticationRequest_Customer",
 			"event": [
 				{
 					"listen": "test",
@@ -216,6 +284,53 @@
 				"body": {
 					"mode": "raw",
 					"raw": "{\r\n    \"UserId\": \"Bella.Barnes@demo.com\",\r\n    \"Password\": \"N0tV3ryS3cret\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:{{portNumber}}/api/authentication/authenticate",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "{{portNumber}}",
+					"path": [
+						"api",
+						"authentication",
+						"authenticate"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST AuthenticationRequest_Admin",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseMessage = pm.response.json();\r",
+							"\r",
+							"const accessToken = responseMessage.token; // Extracts the token from the response body\r",
+							"\r",
+							"pm.collectionVariables.set(\"accessToken\", accessToken); // Saves to a collection variable"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"UserId\": \"Bruce.Wayne@demo.com\",\r\n    \"Password\": \"N0tV3ryS3cret\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"

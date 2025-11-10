@@ -24,7 +24,9 @@ builder.Services.AddDbContext<BigBookDbContext>(
     dbContextOptions => dbContextOptions.UseSqlite(
         builder.Configuration["ConnectionStrings:BigBooksDBConnectionString"]));
 
+builder.Services.AddScoped<IUserProvider, UserProvider>();
 builder.Services.AddScoped<IBookProvider, BookProvider>();
+builder.Services.AddScoped<IBookReviewProvider, BookReviewProvider>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 
 builder.Services.AddAuthentication("Bearer")
@@ -45,6 +47,12 @@ builder.Services.AddAuthentication("Bearer")
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("BookAccess", policy =>
+    {
+        policy.RequireAuthenticatedUser();
+        policy.RequireClaim(ClaimTypes.Role, Role.Admin.ToString());
+    });
+
+    options.AddPolicy("AccountAccess", policy =>
     {
         policy.RequireAuthenticatedUser();
         policy.RequireClaim(ClaimTypes.Role, Role.Admin.ToString());

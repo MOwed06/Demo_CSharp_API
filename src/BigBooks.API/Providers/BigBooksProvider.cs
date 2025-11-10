@@ -2,7 +2,7 @@
 
 namespace BigBooks.API.Providers
 {
-    public abstract class BookStoreProvider
+    public abstract class BigBooksProvider
     {
         protected (bool Valid, string Error) ValidateDto(object dto)
         {

@@ -10,9 +10,11 @@ namespace BigBooks.API.Controllers
     {
         /// <summary>
         /// Request token for user.
-        /// Customer User: "Bella.Barnes@demo.com", "N0tV3ryS3cret"
-        /// Admin user: "Clark.Kent@demo.com", "N0tV3ryS3cret"
         /// </summary>
+        /// <remarks>
+        /// Example customer user: "Bella.Barnes@demo.com", "N0tV3ryS3cret"; 
+        /// admin user: "Clark.Kent@demo.com", "N0tV3ryS3cret"
+        /// </remarks>
         /// <param name="authRequest"></param>
         /// <returns>authentication response</returns>
         [HttpPost("authenticate")]
