@@ -23,6 +23,7 @@ namespace BigBooks.API.Providers
 
             var book = ctx.Books
                 .Include(b => b.Reviews)
+                .AsNoTracking()
                 .FirstOrDefault(b => b.Key == key);
 
             if (book == null)
@@ -56,6 +57,7 @@ namespace BigBooks.API.Providers
 
             var books = ctx.Books
                 .Where(b => b.Genre == genre)
+                .AsNoTracking()
                 .ToList();
 
             return books.Select(b => new BookOverviewDto
@@ -73,6 +75,7 @@ namespace BigBooks.API.Providers
 
             var books = ctx.Books
                 .Where(b => b.Author.ToLower().Contains(author.ToLower()))
+                .AsNoTracking()
                 .ToList();
 
             return books.Select(b => new BookOverviewDto

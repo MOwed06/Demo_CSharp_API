@@ -1,7 +1,6 @@
 using BigBooks.API.Core;
 using BigBooks.API.Interfaces;
 using BigBooks.API.Models;
-using BigBooks.API.Providers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -31,7 +30,7 @@ namespace BigBooks.API.Controllers
 
                 if (bookDto == null)
                 {
-                    return NotFound();
+                    return NotFound($"book {key}");
                 }
 
                 return Ok(bookDto);
@@ -44,11 +43,13 @@ namespace BigBooks.API.Controllers
         }
 
         /// <summary>
-        /// example
-        /// https://localhost:{{portNumber}}/api/book/genre?name=history
+        /// Get books by genre
         /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
+        /// <remarks>
+        /// Genre: Fiction, Childrens, Fantasy, Mystery, History, Romance
+        /// </remarks>
+        /// <param name="name">genre to retrieve</param>
+        /// <returns>matched books</returns>
         /// <exception cref="ArgumentException"></exception>
         [HttpGet("genre", Name = "GetBooksByGenre")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -81,6 +82,11 @@ namespace BigBooks.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Books by string match on author name
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns>list of books</returns>
         [HttpGet("author", Name = "GetBooksByAuthor")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -102,11 +108,13 @@ namespace BigBooks.API.Controllers
         }
 
         /// <summary>
-        /// example
-        /// https://localhost:{{portNumber}}/api/book/genre?name=history
+        /// Add new book.
         /// </summary>
-        /// <param name="dto"></param>
-        /// <returns></returns>
+        /// <remarks>
+        /// Requires authenticated user with Admin role
+        /// </remarks>
+        /// <param name="dto">details of book to add</param>
+        /// <returns>details of added book</returns>
         [HttpPost]
         [Authorize(Policy = "BookAccess")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -133,6 +141,15 @@ namespace BigBooks.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Update properties of existing book.
+        /// </summary>
+        /// <remarks>
+        /// Requires authenticated user with Admin role
+        /// </remarks>
+        /// <param name="key">key of book to modify</param>
+        /// <param name="patchDoc">list of changes</param>
+        /// <returns></returns>
         [HttpPatch("{key}")]
         [Authorize(Policy = "BookAccess")]
         [ProducesResponseType(StatusCodes.Status200OK)]

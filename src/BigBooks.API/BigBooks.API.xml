@@ -16,9 +16,11 @@
         <member name="M:BigBooks.API.Controllers.AuthenticationController.Authenticate(BigBooks.API.Authentication.AuthRequest)">
             <summary>
             Request token for user.
-            Customer User: "Bella.Barnes@demo.com", "N0tV3ryS3cret"
-            Admin user: "Clark.Kent@demo.com", "N0tV3ryS3cret"
             </summary>
+            <remarks>
+            Example customer user: "Bella.Barnes@demo.com", "N0tV3ryS3cret"; 
+            admin user: "Clark.Kent@demo.com", "N0tV3ryS3cret"
+            </remarks>
             <param name="authRequest"></param>
             <returns>authentication response</returns>
         </member>
@@ -31,20 +33,52 @@
         </member>
         <member name="M:BigBooks.API.Controllers.BookController.GetBooksByGenre(System.String)">
             <summary>
-            example
-            https://localhost:{{portNumber}}/api/book/genre?name=history
+            Get books by genre
+            </summary>
+            <remarks>
+            Genre: Fiction, Childrens, Fantasy, Mystery, History, Romance
+            </remarks>
+            <param name="name">genre to retrieve</param>
+            <returns>matched books</returns>
+            <exception cref="T:System.ArgumentException"></exception>
+        </member>
+        <member name="M:BigBooks.API.Controllers.BookController.GetBooksByAuthor(System.String)">
+            <summary>
+            Books by string match on author name
             </summary>
             <param name="name"></param>
-            <returns></returns>
-            <exception cref="T:System.ArgumentException"></exception>
+            <returns>list of books</returns>
         </member>
         <member name="M:BigBooks.API.Controllers.BookController.AddBook(BigBooks.API.Models.BookAddUpdateDto)">
             <summary>
-            example
-            https://localhost:{{portNumber}}/api/book/genre?name=history
+            Add new book.
             </summary>
-            <param name="dto"></param>
+            <remarks>
+            Requires authenticated user with Admin role
+            </remarks>
+            <param name="dto">details of book to add</param>
+            <returns>details of added book</returns>
+        </member>
+        <member name="M:BigBooks.API.Controllers.BookController.UpdateBook(System.Int32,Microsoft.AspNetCore.JsonPatch.JsonPatchDocument{BigBooks.API.Models.BookAddUpdateDto})">
+            <summary>
+            Update properties of existing book.
+            </summary>
+            <remarks>
+            Requires authenticated user with Admin role
+            </remarks>
+            <param name="key">key of book to modify</param>
+            <param name="patchDoc">list of changes</param>
             <returns></returns>
+        </member>
+        <member name="M:BigBooks.API.Controllers.UserController.GetUser(System.Int32)">
+            <summary>
+            Get user by key.
+            </summary>
+            <remarks>
+            Requires authenticated user with Admin role
+            </remarks>
+            <param name="key">user account key</param>
+            <returns>user details</returns>
         </member>
         <member name="T:BigBooks.API.Migrations.DatabaseSetupNew">
             <inheritdoc />
