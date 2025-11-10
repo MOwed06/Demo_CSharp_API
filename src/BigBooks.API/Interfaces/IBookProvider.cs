@@ -1,0 +1,17 @@
+using BigBooks.API.Core;
+using BigBooks.API.Models;
+using BigBooks.API.Providers;
+using Microsoft.AspNetCore.JsonPatch;
+
+namespace BigBooks.API.Interfaces
+{
+    public interface IBookProvider
+    {
+        ProviderKeyResponse AddBook(BookAddUpdateDto dto);
+        bool BookExists(int key);
+        BookDetailsDto? GetBook(int key);
+        List<BookOverviewDto> GetBooksByAuthor(string author);
+        List<BookOverviewDto> GetBooksByGenre(Genre genre);
+        ProviderKeyResponse UpdateBook(int key, JsonPatchDocument<BookAddUpdateDto> patchDoc);
+    }
+}

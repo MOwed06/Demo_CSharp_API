@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>BigBooks.API</name>
+    </assembly>
+    <members>
+        <member name="M:BigBooks.API.Services.AuthService.GenerateToken(BigBooks.API.Authentication.AuthRequest)">
+            <summary>
+            return token for user
+            return null if invalid/rejected
+            </summary>
+            <param name="userId"></param>
+            <param name="password"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BigBooks.API.Controllers.AuthenticationController.Authenticate(BigBooks.API.Authentication.AuthRequest)">
+            <summary>
+            Request token for user.
+            Customer User: "Bella.Barnes@demo.com", "N0tV3ryS3cret"
+            Admin user: "Clark.Kent@demo.com", "N0tV3ryS3cret"
+            </summary>
+            <param name="authRequest"></param>
+            <returns>authentication response</returns>
+        </member>
+        <member name="M:BigBooks.API.Controllers.BookController.GetBook(System.Int32)">
+            <summary>
+            Get book by key
+            </summary>
+            <param name="key">key of book to retrieve</param>
+            <returns>details of selected book</returns>
+        </member>
+        <member name="M:BigBooks.API.Controllers.BookController.GetBooksByGenre(System.String)">
+            <summary>
+            example
+            https://localhost:{{portNumber}}/api/book/genre?name=history
+            </summary>
+            <param name="name"></param>
+            <returns></returns>
+            <exception cref="T:System.ArgumentException"></exception>
+        </member>
+        <member name="M:BigBooks.API.Controllers.BookController.AddBook(BigBooks.API.Models.BookAddUpdateDto)">
+            <summary>
+            example
+            https://localhost:{{portNumber}}/api/book/genre?name=history
+            </summary>
+            <param name="dto"></param>
+            <returns></returns>
+        </member>
+        <member name="T:BigBooks.API.Migrations.DatabaseSetupNew">
+            <inheritdoc />
+        </member>
+        <member name="M:BigBooks.API.Migrations.DatabaseSetupNew.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:BigBooks.API.Migrations.DatabaseSetupNew.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:BigBooks.API.Migrations.DatabaseSetupNew.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="T:BigBooks.API.Models.BookDetailsDto">
+            <summary>
+            Book detail information
+            </summary>
+        </member>
+        <member name="T:BigBooks.API.Models.BookOverviewDto">
+            <summary>
+            Simplified book overview
+            </summary>
+        </member>
+    </members>
+</doc>

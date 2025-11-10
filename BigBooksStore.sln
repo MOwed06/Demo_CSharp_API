@@ -1,0 +1,46 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36623.8
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BigBooks.API", "src\BigBooks.API\BigBooks.API.csproj", "{D6BAD28B-0AF3-D448-D3AB-222F5DE7D579}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BigBooks.UnitTest", "test\BigBooks.UnitTest\BigBooks.UnitTest.csproj", "{87812339-0FF8-4D16-BCAE-D48957A7319C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BigBooks.IntegrationTest", "test\BigBooks.IntegrationTest\BigBooks.IntegrationTest.csproj", "{3B9138C3-5050-49EA-971A-77A8795FB50E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Application", "Application", "{915B630D-025D-410A-8B6C-4091276D34C1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D6BAD28B-0AF3-D448-D3AB-222F5DE7D579}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6BAD28B-0AF3-D448-D3AB-222F5DE7D579}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6BAD28B-0AF3-D448-D3AB-222F5DE7D579}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6BAD28B-0AF3-D448-D3AB-222F5DE7D579}.Release|Any CPU.Build.0 = Release|Any CPU
+		{87812339-0FF8-4D16-BCAE-D48957A7319C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{87812339-0FF8-4D16-BCAE-D48957A7319C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{87812339-0FF8-4D16-BCAE-D48957A7319C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{87812339-0FF8-4D16-BCAE-D48957A7319C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3B9138C3-5050-49EA-971A-77A8795FB50E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3B9138C3-5050-49EA-971A-77A8795FB50E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3B9138C3-5050-49EA-971A-77A8795FB50E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3B9138C3-5050-49EA-971A-77A8795FB50E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{D6BAD28B-0AF3-D448-D3AB-222F5DE7D579} = {915B630D-025D-410A-8B6C-4091276D34C1}
+		{87812339-0FF8-4D16-BCAE-D48957A7319C} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{3B9138C3-5050-49EA-971A-77A8795FB50E} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B9C1B890-7DC9-44B1-A9EA-133ADDD9FBBF}
+	EndGlobalSection
+EndGlobal

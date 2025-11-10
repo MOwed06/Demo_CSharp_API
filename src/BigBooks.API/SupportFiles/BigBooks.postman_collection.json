@@ -1,0 +1,272 @@
+{
+	"info": {
+		"_postman_id": "7a5c68ac-4917-433c-804b-a80c994b7322",
+		"name": "BigBooks",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "49654545",
+		"_collection_link": "https://michael-owed-4169684.postman.co/workspace/Michael-Owed's-Workspace~44a56804-dea4-4888-81d5-eb396cebdadb/collection/49654545-7a5c68ac-4917-433c-804b-a80c994b7322?action=share&source=collection_link&creator=49654545"
+	},
+	"item": [
+		{
+			"name": "GET Book",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:{{portNumber}}/api/book/2",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "{{portNumber}}",
+					"path": [
+						"api",
+						"book",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET BooksByGenreMultiple",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:{{portNumber}}/api/book/genre?name=childrens",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "{{portNumber}}",
+					"path": [
+						"api",
+						"book",
+						"genre"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "childrens"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET BooksByAuthor",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:{{portNumber}}/api/book/author?name=collins",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "{{portNumber}}",
+					"path": [
+						"api",
+						"book",
+						"author"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "collins"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST AddBook",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"Title\": \"11/22/63: A Novel\",\n    \"Author\": \"Stephen King\",\n    \"Isbn\": \"B74E3696-7668-4A44-9522-ABF958E031E0\",\n    \"Description\": \"It begins with Jake Epping, a thirty-five-year-old English teacher in Lisbon Falls, Maine, whose life is upended when his friend Al, who owns the local diner, divulges a secret: his storeroom is a portal to the past, a particular day in 1958. \",\n    \"Genre\": 1,\n    \"Price\": 19.72,\n    \"StockQuantity\": 16\n}"
+				},
+				"url": {
+					"raw": "https://localhost:{{portNumber}}/api/book",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "{{portNumber}}",
+					"path": [
+						"api",
+						"book"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PATCH UpdateBook",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n    {\n      \"op\": \"replace\",\n      \"path\": \"/Author\",\n      \"value\": \"Some Other Guy\"\n    },\n    {\n      \"op\": \"replace\",\n      \"path\": \"/StockQuantity\",\n      \"value\": \"0\"\n    }    \n]"
+				},
+				"url": {
+					"raw": "https://localhost:{{portNumber}}/api/book/7",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "{{portNumber}}",
+					"path": [
+						"api",
+						"book",
+						"7"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST AuthenticationRequest",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseMessage = pm.response.json();\r",
+							"\r",
+							"const accessToken = responseMessage.token; // Extracts the token from the response body\r",
+							"\r",
+							"pm.collectionVariables.set(\"accessToken\", accessToken); // Saves to a collection variable"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"UserId\": \"Bella.Barnes@demo.com\",\r\n    \"Password\": \"N0tV3ryS3cret\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:{{portNumber}}/api/authentication/authenticate",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "{{portNumber}}",
+					"path": [
+						"api",
+						"authentication",
+						"authenticate"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "accessToken",
+			"value": ""
+		}
+	]
+}
