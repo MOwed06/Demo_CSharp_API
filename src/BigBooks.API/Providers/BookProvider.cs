@@ -5,10 +5,9 @@ using BigBooks.API.Models;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.EntityFrameworkCore;
 
-
 namespace BigBooks.API.Providers 
 {
-    public class BookProvider(BigBookDbContext ctx, ILogger<BookProvider> logger) : BookStoreProvider, IBookProvider
+    public class BookProvider(BigBookDbContext ctx, ILogger<BookProvider> logger) : BigBooksProvider, IBookProvider
     {
         public bool BookExists(int key)
         {
@@ -31,9 +30,7 @@ namespace BigBooks.API.Providers
                 return null;
             }
 
-            double? bookRating = book.Reviews.Any()
-                ? book.Reviews?.Average(r => r.Score)
-                : null;
+            double? bookRating = CalculateBookRating(book.Reviews);
 
             return new BookDetailsDto
             {
@@ -65,8 +62,11 @@ namespace BigBooks.API.Providers
                 Key = b.Key,
                 Title = b.Title,
                 Author = b.Author,
-                Genre = b.Genre.ToString()
-            }).ToList();
+                Genre = b.Genre.ToString(),
+                Rating = CalculateBookRating(b.Reviews)
+            })
+            .OrderByDescending(b => b.Rating)
+            .ToList();
         }
 
         public List<BookOverviewDto> GetBooksByAuthor(string author)
@@ -75,6 +75,7 @@ namespace BigBooks.API.Providers
 
             var books = ctx.Books
                 .Where(b => b.Author.ToLower().Contains(author.ToLower()))
+                .Include(b => b.Reviews)
                 .AsNoTracking()
                 .ToList();
 
@@ -83,8 +84,11 @@ namespace BigBooks.API.Providers
                 Key = b.Key,
                 Title = b.Title,
                 Author = b.Author,
-                Genre = b.Genre.ToString()
-            }).ToList();
+                Genre = b.Genre.ToString(),
+                Rating = CalculateBookRating(b.Reviews)
+            })
+            .OrderByDescending(b => b.Rating)
+            .ToList();
         }
 
         public ProviderKeyResponse AddBook(BookAddUpdateDto dto)
@@ -178,6 +182,13 @@ namespace BigBooks.API.Providers
             {
                 return new ProviderKeyResponse(null, ex.Message);
             }
+        }
+
+        private double? CalculateBookRating(ICollection<BookReview> reviews)
+        {
+            return reviews.Any()
+                ? reviews.Average(r => r.Score)
+                : null;
         }
 
         private (Guid? BookIsbn, string Error) CheckIsbn(string inputIsbn, int? existingBookKey)

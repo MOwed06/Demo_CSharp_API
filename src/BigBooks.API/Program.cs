@@ -26,6 +26,7 @@ builder.Services.AddDbContext<BigBookDbContext>(
 
 builder.Services.AddScoped<IUserProvider, UserProvider>();
 builder.Services.AddScoped<IBookProvider, BookProvider>();
+builder.Services.AddScoped<IBookReviewProvider, BookReviewProvider>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 
 builder.Services.AddAuthentication("Bearer")
