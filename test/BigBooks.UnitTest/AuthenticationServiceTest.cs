@@ -3,7 +3,11 @@ using BigBooks.API.Core;
 using BigBooks.API.Services;
 using BigBooks.UnitTest.Common;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Moq;
+using System.IdentityModel.Tokens.Jwt;
+using System.Text;
+using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 
 namespace BigBooks.UnitTest
 {
@@ -53,6 +57,53 @@ namespace BigBooks.UnitTest
                 Assert.Null(response.Token);
                 Assert.Contains(expectedError, response.Error);
             }
+        }
+
+        [Fact]
+        public void CheckTokenAuthentication()
+        {
+            // arrange
+            InitializeDatabase();
+
+            var authRequest = new AuthRequest
+            {
+                UserId = "Bruce.Banner@test.com",
+                Password = ApplicationConstant.USER_PASSWORD
+            };
+
+            // act
+            var response = _authService.GenerateToken(authRequest);
+
+            // assert
+            SecurityToken validatedToken;
+            var tokenParams = GetValidationParameters();
+            var tokenHandler = new JwtSecurityTokenHandler();
+
+            // if validate token fails, exception thrown, test implicitly fails
+            var principal = tokenHandler.ValidateToken(token: response.Token,
+                validationParameters: tokenParams,
+                out validatedToken);
+
+            Assert.True(principal.Identity.IsAuthenticated);
+        }
+
+        private TokenValidationParameters GetValidationParameters(double? clockOffsetHours = null)
+        {
+            TimeSpan clockSkew = clockOffsetHours.HasValue
+                ? TimeSpan.FromHours(clockOffsetHours.Value)
+                : TimeSpan.Zero;
+
+            return new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(Convert.FromBase64String(MockConfiguration.SECRET_KEY)),
+                ValidateIssuer = true,
+                ValidIssuer = MockConfiguration.ISSUER,
+                ValidateAudience = true,
+                ValidAudience = MockConfiguration.AUDIENCE,
+                ValidateLifetime = true,
+                ClockSkew = clockSkew
+            };
         }
     }
 }

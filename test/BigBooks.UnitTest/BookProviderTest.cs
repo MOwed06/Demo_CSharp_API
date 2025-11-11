@@ -1,4 +1,5 @@
 using BigBooks.API.Core;
+using BigBooks.API.Entities;
 using BigBooks.API.Models;
 using BigBooks.API.Providers;
 using BigBooks.UnitTest.Common;
@@ -45,6 +46,54 @@ namespace BigBooks.UnitTest
             // assert
             Assert.Null(obs);
         }
+
+        [Theory]
+        [InlineData(new int [0], null)]
+        [InlineData(new int[] { 3 }, 3.0)]
+        [InlineData(new int[] { 3, 4 }, 3.5)]
+        [InlineData(new int[] { 3, 4, 5, 6, 7, 8, 9, 10 }, 6.5)]
+        public void BookRatingCalculation(int[] ratings, double? expectedRating)
+        {
+            const int BOOK_KEY = 3;
+
+            // arrange
+            var extraBooks = new List<Book>
+            {
+                new Book
+                {
+                    Key = 3,
+                    Title = "The Firm",
+                    Author = "John Grisham",
+                    Isbn = Guid.Parse("C4E619C5-CFFF-46C9-8518-9DE8B58E4E0A"),
+                    Genre = Genre.Mystery,
+                    StockQuantity = 1,
+                    Price = 1f
+                }
+            };
+
+            var extraReviews = new List<BookReview>();
+
+            int reviewKey = 3;
+            foreach (var r in ratings)
+            {
+                extraReviews.Add(new BookReview
+                {
+                    Key = reviewKey++,
+                    BookKey = BOOK_KEY,
+                    Score = r
+                });
+            }
+
+            InitializeDatabase(extraBooks: extraBooks,
+                extraBookReviews: extraReviews);
+
+            // act
+            var obs = _bookPrv.GetBook(BOOK_KEY);
+
+            // assert
+            Assert.Equal(expectedRating, obs?.Rating);
+        }
+
 
         [Theory]
         [InlineData(1, 4.5)]
