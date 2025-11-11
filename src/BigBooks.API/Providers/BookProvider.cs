@@ -4,7 +4,6 @@ using BigBooks.API.Interfaces;
 using BigBooks.API.Models;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace BigBooks.API.Providers 
 {
@@ -41,7 +40,7 @@ namespace BigBooks.API.Providers
                 Isbn = book.Isbn.ToString("D").ToUpper(),
                 Description = book.Description,
                 Genre = book.Genre.ToString(),
-                Price = book.Price.ToString("F2"),
+                Price = book.Price.ToString("C"),
                 InStock = book.StockQuantity > 0,
                 Rating = bookRating.HasValue
                     ? (double?)Math.Round(bookRating.Value, 2)
@@ -221,7 +220,12 @@ namespace BigBooks.API.Providers
 
         private (Guid? BookIsbn, string Error) CheckIsbn(string inputIsbn, int? existingBookKey)
         {
-            var bookIsbn = Guid.Parse(inputIsbn);
+            var bookIsbn = Guid.Empty;
+
+            if (!Guid.TryParse(inputIsbn, out bookIsbn))
+            {
+                return (null, $"invalid ISBN value {inputIsbn}");
+            }
 
             if (ctx.Books.Where(b => b.Key != existingBookKey).Any(b => b.Isbn == bookIsbn))
             {

@@ -82,14 +82,23 @@
         </member>
         <member name="M:BigBooks.API.Controllers.UserController.PurchaseBooks(BigBooks.API.Models.BookPurchaseDto)">
             <summary>
-            Purchases designated books for logged in user
+            Purchase designated books for logged in user
             </summary>
             <remarks>
-            Purchase is made for logged in user (based on claims)
+            Purchase is made for logged in user based on claims
             Purchase is refused if stock unavailable or user wallet is insufficient
             </remarks>
             <param name="dto">book key and quantity</param>
             <returns>updated user info</returns>
+        </member>
+        <member name="M:BigBooks.API.Controllers.UserController.GetUsers">
+            <summary>
+            Get all users
+            </summary>
+            <remarks>
+            Requires authenticated user with Admin role
+            </remarks>
+            <returns>overview of each user</returns>
         </member>
         <member name="T:BigBooks.API.Migrations.DatabaseSetupNew">
             <inheritdoc />

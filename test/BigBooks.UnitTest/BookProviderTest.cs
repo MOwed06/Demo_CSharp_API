@@ -62,9 +62,10 @@ namespace BigBooks.UnitTest
         }
 
         [Theory]
-        [InlineData(NEW_BOOK_GUID, null)]
-        [InlineData(BOOK2_GUID, "bob")]
-        public void BookAddDtoCheck(string isbn, string? expectedError)
+        [InlineData(NEW_BOOK_GUID, null)]  // valid Guid, no error expected
+        [InlineData(BOOK2_GUID, "Duplicate ISBN")]
+        [InlineData("80F4-403C-B7E5-860BA52B8F99", "invalid ISBN value")]
+        public void BookAddDtoGuidCheck(string isbn, string? expectedError)
         {
             // arrange
             InitializeDatabase();
@@ -92,7 +93,7 @@ namespace BigBooks.UnitTest
             }
             else
             {
-                Assert.Contains("Duplicate ISBN", obs.Error);
+                Assert.Contains(expectedError, obs.Error);
                 Assert.Null(obs.Key);
             }
         }

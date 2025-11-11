@@ -8,26 +8,77 @@ BigBookStore solution is a sandbox that I am leveraging to showcase my capabilit
 
 The BigBooks.API project implements a simple API for a hypothetical on-line book store.
 
-I will continue to evolve this project as my bandwidth allows. I will keep the master branch in an operational state. (I make no promises about the dev branch.)
+I will continue to evolve this project as my bandwidth allows. I will keep the main branch in an operational state. (I make no promises about the dev branch.)
 
 <br>
 
 ## Repo Elements
 
 1. src/BigBooks.API
-    - Project source code
-    - SQLite database, BigBooks.db
+
 1. test/PostmanCollection
-    - This Postman collection holds pre-defined API calls to demonstrate operation of BigBooks.API
-    - Since the BigBooks.API leverages authentication tokens, the Postman AuthenticationRequest must precede other API requests.
-        - The AuthenticationRequest will save the response token to a Postman variable which is then used in the header of subsequent requests.
-        - Example user with Customer Role: Bella.Barnes@demo.com
-        - Example user with Admin Role: Clark.Kent@demo.com
+
 1. test/BigBooks.UnitTest
-    - Unit tests of project elements exercised in isolation.
+
 1. test/BigBooks.IntegrationTest
-    - Integration test demonstrating end-to-end message scenarios leveraging an in-memory database along with a WebApplicationFactory design pattern.
 
 
+<br>
 
+### BigBooks.API
 
+- The project leverages a typical Web API pattern.
+    - Controller layer is intentionally light-weight.
+    - Provider layer resolves data transformation and db interactions.
+    - Dto objects exchanged with controllers
+    - Simmplified token authorization
+
+- Intentional complexities
+    - UserController, PurchaseBooks() indentifies user from token claim
+    - Admin user required for:
+        - BookController, AddBook()
+        - BookController, UpdateBook()
+        - UserController, GetUserInfo()
+        - UserController, GetUsers()
+    - Validation of modified object in BookProvider.cs UpdateBook()    
+    - BookAddUpdateDto.Isbn must be valid Guid
+
+- SQLite database, BigBooks.db
+
+<br>
+
+### PostmanCollection
+
+- This Postman collection holds pre-defined API calls to demonstrate operation of BigBooks.API
+- Since the BigBooks.API leverages authentication tokens, the Postman AuthenticationRequest must precede other API requests.
+    - The AuthenticationRequest will save the response token to a Postman variable which is then used in the header of subsequent requests.
+    - Example user with Customer Role: Bella.Barnes@demo.com
+    - Example user with Admin Role: Clark.Kent@demo.com
+
+<br>
+
+### BigBooks.UnitTest
+
+- xunit tests of project elements exercised in isolation.
+- InMemory DbContext created for each test case.
+    - Refer to BigBookTest.cs constructor.
+
+<br>
+
+### BigBooks.IntegrationTest
+
+- Integration test demonstrating end-to-end message scenarios leveraging an in-memory database along with a WebApplicationFactory design pattern.
+
+<br>
+
+### Feature Roadmap
+
+Things yet to do ...
+
+1. Lots more unit tests
+1. Convert Controller methods to async.
+1. UserController, Add User
+1. UserController, Modify User
+1. BookReview, add property ReviewDate
+1. BookReviewController, Add Review
+1. BookReviewController, Delete Review

@@ -1,15 +1,9 @@
 using BigBooks.API.Authentication;
 using BigBooks.API.Core;
-using BigBooks.API.Providers;
 using BigBooks.API.Services;
 using BigBooks.UnitTest.Common;
 using Microsoft.Extensions.Logging;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BigBooks.UnitTest
 {

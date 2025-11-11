@@ -2,8 +2,6 @@
 using BigBooks.API.Interfaces;
 using BigBooks.API.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using System.Security.Claims;
 
 namespace BigBooks.API.Providers
 {
@@ -35,9 +33,29 @@ namespace BigBooks.API.Providers
                 UserEmail = appUser.UserEmail,
                 UserName = appUser.UserName,
                 Role = appUser.Role.ToString(),
-                Wallet = appUser.Wallet,
+                Wallet = appUser.Wallet.ToString("C"),
                 Books = userBooks
             };
+        }
+
+        public List<UserOverviewDto> GetUsers()
+        {
+            logger.LogDebug("GetUsers");
+
+            var appUsers = ctx.AppUsers
+                .AsNoTracking()
+                .ToList();
+
+            return appUsers
+                .Select(u => new UserOverviewDto
+                {
+                    Key = u.Key,
+                    UserEmail = u.UserEmail,
+                    Role = u.Role.ToString(),
+                    Wallet = u.Wallet.ToString("C"),
+                    BookCount = u.UserBookIds.Count()
+                })
+                .ToList();
         }
 
         /// <summary>

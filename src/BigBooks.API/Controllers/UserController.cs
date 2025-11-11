@@ -63,6 +63,7 @@ namespace BigBooks.API.Controllers
 
             try
             {
+                // extract appUser key from active user claims
                 var currentUserKeyValue = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
                 var response = userProvider.PurchaseBooks(currentUserKeyValue, dto);
@@ -80,6 +81,33 @@ namespace BigBooks.API.Controllers
             catch (Exception ex)
             {
                 logger.LogCritical($"PurchaseBooks, book: {dto.BookKey}, qty: {dto.RequestedQuantity}", ex);
+                return BadRequest();
+            }
+        }
+
+        /// <summary>
+        /// Get all users
+        /// </summary>
+        /// <remarks>
+        /// Requires authenticated user with Admin role
+        /// </remarks>
+        /// <returns>overview of each user</returns>
+        [HttpGet]
+        [Authorize(Policy = "AccountAccess")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public ActionResult<IEnumerable<UserOverviewDto>> GetUsers()
+        {
+            logger.LogTrace("GetUsers");
+
+            try
+            {
+                var userDtos = userProvider.GetUsers();
+                return Ok(userDtos);
+            }
+            catch (Exception ex)
+            {
+                logger.LogCritical("GetUsers", ex);
                 return BadRequest();
             }
         }

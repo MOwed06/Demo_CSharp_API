@@ -7,5 +7,6 @@ namespace BigBooks.API.Interfaces
     {
         UserDetailsDto GetUser(int key);
         public ProviderKeyResponse PurchaseBooks(string currentUserKeyValue, BookPurchaseDto dto);
+        public List<UserOverviewDto> GetUsers();
     }
 }

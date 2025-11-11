@@ -8,7 +8,7 @@
 	},
 	"item": [
 		{
-			"name": "GET Book",
+			"name": "GET Book Details",
 			"request": {
 				"auth": {
 					"type": "bearer",
@@ -39,7 +39,7 @@
 			"response": []
 		},
 		{
-			"name": "GET User",
+			"name": "GET User Details",
 			"request": {
 				"auth": {
 					"type": "bearer",
@@ -64,6 +64,36 @@
 						"api",
 						"user",
 						"5"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET Users",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:{{portNumber}}/api/user",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "{{portNumber}}",
+					"path": [
+						"api",
+						"user"
 					]
 				}
 			},
@@ -220,6 +250,45 @@
 			"response": []
 		},
 		{
+			"name": "POST PurchaseBook",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"BookKey\": 4,\n    \"RequestedQuantity\": 2\n}"
+				},
+				"url": {
+					"raw": "https://localhost:{{portNumber}}/api/user",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "{{portNumber}}",
+					"path": [
+						"api",
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "PATCH UpdateBook",
 			"request": {
 				"auth": {
@@ -348,6 +417,38 @@
 						"api",
 						"authentication",
 						"authenticate"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET BookReviews",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:{{portNumber}}/api/book/9/reviews",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "{{portNumber}}",
+					"path": [
+						"api",
+						"book",
+						"9",
+						"reviews"
 					]
 				}
 			},
