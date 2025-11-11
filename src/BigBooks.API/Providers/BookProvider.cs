@@ -4,6 +4,7 @@ using BigBooks.API.Interfaces;
 using BigBooks.API.Models;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace BigBooks.API.Providers 
 {
@@ -182,6 +183,33 @@ namespace BigBooks.API.Providers
             {
                 return new ProviderKeyResponse(null, ex.Message);
             }
+        }
+
+        /// <summary>
+        /// Remove designated quantity of books from available stock
+        /// </summary>
+        /// <param name="bookKey"></param>
+        /// <param name="requestedQuantity"></param>
+        /// <returns>
+        /// True if operation successful, stock available
+        /// False if operation fail, stock unavailable
+        /// </returns>
+        public bool RemoveFromStock(int bookKey, int requestedQuantity)
+        {
+            logger.LogDebug($"RemoveFromStock, {bookKey}, {requestedQuantity}");
+
+            var selectedBook = ctx.Books
+                .Single(b => b.Key == bookKey);
+
+            if (selectedBook.StockQuantity > requestedQuantity)
+            {
+                selectedBook.StockQuantity -= requestedQuantity;
+                ctx.SaveChanges();
+                return true;
+            }
+
+            // insufficient quantity
+            return false;
         }
 
         private double? CalculateBookRating(ICollection<BookReview> reviews)

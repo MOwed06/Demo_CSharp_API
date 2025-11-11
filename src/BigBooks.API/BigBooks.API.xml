@@ -70,15 +70,26 @@
             <param name="patchDoc">list of changes</param>
             <returns></returns>
         </member>
-        <member name="M:BigBooks.API.Controllers.UserController.GetUser(System.Int32)">
+        <member name="M:BigBooks.API.Controllers.UserController.GetUserInfo(System.Int32)">
             <summary>
-            Get user by key.
+            Get user info by key.
             </summary>
             <remarks>
             Requires authenticated user with Admin role
             </remarks>
             <param name="key">user account key</param>
             <returns>user details</returns>
+        </member>
+        <member name="M:BigBooks.API.Controllers.UserController.PurchaseBooks(BigBooks.API.Models.BookPurchaseDto)">
+            <summary>
+            Purchases designated books for logged in user
+            </summary>
+            <remarks>
+            Purchase is made for logged in user (based on claims)
+            Purchase is refused if stock unavailable or user wallet is insufficient
+            </remarks>
+            <param name="dto">book key and quantity</param>
+            <returns>updated user info</returns>
         </member>
         <member name="T:BigBooks.API.Migrations.DatabaseSetupNew">
             <inheritdoc />
@@ -101,6 +112,27 @@
             <summary>
             Simplified book overview
             </summary>
+        </member>
+        <member name="M:BigBooks.API.Providers.BookProvider.RemoveFromStock(System.Int32,System.Int32)">
+            <summary>
+            Remove designated quantity of books from available stock
+            </summary>
+            <param name="bookKey"></param>
+            <param name="requestedQuantity"></param>
+            <returns>
+            True if operation successful, stock available
+            False if operation fail, stock unavailable
+            </returns>
+        </member>
+        <member name="M:BigBooks.API.Providers.UserProvider.PurchaseBooks(System.String,BigBooks.API.Models.BookPurchaseDto)">
+            <summary>
+            extract userKey from claim
+            refer to AuthService.cs, GenerateToken(), user key embedded in token
+            </summary>
+            <param name="currentUserKeyValue"></param>
+            <param name="bookKey"></param>
+            <param name="requestedQuantity"></param>
+            <returns></returns>
         </member>
     </members>
 </doc>
