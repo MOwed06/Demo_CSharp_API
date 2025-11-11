@@ -100,6 +100,11 @@
             </remarks>
             <returns>overview of each user</returns>
         </member>
+        <member name="P:BigBooks.API.Entities.AppUser.UserEmail">
+            <summary>
+            UserEmail is user id for API
+            </summary>
+        </member>
         <member name="T:BigBooks.API.Migrations.DatabaseSetupNew">
             <inheritdoc />
         </member>
@@ -141,7 +146,7 @@
             <param name="currentUserKeyValue"></param>
             <param name="bookKey"></param>
             <param name="requestedQuantity"></param>
-            <returns></returns>
+            <returns>user key associated with purchase</returns>
         </member>
     </members>
 </doc>

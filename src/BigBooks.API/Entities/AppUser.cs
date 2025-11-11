@@ -13,6 +13,9 @@ namespace BigBooks.API.Entities
         [Required]
         public Role Role { get; set; }
 
+        /// <summary>
+        /// UserEmail is user id for API
+        /// </summary>
         [Required]
         [MaxLength(100)]
         public string UserEmail { get; set; } = string.Empty;
