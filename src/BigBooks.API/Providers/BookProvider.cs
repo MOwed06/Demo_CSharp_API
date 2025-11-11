@@ -40,7 +40,7 @@ namespace BigBooks.API.Providers
                 Isbn = book.Isbn.ToString("D").ToUpper(),
                 Description = book.Description,
                 Genre = book.Genre.ToString(),
-                Price = book.Price.ToString("F2"),
+                Price = book.Price.ToString("C"),
                 InStock = book.StockQuantity > 0,
                 Rating = bookRating.HasValue
                     ? (double?)Math.Round(bookRating.Value, 2)
@@ -184,6 +184,33 @@ namespace BigBooks.API.Providers
             }
         }
 
+        /// <summary>
+        /// Remove designated quantity of books from available stock
+        /// </summary>
+        /// <param name="bookKey"></param>
+        /// <param name="requestedQuantity"></param>
+        /// <returns>
+        /// True if operation successful, stock available
+        /// False if operation fail, stock unavailable
+        /// </returns>
+        public bool RemoveFromStock(int bookKey, int requestedQuantity)
+        {
+            logger.LogDebug($"RemoveFromStock, {bookKey}, {requestedQuantity}");
+
+            var selectedBook = ctx.Books
+                .Single(b => b.Key == bookKey);
+
+            if (selectedBook.StockQuantity > requestedQuantity)
+            {
+                selectedBook.StockQuantity -= requestedQuantity;
+                ctx.SaveChanges();
+                return true;
+            }
+
+            // insufficient quantity
+            return false;
+        }
+
         private double? CalculateBookRating(ICollection<BookReview> reviews)
         {
             return reviews.Any()
@@ -193,7 +220,12 @@ namespace BigBooks.API.Providers
 
         private (Guid? BookIsbn, string Error) CheckIsbn(string inputIsbn, int? existingBookKey)
         {
-            var bookIsbn = Guid.Parse(inputIsbn);
+            var bookIsbn = Guid.Empty;
+
+            if (!Guid.TryParse(inputIsbn, out bookIsbn))
+            {
+                return (null, $"invalid ISBN value {inputIsbn}");
+            }
 
             if (ctx.Books.Where(b => b.Key != existingBookKey).Any(b => b.Isbn == bookIsbn))
             {
