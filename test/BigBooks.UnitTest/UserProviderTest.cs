@@ -3,6 +3,7 @@ using BigBooks.API.Entities;
 using BigBooks.API.Models;
 using BigBooks.API.Providers;
 using BigBooks.UnitTest.Common;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Moq;
 
@@ -101,6 +102,47 @@ namespace BigBooks.UnitTest
             // assert
             Assert.Contains(expectedError, response.Error);
             Assert.Null(response.Key);
+        }
+
+        [Theory]
+        [InlineData(1, 1, 28.58f, 16)]  // book 1, stock = 17, cost = 11.42
+        [InlineData(1, 2, 17.16f, 15)]    // book 1, stock = 17, cost = 11.42
+        [InlineData(2, 1, 22.89f, 5)]     // book 2, stock = 6, cost = 17.11
+        [InlineData(3, 1, 26.58f, 0)]     // book 3, stock = 1, cost = 13.42
+        public void CheckPurchaseBooksValid(int bookKey, int reqQuantity, float expectedWallet, int expectedStock)
+        {
+            // arrange
+            const string USER_KEY_VALUE = "3";
+
+            var purchaseDto = new BookPurchaseDto
+            {
+                BookKey = bookKey,
+                RequestedQuantity = reqQuantity
+            };
+
+            // act
+            var response = _userProvider.PurchaseBooks(USER_KEY_VALUE, purchaseDto);
+
+            var observedUser = _ctx.AppUsers
+                .AsNoTracking()
+                .Single(u => u.Key == response.Key.Value);
+
+            var observedBook = _ctx.Books
+                .AsNoTracking()
+                .Single(b => b.Key == bookKey);
+
+            // assert
+            Assert.Contains(bookKey, observedUser.UserBookIds); // book now associated with user
+            Assert.Equal(expectedStock, observedBook.StockQuantity);
+
+            var adjustedObserved = Truncate2Digits(observedUser.Wallet);
+            var adjustedExpected = Truncate2Digits(expectedWallet);
+            Assert.Equal(adjustedExpected, adjustedObserved);
+        }
+
+        private float Truncate2Digits(float value)
+        {
+            return (float)Math.Truncate(value * 100) / 100f;
         }
     }
 }

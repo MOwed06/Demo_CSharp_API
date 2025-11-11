@@ -65,7 +65,7 @@ namespace BigBooks.API.Providers
         /// <param name="currentUserKeyValue"></param>
         /// <param name="bookKey"></param>
         /// <param name="requestedQuantity"></param>
-        /// <returns></returns>
+        /// <returns>user key associated with purchase</returns>
         public ProviderKeyResponse PurchaseBooks(string currentUserKeyValue, BookPurchaseDto dto)
         {
             logger.LogDebug($"PurchaseBooks, user: {currentUserKeyValue}, book: {dto.BookKey}, qty: {dto.RequestedQuantity}");

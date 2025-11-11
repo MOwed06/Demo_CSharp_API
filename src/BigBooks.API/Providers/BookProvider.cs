@@ -200,7 +200,7 @@ namespace BigBooks.API.Providers
             var selectedBook = ctx.Books
                 .Single(b => b.Key == bookKey);
 
-            if (selectedBook.StockQuantity > requestedQuantity)
+            if (selectedBook.StockQuantity >= requestedQuantity)
             {
                 selectedBook.StockQuantity -= requestedQuantity;
                 ctx.SaveChanges();
