@@ -60,6 +60,9 @@ I will continue to evolve this project as my bandwidth allows. I will keep the m
 ### BigBooks.UnitTest
 
 - xunit tests of project elements exercised in isolation.
+    - AuthenticationServiceTest.cs
+    - BookProviderTest.cs
+    - UserProviderTest.cs
 - InMemory DbContext created for each test case.
     - Refer to BigBookTest.cs constructor.
 
@@ -67,7 +70,10 @@ I will continue to evolve this project as my bandwidth allows. I will keep the m
 
 ### BigBooks.IntegrationTest
 
-- Integration test demonstrating end-to-end message scenarios leveraging an in-memory database along with a WebApplicationFactory design pattern.
+- xunit project demonstrating end-to-end message scenarios leveraging an in-memory database and a WebApplicationFactory design pattern.
+- This example is significant not for the coverage it provides (which is small), but rather for the manner of test execution.
+    - BigBookWebAppFactory.cs, ConfigureWebHost() adjusts the service and configuration of the source WebApplication to spawn an internal, temporary TestServer for testing.
+    - The HttpRequests of MessageTest.cs target the TestServer to exercise system-level behaviors of the source project.
 
 <br>
 

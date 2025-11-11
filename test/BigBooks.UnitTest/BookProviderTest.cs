@@ -94,7 +94,6 @@ namespace BigBooks.UnitTest
             Assert.Equal(expectedRating, obs?.Rating);
         }
 
-
         [Theory]
         [InlineData(1, 4.5)]
         [InlineData(2, null)]
