@@ -54,6 +54,7 @@ namespace BigBooks.API.Providers
 
             var books = ctx.Books
                 .Where(b => b.Genre == genre)
+                .Include(b => b.Reviews)
                 .AsNoTracking()
                 .ToList();
 

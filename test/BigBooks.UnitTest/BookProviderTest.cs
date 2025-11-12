@@ -67,7 +67,7 @@ namespace BigBooks.UnitTest
                     Isbn = Guid.Parse("C4E619C5-CFFF-46C9-8518-9DE8B58E4E0A"),
                     Genre = Genre.Mystery,
                     StockQuantity = 1,
-                    Price = 1f
+                    Price = 1m
                 }
             };
 
@@ -125,7 +125,7 @@ namespace BigBooks.UnitTest
                 Isbn = isbn,
                 Description = null,
                 Genre = Genre.Childrens,
-                Price = 17.63f,
+                Price = 17.63m,
                 StockQuantity = 5
             };
 

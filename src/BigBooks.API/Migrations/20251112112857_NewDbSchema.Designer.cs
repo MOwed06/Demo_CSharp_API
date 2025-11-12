@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BigBooks.API.Migrations
 {
     [DbContext(typeof(BigBookDbContext))]
-    [Migration("20251109120300_DatabaseSetupNew")]
-    partial class DatabaseSetupNew
+    [Migration("20251112112857_NewDbSchema")]
+    partial class NewDbSchema
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -34,10 +34,6 @@ namespace BigBooks.API.Migrations
                     b.Property<int>("Role")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("UserBookIds")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("UserEmail")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -48,8 +44,8 @@ namespace BigBooks.API.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
-                    b.Property<float>("Wallet")
-                        .HasColumnType("REAL");
+                    b.Property<decimal>("Wallet")
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Key");
 
@@ -61,60 +57,54 @@ namespace BigBooks.API.Migrations
                             Key = 1,
                             Password = "N0tV3ryS3cret",
                             Role = -1,
-                            UserBookIds = "[]",
                             UserEmail = "Clark.Kent@demo.com",
                             UserName = "Clark Kent",
-                            Wallet = 1f
+                            Wallet = 1m
                         },
                         new
                         {
                             Key = 2,
                             Password = "N0tV3ryS3cret",
                             Role = -1,
-                            UserBookIds = "[]",
                             UserEmail = "Bruce.Wayne@demo.com",
                             UserName = "Bruce Wayne",
-                            Wallet = 1f
+                            Wallet = 1m
                         },
                         new
                         {
                             Key = 3,
                             Password = "N0tV3ryS3cret",
                             Role = 0,
-                            UserBookIds = "[]",
                             UserEmail = "Diana.Prince@demo.com",
                             UserName = "Diana Prince",
-                            Wallet = 16.5f
+                            Wallet = 16.50m
                         },
                         new
                         {
                             Key = 4,
                             Password = "N0tV3ryS3cret",
                             Role = 0,
-                            UserBookIds = "[1,3]",
                             UserEmail = "Arthur.Anderson@demo.com",
                             UserName = "Arthur Anderson",
-                            Wallet = 100f
+                            Wallet = 100.0m
                         },
                         new
                         {
                             Key = 5,
                             Password = "N0tV3ryS3cret",
                             Role = 0,
-                            UserBookIds = "[2,8,9]",
                             UserEmail = "Bella.Barnes@demo.com",
                             UserName = "Bella Barnes",
-                            Wallet = 50f
+                            Wallet = 50.0m
                         },
                         new
                         {
                             Key = 6,
                             Password = "N0tV3ryS3cret",
                             Role = 0,
-                            UserBookIds = "[]",
                             UserEmail = "Celeste.Cadwell@demo.com",
                             UserName = "Celeste Cadwell",
-                            Wallet = 20f
+                            Wallet = 20.0m
                         });
                 });
 
@@ -139,8 +129,8 @@ namespace BigBooks.API.Migrations
                     b.Property<Guid>("Isbn")
                         .HasColumnType("TEXT");
 
-                    b.Property<float>("Price")
-                        .HasColumnType("REAL");
+                    b.Property<decimal>("Price")
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("StockQuantity")
                         .HasColumnType("INTEGER");
@@ -162,7 +152,7 @@ namespace BigBooks.API.Migrations
                             Description = "A long time ago, people used to tell magical stories of wonder and enchantment. Those stories were called Fairy Tales.",
                             Genre = 2,
                             Isbn = new Guid("383ebbb6-8d11-4a7e-8411-07a2994bd3b1"),
-                            Price = 17.51f,
+                            Price = 17.51m,
                             StockQuantity = 23,
                             Title = "The Stinky Cheese Man and Other Fairly Stupid Tales"
                         },
@@ -173,7 +163,7 @@ namespace BigBooks.API.Migrations
                             Description = "Let the wild rumpus continue as this classic comes to life like never before with new reproductions of Maurice Sendak's artwork.",
                             Genre = 2,
                             Isbn = new Guid("31ab208d-ea2d-458b-b708-744e16bbde5a"),
-                            Price = 11.42f,
+                            Price = 11.42m,
                             StockQuantity = 17,
                             Title = "Where the Wild Things Are"
                         },
@@ -184,7 +174,7 @@ namespace BigBooks.API.Migrations
                             Description = "Rabbit lives alone. He cooks for himself, cleans up for himself, and at the end of the day, reads himself a story. It's a simple life, and he likes it.",
                             Genre = 2,
                             Isbn = new Guid("623beb0c-3798-4629-9a4e-1894112b1122"),
-                            Price = 13.7f,
+                            Price = 13.70m,
                             StockQuantity = 45,
                             Title = "Too Many Frogs"
                         },
@@ -195,7 +185,7 @@ namespace BigBooks.API.Migrations
                             Description = "Citizen Soldiers opens at 0001 hours, June 7, 1944, on the Normandy beaches, and ends at 0245 hours, May 7, 1945, with the allied victory.",
                             Genre = 5,
                             Isbn = new Guid("d454af8a-fe4a-45ac-8fab-c220677ea6ed"),
-                            Price = 17.11f,
+                            Price = 17.11m,
                             StockQuantity = 6,
                             Title = "Citizen Soldiers"
                         },
@@ -206,7 +196,7 @@ namespace BigBooks.API.Migrations
                             Description = "It has been centuries since the fall of the 10 consecrated orders known as the Knights Radiant, but their Shardblades and Shardplate remain: mystical swords and suits of armor that transform ordinary men into near-invincible warriors. Men trade kingdoms for Shardblades. Wars were fought for them and won by them.",
                             Genre = 3,
                             Isbn = new Guid("c0cad277-f103-4c93-8a15-513fdfef2d5f"),
-                            Price = 21.09f,
+                            Price = 21.09m,
                             StockQuantity = 21,
                             Title = "The Way of Kings"
                         },
@@ -217,7 +207,7 @@ namespace BigBooks.API.Migrations
                             Description = "In 1922, Count Alexander Rostov is deemed an unrepentant aristocrat by a Bolshevik tribunal, and is sentenced to house arrest in the Metropol, a grand hotel across the street from the Kremlin. Rostov, an indomitable man of erudition and wit, has never worked a day in his life, and must now live in an attic room.",
                             Genre = 1,
                             Isbn = new Guid("ff347fe2-9b34-41e5-ad04-afbd9cd2b568"),
-                            Price = 11.19f,
+                            Price = 11.19m,
                             StockQuantity = 17,
                             Title = "A Gentleman in Moscow"
                         },
@@ -227,7 +217,7 @@ namespace BigBooks.API.Migrations
                             Author = "Some Guy",
                             Genre = 1,
                             Isbn = new Guid("230eca9f-474e-45d4-a412-977733cd8893"),
-                            Price = 13.19f,
+                            Price = 13.19m,
                             StockQuantity = 11,
                             Title = "My Story in BIG LETTERS"
                         },
@@ -238,7 +228,7 @@ namespace BigBooks.API.Migrations
                             Description = "When Gregor falls through a grate in the laundry room of his apartment building, he hurtles into the dark Underland, where spiders, rats, cockroaches coexist uneasily with humans. This world is on the brink of war, and Gregor's arrival is no accident. ",
                             Genre = 2,
                             Isbn = new Guid("9909d495-cffb-4cf1-b876-cbb9857323d2"),
-                            Price = 8.29f,
+                            Price = 8.29m,
                             StockQuantity = 21,
                             Title = "Gregor the Overlander"
                         },
@@ -249,7 +239,7 @@ namespace BigBooks.API.Migrations
                             Description = "Months have passed since Gregor first fell into the strange Underland beneath New York City, and he swears he will never go back. But he is destined to be a key player in another prophecy, this one about an ominous white rat called the Bane.",
                             Genre = 2,
                             Isbn = new Guid("09c64a27-f96c-4e3b-8361-dc3c2c8ada7a"),
-                            Price = 9.46f,
+                            Price = 9.46m,
                             StockQuantity = 13,
                             Title = "Gregor and the Prophecy of Bane"
                         },
@@ -260,7 +250,7 @@ namespace BigBooks.API.Migrations
                             Description = "In the ruins of a place once known as North America lies the nation of Panem, a shining Capitol surrounded by twelve outlying districts. The Capitol keeps the districts in line by forcing them all to send one boy and one girl between the ages of twelve and eighteen to participate in the annual Hunger Games, a fight to the death on live TV.",
                             Genre = 3,
                             Isbn = new Guid("5672c761-c89d-460a-8877-ded4b48525f5"),
-                            Price = 13.19f,
+                            Price = 13.19m,
                             StockQuantity = 11,
                             Title = "The Hunger Games"
                         },
@@ -271,9 +261,86 @@ namespace BigBooks.API.Migrations
                             Description = "In the city of Atlanta, young women are dying—at the hands of a killer who signs his work with a single, chilling act of mutilation. Leaving behind enough evidence to fuel a frenzied police hunt, this cunning madman is bringing together dozens of lives, crossing the boundaries of wealth and race.",
                             Genre = 3,
                             Isbn = new Guid("4929c5a8-8f0c-4f1a-a742-154f037c0761"),
-                            Price = 19.23f,
+                            Price = 19.23m,
                             StockQuantity = 3,
                             Title = "Triptych: A Will Trent"
+                        });
+                });
+
+            modelBuilder.Entity("BigBooks.API.Entities.BookPurchase", b =>
+                {
+                    b.Property<int>("Key")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("BookKey")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("PurchaseDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("PurchaseQuantity")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("UserKey")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Key");
+
+                    b.HasIndex("BookKey");
+
+                    b.HasIndex("UserKey");
+
+                    b.ToTable("BookPurchases");
+
+                    b.HasData(
+                        new
+                        {
+                            Key = 1,
+                            BookKey = 1,
+                            PurchaseDate = new DateTime(2025, 3, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            PurchaseQuantity = 1,
+                            UserKey = 4
+                        },
+                        new
+                        {
+                            Key = 2,
+                            BookKey = 3,
+                            PurchaseDate = new DateTime(2025, 3, 16, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            PurchaseQuantity = 1,
+                            UserKey = 4
+                        },
+                        new
+                        {
+                            Key = 3,
+                            BookKey = 2,
+                            PurchaseDate = new DateTime(2025, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            PurchaseQuantity = 3,
+                            UserKey = 5
+                        },
+                        new
+                        {
+                            Key = 4,
+                            BookKey = 8,
+                            PurchaseDate = new DateTime(2025, 4, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            PurchaseQuantity = 2,
+                            UserKey = 5
+                        },
+                        new
+                        {
+                            Key = 5,
+                            BookKey = 9,
+                            PurchaseDate = new DateTime(2025, 4, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            PurchaseQuantity = 1,
+                            UserKey = 5
+                        },
+                        new
+                        {
+                            Key = 6,
+                            BookKey = 9,
+                            PurchaseDate = new DateTime(2025, 6, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            PurchaseQuantity = 1,
+                            UserKey = 5
                         });
                 });
 
@@ -287,6 +354,10 @@ namespace BigBooks.API.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Description")
+                        .HasMaxLength(500)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("ReviewDate")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("Score")
@@ -308,13 +379,16 @@ namespace BigBooks.API.Migrations
                         {
                             Key = 1,
                             BookKey = 1,
-                            Score = 6
+                            ReviewDate = new DateTime(2023, 8, 17, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Score = 6,
+                            UserKey = 4
                         },
                         new
                         {
                             Key = 2,
                             BookKey = 1,
                             Description = "My kids loved this book. I read it to them every night!",
+                            ReviewDate = new DateTime(2024, 11, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Score = 9,
                             UserKey = 5
                         },
@@ -322,48 +396,57 @@ namespace BigBooks.API.Migrations
                         {
                             Key = 3,
                             BookKey = 3,
+                            ReviewDate = new DateTime(2025, 1, 7, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Score = 9
                         },
                         new
                         {
                             Key = 4,
                             BookKey = 3,
+                            Description = "The plot wandered.",
+                            ReviewDate = new DateTime(2025, 4, 23, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Score = 6
                         },
                         new
                         {
                             Key = 5,
                             BookKey = 4,
+                            ReviewDate = new DateTime(2024, 5, 9, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Score = 8
                         },
                         new
                         {
                             Key = 6,
                             BookKey = 5,
+                            ReviewDate = new DateTime(2024, 5, 11, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Score = 9
                         },
                         new
                         {
                             Key = 7,
                             BookKey = 6,
+                            ReviewDate = new DateTime(2024, 5, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Score = 8
                         },
                         new
                         {
                             Key = 8,
                             BookKey = 6,
+                            ReviewDate = new DateTime(2024, 5, 13, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Score = 7
                         },
                         new
                         {
                             Key = 9,
                             BookKey = 7,
+                            ReviewDate = new DateTime(2024, 5, 14, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Score = 7
                         },
                         new
                         {
                             Key = 10,
                             BookKey = 7,
+                            ReviewDate = new DateTime(2024, 5, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Score = 8
                         },
                         new
@@ -371,6 +454,7 @@ namespace BigBooks.API.Migrations
                             Key = 11,
                             BookKey = 9,
                             Description = "This book was way too dark for kids.",
+                            ReviewDate = new DateTime(2024, 5, 16, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Score = 3,
                             UserKey = 5
                         },
@@ -379,6 +463,7 @@ namespace BigBooks.API.Migrations
                             Key = 12,
                             BookKey = 9,
                             Description = "Every child should read this book.",
+                            ReviewDate = new DateTime(2024, 5, 17, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Score = 10,
                             UserKey = 2
                         },
@@ -387,9 +472,29 @@ namespace BigBooks.API.Migrations
                             Key = 13,
                             BookKey = 7,
                             Description = "This book was long and boring.",
+                            ReviewDate = new DateTime(2024, 5, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Score = 5,
                             UserKey = 5
                         });
+                });
+
+            modelBuilder.Entity("BigBooks.API.Entities.BookPurchase", b =>
+                {
+                    b.HasOne("BigBooks.API.Entities.Book", "Book")
+                        .WithMany()
+                        .HasForeignKey("BookKey")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BigBooks.API.Entities.AppUser", "AppUser")
+                        .WithMany("BookPurchases")
+                        .HasForeignKey("UserKey")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AppUser");
+
+                    b.Navigation("Book");
                 });
 
             modelBuilder.Entity("BigBooks.API.Entities.BookReview", b =>
@@ -407,6 +512,11 @@ namespace BigBooks.API.Migrations
                     b.Navigation("Book");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("BigBooks.API.Entities.AppUser", b =>
+                {
+                    b.Navigation("BookPurchases");
                 });
 
             modelBuilder.Entity("BigBooks.API.Entities.Book", b =>

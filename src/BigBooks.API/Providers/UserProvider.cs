@@ -15,6 +15,7 @@ namespace BigBooks.API.Providers
 
             var appUser = ctx.AppUsers
                 .AsNoTracking()
+                .Include(u => u.BookPurchases)
                 .SingleOrDefault(u => u.Key == key);
 
             if (appUser == null)
@@ -22,8 +23,13 @@ namespace BigBooks.API.Providers
                 return null;
             }
 
+            // use hashset to prohibit duplicate entries
+            var userBookKeys = appUser.BookPurchases
+                .Select(u => u.BookKey)
+                .ToHashSet();
+
             var userBooks = ctx.Books
-                .Where(b => appUser.UserBookIds.Contains(b.Key))
+                .Where(b => userBookKeys.Contains(b.Key))
                 .Select(b => b.Title)
                 .ToList();
 
@@ -53,7 +59,7 @@ namespace BigBooks.API.Providers
                     UserEmail = u.UserEmail,
                     Role = u.Role.ToString(),
                     Wallet = u.Wallet.ToString("C"),
-                    BookCount = u.UserBookIds.Count()
+                    BookCount = u.BookPurchases.Count()
                 })
                 .ToList();
         }
@@ -66,7 +72,7 @@ namespace BigBooks.API.Providers
         /// <param name="bookKey"></param>
         /// <param name="requestedQuantity"></param>
         /// <returns>user key associated with purchase</returns>
-        public ProviderKeyResponse PurchaseBooks(string currentUserKeyValue, BookPurchaseDto dto)
+        public ProviderKeyResponse PurchaseBooks(string currentUserKeyValue, BookPurchaseRequestDto dto)
         {
             logger.LogDebug($"PurchaseBooks, user: {currentUserKeyValue}, book: {dto.BookKey}, qty: {dto.RequestedQuantity}");
 
@@ -108,7 +114,16 @@ namespace BigBooks.API.Providers
 
             // valid purchase, stock available
             appUser.Wallet -= purchaseAmount;
-            appUser.UserBookIds.Add(dto.BookKey);
+
+            // TODO move to new provider ...
+
+            appUser.BookPurchases.Add(new BookPurchase
+            {
+                PurchaseDate = DateTime.Today,
+                PurchaseQuantity = dto.RequestedQuantity,
+                BookKey = dto.BookKey
+            });
+
             ctx.SaveChanges();
 
             return new ProviderKeyResponse(userKey, string.Empty);

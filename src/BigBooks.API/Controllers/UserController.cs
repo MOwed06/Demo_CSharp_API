@@ -57,7 +57,7 @@ namespace BigBooks.API.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult<UserDetailsDto> PurchaseBooks(BookPurchaseDto dto)
+        public ActionResult<UserDetailsDto> PurchaseBooks(BookPurchaseRequestDto dto)
         {
             logger.LogTrace($"PurchaseBooks, book: {dto.BookKey}, qty: {dto.RequestedQuantity}");
 

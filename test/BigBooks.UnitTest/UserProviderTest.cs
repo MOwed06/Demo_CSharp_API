@@ -14,7 +14,7 @@ namespace BigBooks.UnitTest
         private readonly UserProvider _userProvider;
 
         private const int CUSTOMER_KEY = 3;
-        private const float CUSTOMER_WALLET = 40.0f;
+        private const decimal CUSTOMER_WALLET = 40.0m;
 
         private const int RARE_BOOK_KEY = 3;
         private const int PRE_RELEASE_BOOK_KEY = 4;
@@ -39,7 +39,7 @@ namespace BigBooks.UnitTest
                     Author = "Some Fancy Person",
                     Isbn = Guid.Parse("C352E91B-80F4-403C-B7E5-860BA52B8F99"),
                     Genre = Genre.Childrens,
-                    Price = 13.42f,
+                    Price = 13.42m,
                     StockQuantity = 1
                 },
                 new Book
@@ -49,7 +49,7 @@ namespace BigBooks.UnitTest
                     Author = "Some Fancy Person",
                     Isbn = Guid.Parse("C352E91B-80F4-403C-B7E5-860BA52B8F99"),
                     Genre = Genre.Childrens,
-                    Price = 11.42f,
+                    Price = 11.42m,
                     StockQuantity = 0
                 }
             };
@@ -62,8 +62,7 @@ namespace BigBooks.UnitTest
                     UserName = "Zachary Zimmer",
                     UserEmail = "Zachary.Zimmer@demo.com",
                     Wallet = CUSTOMER_WALLET,
-                    Password = ApplicationConstant.USER_PASSWORD,
-                    UserBookIds = new List<int>()
+                    Password = ApplicationConstant.USER_PASSWORD
                 }
             };
 
@@ -90,7 +89,7 @@ namespace BigBooks.UnitTest
         public void CheckPurchaseBooksInvalid(string currentUserKey, int bookKey, int reqQuantity, string expectedError)
         {
             // arrange
-            var purchaseDto = new BookPurchaseDto
+            var purchaseDto = new BookPurchaseRequestDto
             {
                 BookKey = bookKey,
                 RequestedQuantity = reqQuantity
@@ -105,16 +104,16 @@ namespace BigBooks.UnitTest
         }
 
         [Theory]
-        [InlineData(1, 1, 28.58f, 16)]  // book 1, stock = 17, cost = 11.42
-        [InlineData(1, 2, 17.16f, 15)]    // book 1, stock = 17, cost = 11.42
-        [InlineData(2, 1, 22.89f, 5)]     // book 2, stock = 6, cost = 17.11
-        [InlineData(3, 1, 26.58f, 0)]     // book 3, stock = 1, cost = 13.42
-        public void CheckPurchaseBooksValid(int bookKey, int reqQuantity, float expectedWallet, int expectedStock)
+        [InlineData(1, 1, 28.58, 16)]  // book 1, stock = 17, cost = 11.42
+        [InlineData(1, 2, 17.16, 15)]    // book 1, stock = 17, cost = 11.42
+        [InlineData(2, 1, 22.89, 5)]     // book 2, stock = 6, cost = 17.11
+        [InlineData(3, 1, 26.58, 0)]     // book 3, stock = 1, cost = 13.42
+        public void CheckPurchaseBooksValid(int bookKey, int reqQuantity, decimal expectedWallet, int expectedStock)
         {
             // arrange
             const string USER_KEY_VALUE = "3";
 
-            var purchaseDto = new BookPurchaseDto
+            var purchaseDto = new BookPurchaseRequestDto
             {
                 BookKey = bookKey,
                 RequestedQuantity = reqQuantity
@@ -125,6 +124,7 @@ namespace BigBooks.UnitTest
 
             var observedUser = _ctx.AppUsers
                 .AsNoTracking()
+                .Include(u => u.BookPurchases)
                 .Single(u => u.Key == response.Key.Value);
 
             var observedBook = _ctx.Books
@@ -132,17 +132,13 @@ namespace BigBooks.UnitTest
                 .Single(b => b.Key == bookKey);
 
             // assert
-            Assert.Contains(bookKey, observedUser.UserBookIds); // book now associated with user
+            var obsUserBookKeys = observedUser.BookPurchases
+                .Select(u => u.BookKey)
+                .ToHashSet();
+           
+            Assert.Contains(bookKey, obsUserBookKeys); // book now associated with user
             Assert.Equal(expectedStock, observedBook.StockQuantity);
-
-            var adjustedObserved = Truncate2Digits(observedUser.Wallet);
-            var adjustedExpected = Truncate2Digits(expectedWallet);
-            Assert.Equal(adjustedExpected, adjustedObserved);
-        }
-
-        private float Truncate2Digits(float value)
-        {
-            return (float)Math.Truncate(value * 100) / 100f;
+            Assert.Equal(expectedWallet, observedUser.Wallet);
         }
     }
 }

@@ -80,7 +80,7 @@
             <param name="key">user account key</param>
             <returns>user details</returns>
         </member>
-        <member name="M:BigBooks.API.Controllers.UserController.PurchaseBooks(BigBooks.API.Models.BookPurchaseDto)">
+        <member name="M:BigBooks.API.Controllers.UserController.PurchaseBooks(BigBooks.API.Models.BookPurchaseRequestDto)">
             <summary>
             Purchase designated books for logged in user
             </summary>
@@ -105,16 +105,16 @@
             UserEmail is user id for API
             </summary>
         </member>
-        <member name="T:BigBooks.API.Migrations.DatabaseSetupNew">
+        <member name="T:BigBooks.API.Migrations.NewDbSchema">
             <inheritdoc />
         </member>
-        <member name="M:BigBooks.API.Migrations.DatabaseSetupNew.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+        <member name="M:BigBooks.API.Migrations.NewDbSchema.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
             <inheritdoc />
         </member>
-        <member name="M:BigBooks.API.Migrations.DatabaseSetupNew.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+        <member name="M:BigBooks.API.Migrations.NewDbSchema.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
             <inheritdoc />
         </member>
-        <member name="M:BigBooks.API.Migrations.DatabaseSetupNew.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+        <member name="M:BigBooks.API.Migrations.NewDbSchema.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
         <member name="T:BigBooks.API.Models.BookDetailsDto">
@@ -138,7 +138,7 @@
             False if operation fail, stock unavailable
             </returns>
         </member>
-        <member name="M:BigBooks.API.Providers.UserProvider.PurchaseBooks(System.String,BigBooks.API.Models.BookPurchaseDto)">
+        <member name="M:BigBooks.API.Providers.UserProvider.PurchaseBooks(System.String,BigBooks.API.Models.BookPurchaseRequestDto)">
             <summary>
             extract userKey from claim
             refer to AuthService.cs, GenerateToken(), user key embedded in token

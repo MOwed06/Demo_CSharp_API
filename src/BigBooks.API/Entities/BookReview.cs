@@ -12,11 +12,16 @@ namespace BigBooks.API.Entities
         [Required]
         [Range(0, 10)]
         public int Score { get; set; }
+
+        [Required]
+        public DateTime ReviewDate { get; set; }
+
+        [MaxLength(500)]
         public string? Description { get; set; }
 
         [ForeignKey("UserKey")]
         public AppUser? User { get; set; }
-        public int? UserKey { get; set; }
+        public int? UserKey { get; set; } // UserKey null for anonymous review
 
         [ForeignKey("BookKey")]
         public Book? Book { get; set; }
