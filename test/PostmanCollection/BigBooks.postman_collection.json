@@ -8,7 +8,7 @@
 	},
 	"item": [
 		{
-			"name": "GET Book Details",
+			"name": "GET BookDetails",
 			"request": {
 				"auth": {
 					"type": "bearer",
@@ -39,7 +39,7 @@
 			"response": []
 		},
 		{
-			"name": "GET User Details",
+			"name": "GET UserDetails",
 			"request": {
 				"auth": {
 					"type": "bearer",
@@ -250,6 +250,45 @@
 			"response": []
 		},
 		{
+			"name": "POST AddUser",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"UserEmail\": \"Elena.Edwards@demo.com\",\n    \"UserName\": \"Elena M. Edwards\",\n    \"Password\": \"N0tV3ryS3cret\",\n    \"Wallet\": 2592.03,\n    \"Role\": \"customer\"\n}"
+				},
+				"url": {
+					"raw": "https://localhost:{{portNumber}}/api/user",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "{{portNumber}}",
+					"path": [
+						"api",
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "POST PurchaseBook",
 			"request": {
 				"auth": {
@@ -274,7 +313,7 @@
 					"raw": "{\n    \"BookKey\": 4,\n    \"RequestedQuantity\": 2\n}"
 				},
 				"url": {
-					"raw": "https://localhost:{{portNumber}}/api/user",
+					"raw": "https://localhost:{{portNumber}}/api/purchase",
 					"protocol": "https",
 					"host": [
 						"localhost"
@@ -282,7 +321,7 @@
 					"port": "{{portNumber}}",
 					"path": [
 						"api",
-						"user"
+						"purchase"
 					]
 				}
 			},

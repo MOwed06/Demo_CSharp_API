@@ -70,6 +70,17 @@
             <param name="patchDoc">list of changes</param>
             <returns></returns>
         </member>
+        <member name="M:BigBooks.API.Controllers.PurchaseController.PurchaseBooks(BigBooks.API.Models.PurchaseRequestDto)">
+            <summary>
+            Purchase books for logged in user
+            </summary>
+            <remarks>
+            Purchase is made for logged in user based on claims
+            Purchase is refused if stock unavailable or user wallet is insufficient
+            </remarks>
+            <param name="dto">book key and quantity</param>
+            <returns>updated user info</returns>
+        </member>
         <member name="M:BigBooks.API.Controllers.UserController.GetUserInfo(System.Int32)">
             <summary>
             Get user info by key.
@@ -80,17 +91,6 @@
             <param name="key">user account key</param>
             <returns>user details</returns>
         </member>
-        <member name="M:BigBooks.API.Controllers.UserController.PurchaseBooks(BigBooks.API.Models.BookPurchaseRequestDto)">
-            <summary>
-            Purchase designated books for logged in user
-            </summary>
-            <remarks>
-            Purchase is made for logged in user based on claims
-            Purchase is refused if stock unavailable or user wallet is insufficient
-            </remarks>
-            <param name="dto">book key and quantity</param>
-            <returns>updated user info</returns>
-        </member>
         <member name="M:BigBooks.API.Controllers.UserController.GetUsers">
             <summary>
             Get all users
@@ -99,6 +99,16 @@
             Requires authenticated user with Admin role
             </remarks>
             <returns>overview of each user</returns>
+        </member>
+        <member name="M:BigBooks.API.Controllers.UserController.AddUser(BigBooks.API.Models.UserAddUpdateDto)">
+            <summary>
+            Add new user
+            </summary>
+            <remarks>
+            Requires authenticated user with Admin role
+            </remarks>         
+            <param name="dto">user parameters</param>
+            <returns>user details</returns>
         </member>
         <member name="P:BigBooks.API.Entities.AppUser.UserEmail">
             <summary>
@@ -138,7 +148,7 @@
             False if operation fail, stock unavailable
             </returns>
         </member>
-        <member name="M:BigBooks.API.Providers.UserProvider.PurchaseBooks(System.String,BigBooks.API.Models.BookPurchaseRequestDto)">
+        <member name="M:BigBooks.API.Providers.PurchaseProvider.PurchaseBooks(System.String,BigBooks.API.Models.PurchaseRequestDto)">
             <summary>
             extract userKey from claim
             refer to AuthService.cs, GenerateToken(), user key embedded in token

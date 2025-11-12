@@ -1,6 +1,6 @@
 ﻿namespace BigBooks.API.Models
 {
-    public class BookPurchaseRequestDto
+    public class PurchaseRequestDto
     {
         public int BookKey { get; set; }
         public int RequestedQuantity { get; set; }

@@ -89,7 +89,7 @@ namespace BigBooks.UnitTest
         public void CheckPurchaseBooksInvalid(string currentUserKey, int bookKey, int reqQuantity, string expectedError)
         {
             // arrange
-            var purchaseDto = new BookPurchaseRequestDto
+            var purchaseDto = new PurchaseRequestDto
             {
                 BookKey = bookKey,
                 RequestedQuantity = reqQuantity
@@ -113,7 +113,7 @@ namespace BigBooks.UnitTest
             // arrange
             const string USER_KEY_VALUE = "3";
 
-            var purchaseDto = new BookPurchaseRequestDto
+            var purchaseDto = new PurchaseRequestDto
             {
                 BookKey = bookKey,
                 RequestedQuantity = reqQuantity
