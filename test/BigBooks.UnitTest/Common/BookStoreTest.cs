@@ -30,7 +30,7 @@ namespace BigBooks.UnitTest.Common
                     Isbn = Guid.Parse(BOOK1_GUID),
                     Genre = Genre.Childrens,
                     Description = "Let the wild rumpus continue as this classic comes to life like never before with new reproductions of Maurice Sendak's artwork.",
-                    Price = 11.42f,
+                    Price = 11.42m,
                     StockQuantity = 17
                 },
                 new Book
@@ -41,7 +41,7 @@ namespace BigBooks.UnitTest.Common
                     Isbn = Guid.Parse(BOOK2_GUID),
                     Genre = Genre.History,
                     Description = "Citizen Soldiers opens at 0001 hours, June 7, 1944, on the Normandy beaches, and ends at 0245 hours, May 7, 1945, with the allied victory.",
-                    Price = 17.11f,
+                    Price = 17.11m,
                     StockQuantity = 6
                 }
             };

@@ -27,11 +27,11 @@ namespace BigBooks.API.Entities
         public Genre Genre { get; set; }
 
         [Required]
-        public float Price { get; set; }
+        public decimal Price { get; set; }
 
         [Required]
         public int StockQuantity { get; set; }
 
-        public ICollection<BookReview> Reviews { get; set; } = new List<BookReview>();
+        public IList<BookReview> Reviews { get; set; } = new List<BookReview>();
     }
 }

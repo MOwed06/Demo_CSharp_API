@@ -54,6 +54,7 @@ namespace BigBooks.API.Providers
 
             var books = ctx.Books
                 .Where(b => b.Genre == genre)
+                .Include(b => b.Reviews)
                 .AsNoTracking()
                 .ToList();
 
@@ -95,93 +96,79 @@ namespace BigBooks.API.Providers
         {
             logger.LogDebug($"AddBook, {dto.Title}");
 
-            try
+            var isbnCheck = CheckIsbn(dto.Isbn, null);
+            if (!isbnCheck.BookIsbn.HasValue)
             {
-                var isbnCheck = CheckIsbn(dto.Isbn, null);
-                if (!isbnCheck.BookIsbn.HasValue)
-                {
-                    return new ProviderKeyResponse(null, isbnCheck.Error);
-                }
-
-                var addedBook = new Book
-                {
-                    Title = dto.Title,
-                    Author = dto.Author,
-                    Isbn = isbnCheck.BookIsbn.Value,
-                    Description = dto.Description,
-                    Genre = dto.Genre,
-                    Price = dto.Price,
-                    StockQuantity = dto.StockQuantity
-                };
-
-                ctx.Books.Add(addedBook);
-                ctx.SaveChanges();
-
-                return new ProviderKeyResponse(addedBook.Key, string.Empty);
+                return new ProviderKeyResponse(null, isbnCheck.Error);
             }
-            catch (Exception ex)
+
+            var addedBook = new Book
             {
-                return new ProviderKeyResponse(null, ex.Message);
-            }
+                Title = dto.Title,
+                Author = dto.Author,
+                Isbn = isbnCheck.BookIsbn.Value,
+                Description = dto.Description,
+                Genre = dto.Genre,
+                Price = dto.Price,
+                StockQuantity = dto.StockQuantity
+            };
+
+            ctx.Books.Add(addedBook);
+            ctx.SaveChanges();
+
+            return new ProviderKeyResponse(addedBook.Key, string.Empty);
         }
 
         public ProviderKeyResponse UpdateBook(int key, JsonPatchDocument<BookAddUpdateDto> patchDoc)
         {
             logger.LogDebug($"UpdateBook, {key}");
 
-            try
+            var existingBook = ctx.Books
+                .AsNoTracking()
+                .FirstOrDefault(b => b.Key == key);
+
+            if (existingBook == null)
             {
-                var existingBook = ctx.Books
-                    .AsNoTracking()
-                    .FirstOrDefault(b => b.Key == key);
-
-                if (existingBook == null)
-                {
-                    return new ProviderKeyResponse(null, $"Book key {key} not found");
-                }
-
-                // transform from entity to dto
-                var updateDto = new BookAddUpdateDto
-                {
-                    Title = existingBook.Title,
-                    Author = existingBook.Author,
-                    Isbn = existingBook.Isbn.ToString("D").ToUpper(),
-                    Description = existingBook.Description,
-                    Genre = existingBook.Genre,
-                    Price = existingBook.Price,
-                    StockQuantity = existingBook.StockQuantity
-                };
-
-                // transform existing object according to json patch
-                patchDoc.ApplyTo(updateDto);
-                // confirm transformed object obeys dto rules
-                var validationCheck = ValidateDto(updateDto);
-                if (!validationCheck.Valid)
-                {
-                    return new ProviderKeyResponse(null, validationCheck.Error);
-                }
-
-                var isbnCheck = CheckIsbn(updateDto.Isbn, key);
-                if (!isbnCheck.BookIsbn.HasValue)
-                {
-                    return new ProviderKeyResponse(null, isbnCheck.Error);
-                }
-
-                var modifiedBook = ctx.Books.Single(b => b.Key == key);
-                modifiedBook.Title = updateDto.Title;
-                modifiedBook.Author = updateDto.Author;
-                modifiedBook.Isbn = isbnCheck.BookIsbn.Value;
-                modifiedBook.Genre = updateDto.Genre;
-                modifiedBook.Price = updateDto.Price;
-                modifiedBook.StockQuantity = updateDto.StockQuantity;
-
-                ctx.SaveChanges();
-                return new ProviderKeyResponse(key, string.Empty);
+                return new ProviderKeyResponse(null, $"Book key {key} not found");
             }
-            catch (Exception ex)
+
+            // transform from entity to dto
+            var updateDto = new BookAddUpdateDto
             {
-                return new ProviderKeyResponse(null, ex.Message);
+                Title = existingBook.Title,
+                Author = existingBook.Author,
+                Isbn = existingBook.Isbn.ToString("D").ToUpper(),
+                Description = existingBook.Description,
+                Genre = existingBook.Genre,
+                Price = existingBook.Price,
+                StockQuantity = existingBook.StockQuantity
+            };
+
+            // transform existing object according to json patch
+            patchDoc.ApplyTo(updateDto);
+            // confirm transformed object obeys dto rules
+            var validationCheck = ValidateDto(updateDto);
+            if (!validationCheck.Valid)
+            {
+                return new ProviderKeyResponse(null, validationCheck.Error);
             }
+
+            var isbnCheck = CheckIsbn(updateDto.Isbn, key);
+            if (!isbnCheck.BookIsbn.HasValue)
+            {
+                return new ProviderKeyResponse(null, isbnCheck.Error);
+            }
+
+            var modifiedBook = ctx.Books.Single(b => b.Key == key);
+            modifiedBook.Title = updateDto.Title;
+            modifiedBook.Author = updateDto.Author;
+            modifiedBook.Isbn = isbnCheck.BookIsbn.Value;
+            modifiedBook.Genre = updateDto.Genre;
+            modifiedBook.Price = updateDto.Price;
+            modifiedBook.StockQuantity = updateDto.StockQuantity;
+
+            ctx.SaveChanges();
+            return new ProviderKeyResponse(key, string.Empty);
         }
 
         /// <summary>

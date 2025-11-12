@@ -8,6 +8,8 @@ namespace BigBooks.API.Entities
         public DbSet<Book> Books { get; set; }
         public DbSet<BookReview> BookReviews { get; set; }
         public DbSet<AppUser> AppUsers { get; set; }
+        public DbSet<BookPurchase> BookPurchases { get; set; }
+
 
         public BigBookDbContext(DbContextOptions<BigBookDbContext> options) : base(options)
         {
@@ -25,7 +27,7 @@ namespace BigBooks.API.Entities
                     Isbn = Guid.Parse("383EBBB6-8D11-4A7E-8411-07A2994BD3B1"),
                     Genre = Genre.Childrens,
                     Description = "A long time ago, people used to tell magical stories of wonder and enchantment. Those stories were called Fairy Tales.",
-                    Price = 17.51f,
+                    Price = 17.51m,
                     StockQuantity = 23
                 },
                 new Book
@@ -36,7 +38,7 @@ namespace BigBooks.API.Entities
                     Isbn = Guid.Parse("31AB208D-EA2D-458B-B708-744E16BBDE5A"),
                     Genre = Genre.Childrens,
                     Description = "Let the wild rumpus continue as this classic comes to life like never before with new reproductions of Maurice Sendak's artwork.",
-                    Price = 11.42f,
+                    Price = 11.42m,
                     StockQuantity = 17
                 },
                 new Book
@@ -47,7 +49,7 @@ namespace BigBooks.API.Entities
                     Isbn = Guid.Parse("623BEB0C-3798-4629-9A4E-1894112B1122"),
                     Genre = Genre.Childrens,
                     Description = "Rabbit lives alone. He cooks for himself, cleans up for himself, and at the end of the day, reads himself a story. It's a simple life, and he likes it.",
-                    Price = 13.70f,
+                    Price = 13.70m,
                     StockQuantity = 45
                 },
                 new Book
@@ -58,7 +60,7 @@ namespace BigBooks.API.Entities
                     Isbn = Guid.Parse("D454AF8A-FE4A-45AC-8FAB-C220677EA6ED"),
                     Genre = Genre.History,
                     Description = "Citizen Soldiers opens at 0001 hours, June 7, 1944, on the Normandy beaches, and ends at 0245 hours, May 7, 1945, with the allied victory.",
-                    Price = 17.11f,
+                    Price = 17.11m,
                     StockQuantity = 6
                 },
                 new Book
@@ -69,7 +71,7 @@ namespace BigBooks.API.Entities
                     Isbn = Guid.Parse("C0CAD277-F103-4C93-8A15-513FDFEF2D5F"),
                     Genre = Genre.Fantasy,
                     Description = "It has been centuries since the fall of the 10 consecrated orders known as the Knights Radiant, but their Shardblades and Shardplate remain: mystical swords and suits of armor that transform ordinary men into near-invincible warriors. Men trade kingdoms for Shardblades. Wars were fought for them and won by them.",
-                    Price = 21.09f,
+                    Price = 21.09m,
                     StockQuantity = 21
                 },
                 new Book
@@ -80,7 +82,7 @@ namespace BigBooks.API.Entities
                     Isbn = Guid.Parse("FF347FE2-9B34-41E5-AD04-AFBD9CD2B568"),
                     Genre = Genre.Fiction,
                     Description = "In 1922, Count Alexander Rostov is deemed an unrepentant aristocrat by a Bolshevik tribunal, and is sentenced to house arrest in the Metropol, a grand hotel across the street from the Kremlin. Rostov, an indomitable man of erudition and wit, has never worked a day in his life, and must now live in an attic room.",
-                    Price = 11.19f,
+                    Price = 11.19m,
                     StockQuantity = 17
                 },
                 new Book
@@ -91,7 +93,7 @@ namespace BigBooks.API.Entities
                     Isbn = Guid.Parse("230ECA9F-474E-45D4-A412-977733CD8893"),
                     Genre = Genre.Fiction,
                     Description = null,
-                    Price = 13.19f,
+                    Price = 13.19m,
                     StockQuantity = 11
                 },
                 new Book
@@ -102,7 +104,7 @@ namespace BigBooks.API.Entities
                     Isbn = Guid.Parse("9909D495-CFFB-4CF1-B876-CBB9857323D2"),
                     Genre = Genre.Childrens,
                     Description = "When Gregor falls through a grate in the laundry room of his apartment building, he hurtles into the dark Underland, where spiders, rats, cockroaches coexist uneasily with humans. This world is on the brink of war, and Gregor's arrival is no accident. ",
-                    Price = 8.29f,
+                    Price = 8.29m,
                     StockQuantity = 21
                 },
                 new Book
@@ -113,7 +115,7 @@ namespace BigBooks.API.Entities
                     Isbn = Guid.Parse("09C64A27-F96C-4E3B-8361-DC3C2C8ADA7A"),
                     Genre = Genre.Childrens,
                     Description = "Months have passed since Gregor first fell into the strange Underland beneath New York City, and he swears he will never go back. But he is destined to be a key player in another prophecy, this one about an ominous white rat called the Bane.",
-                    Price = 9.46f,
+                    Price = 9.46m,
                     StockQuantity = 13
                 },
                 new Book
@@ -124,7 +126,7 @@ namespace BigBooks.API.Entities
                     Isbn = Guid.Parse("5672C761-C89D-460A-8877-DED4B48525F5"),
                     Genre = Genre.Fantasy,
                     Description = "In the ruins of a place once known as North America lies the nation of Panem, a shining Capitol surrounded by twelve outlying districts. The Capitol keeps the districts in line by forcing them all to send one boy and one girl between the ages of twelve and eighteen to participate in the annual Hunger Games, a fight to the death on live TV.",
-                    Price = 13.19f,
+                    Price = 13.19m,
                     StockQuantity = 11
                 },
                 new Book
@@ -135,7 +137,7 @@ namespace BigBooks.API.Entities
                     Isbn = Guid.Parse("4929C5A8-8F0C-4F1A-A742-154F037C0761"),
                     Genre = Genre.Fantasy,
                     Description = "In the city of Atlanta, young women are dying—at the hands of a killer who signs his work with a single, chilling act of mutilation. Leaving behind enough evidence to fuel a frenzied police hunt, this cunning madman is bringing together dozens of lives, crossing the boundaries of wealth and race.",
-                    Price = 19.23f,
+                    Price = 19.23m,
                     StockQuantity = 3
                 });
 
@@ -145,7 +147,9 @@ namespace BigBooks.API.Entities
                 {
                     Key = 1,
                     Score = 6,
-                    BookKey = 1
+                    BookKey = 1,
+                    ReviewDate = DateTime.Parse("2023-08-17").Date,
+                    UserKey = 4
                 },
                 new BookReview
                 {
@@ -153,55 +157,65 @@ namespace BigBooks.API.Entities
                     Score = 9,
                     BookKey = 1,
                     UserKey = 5,
-                    Description = "My kids loved this book. I read it to them every night!"
+                    Description = "My kids loved this book. I read it to them every night!",
+                    ReviewDate = DateTime.Parse("2024-11-03").Date,
                 },
                 new BookReview
                 {
                     Key = 3,
                     Score = 9,
-                    BookKey = 3
+                    BookKey = 3,
+                    ReviewDate = DateTime.Parse("2025-01-07").Date,
                 },
                 new BookReview
                 {
                     Key = 4,
                     Score = 6,
-                    BookKey = 3
+                    BookKey = 3,
+                    ReviewDate = DateTime.Parse("2025-04-23").Date,
+                    Description = "The plot wandered."
                 },
                 new BookReview
                 {
                     Key = 5,
                     Score = 8,
-                    BookKey = 4
+                    BookKey = 4,
+                    ReviewDate = DateTime.Parse("2024-05-09").Date,
                 },
                 new BookReview
                 {
                     Key = 6,
                     Score = 9,
-                    BookKey = 5
+                    BookKey = 5,
+                    ReviewDate = DateTime.Parse("2024-05-11").Date,
                 },
                 new BookReview
                 {
                     Key = 7,
                     Score = 8,
-                    BookKey = 6
+                    BookKey = 6,
+                    ReviewDate = DateTime.Parse("2024-05-12").Date,
                 },
                 new BookReview
                 {
                     Key = 8,
                     Score = 7,
-                    BookKey = 6
+                    BookKey = 6,
+                    ReviewDate = DateTime.Parse("2024-05-13").Date,
                 },
                 new BookReview
                 {
                     Key = 9,
                     Score = 7,
-                    BookKey = 7
+                    BookKey = 7,
+                    ReviewDate = DateTime.Parse("2024-05-14").Date,
                 },
                 new BookReview
                 {
                     Key = 10,
                     Score = 8,
-                    BookKey = 7
+                    BookKey = 7,
+                    ReviewDate = DateTime.Parse("2024-05-15").Date,
                 },
                 new BookReview
                 {
@@ -209,7 +223,8 @@ namespace BigBooks.API.Entities
                     Score = 3,
                     BookKey = 9,
                     UserKey = 5,
-                    Description = "This book was way too dark for kids."
+                    Description = "This book was way too dark for kids.",
+                    ReviewDate = DateTime.Parse("2024-05-16").Date,
                 },
                 new BookReview
                 {
@@ -217,7 +232,8 @@ namespace BigBooks.API.Entities
                     Score = 10,
                     BookKey = 9,
                     UserKey = 2,
-                    Description = "Every child should read this book."
+                    Description = "Every child should read this book.",
+                    ReviewDate = DateTime.Parse("2024-05-17").Date,
                 },
                 new BookReview
                 {
@@ -225,7 +241,8 @@ namespace BigBooks.API.Entities
                     Score = 5,
                     BookKey = 7,
                     UserKey = 5,
-                    Description = "This book was long and boring."
+                    Description = "This book was long and boring.",
+                    ReviewDate = DateTime.Parse("2024-05-18").Date,
                 });
 
             modelBuilder.Entity<AppUser>()
@@ -237,8 +254,7 @@ namespace BigBooks.API.Entities
                     UserEmail = "Clark.Kent@demo.com",
                     UserName = "Clark Kent",
                     Password = ApplicationConstant.USER_PASSWORD,
-                    Wallet = 1f,
-                    UserBookIds = new List<int>()
+                    Wallet = 1m
                 },
                 new AppUser
                 {
@@ -247,8 +263,7 @@ namespace BigBooks.API.Entities
                     UserEmail = "Bruce.Wayne@demo.com",
                     UserName = "Bruce Wayne",
                     Password = ApplicationConstant.USER_PASSWORD,
-                    Wallet = 1f,
-                    UserBookIds = new List<int>()
+                    Wallet = 1m
                 },
                 new AppUser
                 {
@@ -257,8 +272,7 @@ namespace BigBooks.API.Entities
                     UserEmail = "Diana.Prince@demo.com",
                     UserName = "Diana Prince",
                     Password = ApplicationConstant.USER_PASSWORD,
-                    Wallet = 16.50f,
-                    UserBookIds = new List<int>()
+                    Wallet = 16.50m
                 },
                 new AppUser
                 {
@@ -267,8 +281,7 @@ namespace BigBooks.API.Entities
                     UserEmail = "Arthur.Anderson@demo.com",
                     UserName = "Arthur Anderson",
                     Password = ApplicationConstant.USER_PASSWORD,
-                    Wallet = 100.0f,
-                    UserBookIds = new List<int> { 1, 3 }
+                    Wallet = 100.0m
                 },
                 new AppUser
                 {
@@ -277,8 +290,7 @@ namespace BigBooks.API.Entities
                     UserEmail = "Bella.Barnes@demo.com",
                     UserName = "Bella Barnes",
                     Password = ApplicationConstant.USER_PASSWORD,
-                    Wallet = 50.0f,
-                    UserBookIds = new List<int> { 2, 8, 9 }
+                    Wallet = 50.0m
                 },
                 new AppUser
                 {
@@ -287,10 +299,61 @@ namespace BigBooks.API.Entities
                     UserEmail = "Celeste.Cadwell@demo.com",
                     UserName = "Celeste Cadwell",
                     Password = ApplicationConstant.USER_PASSWORD,
-                    Wallet = 20.0f,
-                    UserBookIds = new List<int>()
+                    Wallet = 20.0m
                 });
-            
+
+            modelBuilder.Entity<BookPurchase>()
+                .HasData(
+                new BookPurchase 
+                {
+                    Key = 1,
+                    PurchaseDate = DateTime.Parse("2025-03-15").Date,
+                    UserKey = 4,
+                    BookKey = 1,
+                    PurchaseQuantity = 1
+                },
+                new BookPurchase
+                {
+                    Key = 2,
+                    PurchaseDate = DateTime.Parse("2025-03-16").Date,
+                    UserKey = 4,
+                    BookKey = 3,
+                    PurchaseQuantity = 1
+                },
+                new BookPurchase
+                {
+                    Key = 3,
+                    PurchaseDate = DateTime.Parse("2025-04-01").Date,
+                    UserKey = 5,
+                    BookKey = 2,
+                    PurchaseQuantity = 3
+                },
+                new BookPurchase
+                {
+                    Key = 4,
+                    PurchaseDate = DateTime.Parse("2025-04-02").Date,
+                    UserKey = 5,
+                    BookKey = 8,
+                    PurchaseQuantity = 2
+                },
+                new BookPurchase
+                {
+                    Key = 5,
+                    PurchaseDate = DateTime.Parse("2025-04-03").Date,
+                    UserKey = 5,
+                    BookKey = 9,
+                    PurchaseQuantity = 1
+                },
+                new BookPurchase
+                {
+                    // same book, same user, different purchase date
+                    Key = 6,
+                    PurchaseDate = DateTime.Parse("2025-06-03").Date,
+                    UserKey = 5,
+                    BookKey = 9,
+                    PurchaseQuantity = 1
+                });
+
             base.OnModelCreating(modelBuilder);
         }
 

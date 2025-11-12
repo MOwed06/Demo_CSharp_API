@@ -29,8 +29,8 @@ namespace BigBooks.API.Entities
         public string Password { get; set; } = string.Empty;
 
         [Required]
-        public float Wallet { get; set; }
+        public decimal Wallet { get; set; }
 
-        public IList<int> UserBookIds { get; set; } = new List<int>();
+        public IList<BookPurchase> BookPurchases { get; set; } = new List<BookPurchase>();
     }
 }

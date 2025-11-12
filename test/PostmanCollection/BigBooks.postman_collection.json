@@ -8,7 +8,7 @@
 	},
 	"item": [
 		{
-			"name": "GET Book Details",
+			"name": "GET BookDetails",
 			"request": {
 				"auth": {
 					"type": "bearer",
@@ -39,7 +39,7 @@
 			"response": []
 		},
 		{
-			"name": "GET User Details",
+			"name": "GET UserDetails",
 			"request": {
 				"auth": {
 					"type": "bearer",
@@ -54,7 +54,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "https://localhost:{{portNumber}}/api/user/5",
+					"raw": "https://localhost:{{portNumber}}/api/user/8",
 					"protocol": "https",
 					"host": [
 						"localhost"
@@ -63,7 +63,7 @@
 					"path": [
 						"api",
 						"user",
-						"5"
+						"8"
 					]
 				}
 			},
@@ -250,6 +250,45 @@
 			"response": []
 		},
 		{
+			"name": "POST AddUser",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"UserEmail\": \"Dylan.Davis@demo.com\",\n    \"UserName\": \"Dylan P. Davis\",\n    \"Password\": \"N0tV3ryS3cret\",\n    \"Wallet\": 1642.43,\n    \"Role\": \"customer\"\n}"
+				},
+				"url": {
+					"raw": "https://localhost:{{portNumber}}/api/user",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "{{portNumber}}",
+					"path": [
+						"api",
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "POST PurchaseBook",
 			"request": {
 				"auth": {
@@ -271,10 +310,10 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"BookKey\": 4,\n    \"RequestedQuantity\": 2\n}"
+					"raw": "{\n    \"BookKey\": 9,\n    \"RequestedQuantity\": 1\n}"
 				},
 				"url": {
-					"raw": "https://localhost:{{portNumber}}/api/user",
+					"raw": "https://localhost:{{portNumber}}/api/purchase",
 					"protocol": "https",
 					"host": [
 						"localhost"
@@ -282,7 +321,7 @@
 					"port": "{{portNumber}}",
 					"path": [
 						"api",
-						"user"
+						"purchase"
 					]
 				}
 			},
@@ -352,7 +391,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"UserId\": \"Bella.Barnes@demo.com\",\r\n    \"Password\": \"N0tV3ryS3cret\"\r\n}",
+					"raw": "{\r\n    \"UserId\": \"Dylan.Davis@demo.com\",\r\n    \"Password\": \"N0tV3ryS3cret\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
