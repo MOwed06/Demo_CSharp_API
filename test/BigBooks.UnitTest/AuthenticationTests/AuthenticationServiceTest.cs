@@ -7,7 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using Moq;
 using System.IdentityModel.Tokens.Jwt;
 
-namespace BigBooks.UnitTest
+namespace BigBooks.UnitTest.AuthenticationTests
 {
     public class AuthenticationServiceTest : BookStoreTest
     {
@@ -29,7 +29,7 @@ namespace BigBooks.UnitTest
         [InlineData("Bruce.Banner@test.com", ApplicationConstant.USER_PASSWORD, null)]
         [InlineData("Bruce.Banner@test.com", "SomePassword", "Invalid password")]
         [InlineData("Some.Person@test.com", ApplicationConstant.USER_PASSWORD, "User not found")]
-        public void GenerateTokenCheck(string userId, string password, string? expectedError)
+        public void GenerateTokenCheck(string userId, string password, string expectedError)
         {
             // arrange
             InitializeDatabase();

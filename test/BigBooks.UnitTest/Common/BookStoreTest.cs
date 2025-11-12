@@ -1,6 +1,7 @@
 using BigBooks.API.Core;
 using BigBooks.API.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 
 namespace BigBooks.UnitTest.Common
 {
@@ -10,6 +11,9 @@ namespace BigBooks.UnitTest.Common
         protected const string BOOK2_GUID = "D77D41ED-1A0D-4BB8-8486-07AE475D80B5";
         protected const string NEW_BOOK_GUID = "31D7C872-077A-4386-93E6-72175E23E84E";
 
+        protected const string STRING_100_CHARS = "ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dol";
+        protected const string STRING_101_CHARS = "ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolo";
+
         protected const string STRING_150_CHARS = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, q";
         protected const string STRING_151_CHARS = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, qu";
 
@@ -17,7 +21,8 @@ namespace BigBooks.UnitTest.Common
 
         protected void InitializeDatabase(List<Book>? extraBooks = null,
             List<BookReview>? extraBookReviews = null,
-            List<AppUser>? extraAppUsers = null)
+            List<AppUser>? extraAppUsers = null,
+            List<BookPurchase>? extraBookPurchases = null)
         {
             // two books
             var books = new List<Book>
@@ -58,16 +63,18 @@ namespace BigBooks.UnitTest.Common
                 {
                     Key = 1,
                     BookKey = 1,
+                    ReviewDate = DateTime.Parse("2025-07-11"),
                     Score = 3
                 },
                 new BookReview
                 {
                     Key = 2,
                     BookKey = 1,
-                    Score = 6
+                    ReviewDate = DateTime.Parse("2025-08-03"),
+                    Score = 6,
+                    UserKey = 1
                 }
             };
-
 
             if (extraBookReviews != null)
             {
@@ -100,9 +107,36 @@ namespace BigBooks.UnitTest.Common
                 users.AddRange(extraAppUsers);
             }
 
+            // two book purchases for user 1
+            var bookPurchases = new List<BookPurchase>
+            {
+                new BookPurchase
+                {
+                    Key = 1,
+                    PurchaseDate = DateTime.Parse("2025-03-15").Date,
+                    UserKey = 1,
+                    BookKey = 1,
+                    PurchaseQuantity = 2
+                },
+                new BookPurchase
+                {
+                    Key = 2,
+                    PurchaseDate = DateTime.Parse("2025-03-16").Date,
+                    UserKey = 1,
+                    BookKey = 2,
+                    PurchaseQuantity = 1
+                }
+            };
+
+            if (extraBookPurchases != null)
+            {
+                bookPurchases.AddRange(extraBookPurchases);
+            }
+
             _ctx.Books.AddRange(books);
             _ctx.BookReviews.AddRange(bookReviews);
             _ctx.AppUsers.AddRange(users);
+            _ctx.BookPurchases.AddRange(bookPurchases);
             _ctx.SaveChanges();
         }
 
@@ -112,6 +146,22 @@ namespace BigBooks.UnitTest.Common
                 .UseInMemoryDatabase(Guid.NewGuid().ToString())
                 .Options;
             _ctx = new BigBookDbContext(options);
+        }
+
+        protected (bool Valid, string Error) ValidateDto(object dto)
+        {
+            var validationContext = new ValidationContext(dto);
+
+            var validationResults = new List<ValidationResult>();
+
+            bool isValid = Validator.TryValidateObject(instance: dto,
+                validationContext: validationContext,
+                validationResults: validationResults,
+                validateAllProperties: true);
+
+            var errors = validationResults.Select(v => v.ErrorMessage).ToList();
+
+            return (isValid, string.Join(", ", errors));
         }
 
         public void Dispose()

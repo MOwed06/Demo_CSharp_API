@@ -7,7 +7,6 @@ namespace BigBooks.API.Models
     public class UserAddUpdateDto : IValidatableObject
     {
         [Required]
-        [MinLength(1)]
         [MaxLength(100)]
         public string UserEmail { get; set; } = string.Empty;
 

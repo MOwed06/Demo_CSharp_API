@@ -14,6 +14,9 @@ namespace BigBooks.API.Controllers
     {
 
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult<IEnumerable<BookReviewDto>> GetBookReviews(int book)
         {
             logger.LogTrace($"GetBookReviews {book}");

@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Moq;
 
-namespace BigBooks.UnitTest
+namespace BigBooks.UnitTest.ProviderTests
 {
     public class PurchaseProviderTest : BookStoreTest
     {
