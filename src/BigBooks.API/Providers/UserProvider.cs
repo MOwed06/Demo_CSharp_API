@@ -49,6 +49,7 @@ namespace BigBooks.API.Providers
 
             var appUsers = ctx.AppUsers
                 .AsNoTracking()
+                .Include(u => u.BookPurchases)
                 .ToList();
 
             return appUsers

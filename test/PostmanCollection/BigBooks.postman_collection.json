@@ -54,7 +54,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "https://localhost:{{portNumber}}/api/user/5",
+					"raw": "https://localhost:{{portNumber}}/api/user/8",
 					"protocol": "https",
 					"host": [
 						"localhost"
@@ -63,7 +63,7 @@
 					"path": [
 						"api",
 						"user",
-						"5"
+						"8"
 					]
 				}
 			},
@@ -271,7 +271,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"UserEmail\": \"Elena.Edwards@demo.com\",\n    \"UserName\": \"Elena M. Edwards\",\n    \"Password\": \"N0tV3ryS3cret\",\n    \"Wallet\": 2592.03,\n    \"Role\": \"customer\"\n}"
+					"raw": "{\n    \"UserEmail\": \"Dylan.Davis@demo.com\",\n    \"UserName\": \"Dylan P. Davis\",\n    \"Password\": \"N0tV3ryS3cret\",\n    \"Wallet\": 1642.43,\n    \"Role\": \"customer\"\n}"
 				},
 				"url": {
 					"raw": "https://localhost:{{portNumber}}/api/user",
@@ -310,7 +310,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"BookKey\": 4,\n    \"RequestedQuantity\": 2\n}"
+					"raw": "{\n    \"BookKey\": 9,\n    \"RequestedQuantity\": 1\n}"
 				},
 				"url": {
 					"raw": "https://localhost:{{portNumber}}/api/purchase",
@@ -391,7 +391,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"UserId\": \"Bella.Barnes@demo.com\",\r\n    \"Password\": \"N0tV3ryS3cret\"\r\n}",
+					"raw": "{\r\n    \"UserId\": \"Dylan.Davis@demo.com\",\r\n    \"Password\": \"N0tV3ryS3cret\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"

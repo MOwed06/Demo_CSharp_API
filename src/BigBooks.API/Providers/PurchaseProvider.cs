@@ -62,7 +62,7 @@ namespace BigBooks.API.Providers
 
             appUser.BookPurchases.Add(new BookPurchase
             {
-                PurchaseDate = DateTime.Today,
+                PurchaseDate = DateTime.Now,
                 PurchaseQuantity = dto.RequestedQuantity,
                 BookKey = dto.BookKey
             });
