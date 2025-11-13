@@ -5,9 +5,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BigBooks.API.Providers
 {
-    public class PurchaseProvider(BigBookDbContext ctx,
-        IBookProvider bookProvider,
-        ILogger<PurchaseProvider> logger) : BigBooksProvider, IPurchaseProvider
+    public class PurchasesProvider(BigBookDbContext ctx,
+        IBooksProvider bookProvider,
+        ILogger<PurchasesProvider> logger) : BaseProvider, IPurchasesProvider
     {
         /// <summary>
         /// extract userKey from claim

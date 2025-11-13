@@ -8,7 +8,7 @@ namespace BigBooks.API.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize(Policy = "AccountAccess")]
-    public class UserController(IUserProvider userProvider, ILogger<UserController> logger) : ControllerBase
+    public class UsersController(IUsersProvider userProvider, ILogger<UsersController> logger) : ControllerBase
     {
         /// <summary>
         /// Get user info by key.

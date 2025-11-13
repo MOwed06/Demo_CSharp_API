@@ -22,10 +22,10 @@ builder.Services.AddDbContext<BigBookDbContext>(
     dbContextOptions => dbContextOptions.UseSqlite(
         builder.Configuration["ConnectionStrings:BigBooksDBConnectionString"]));
 
-builder.Services.AddScoped<IUserProvider, UserProvider>();
-builder.Services.AddScoped<IBookProvider, BookProvider>();
-builder.Services.AddScoped<IPurchaseProvider, PurchaseProvider>();
-builder.Services.AddScoped<IBookReviewProvider, BookReviewProvider>();
+builder.Services.AddScoped<IUsersProvider, UsersProvider>();
+builder.Services.AddScoped<IBooksProvider, BooksProvider>();
+builder.Services.AddScoped<IPurchasesProvider, PurchasesProvider>();
+builder.Services.AddScoped<IBookReviewsProvider, BookReviewsProvider>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 
 builder.Services.AddAuthentication("Bearer")

@@ -10,7 +10,7 @@ namespace BigBooks.API.Controllers
     [Route("api/[controller]")]
     [Authorize]
     [ApiController]
-    public class BookController(IBookProvider bookProvider, ILogger<BookController> logger) : ControllerBase
+    public class BooksController(IBooksProvider bookProvider, ILogger<BooksController> logger) : ControllerBase
     {
         /// <summary>
         /// Get book by key

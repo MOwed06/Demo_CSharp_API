@@ -5,15 +5,18 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BigBooks.API.Controllers
 {
-    [Route("api/book/{book}/reviews")]
+    [Route("api/books/{book}/reviews")]
     [ApiController]
     [Authorize]
-    public class BookReviewController(IBookReviewProvider bookReviewPrv,
-        IBookProvider bookPrv,
-        ILogger<BookReviewController> logger) : ControllerBase
+    public class BookReviewsController(IBookReviewsProvider bookReviewPrv,
+        IBooksProvider bookPrv,
+        ILogger<BookReviewsController> logger) : ControllerBase
     {
 
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult<IEnumerable<BookReviewDto>> GetBookReviews(int book)
         {
             logger.LogTrace($"GetBookReviews {book}");

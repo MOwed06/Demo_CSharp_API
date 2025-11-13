@@ -9,9 +9,9 @@ namespace BigBooks.API.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
-    public class PurchaseController(IPurchaseProvider purchaseProvider,
-        IUserProvider userProvider,
-        ILogger<PurchaseController> logger) : ControllerBase
+    public class PurchasesController(IPurchasesProvider purchaseProvider,
+        IUsersProvider userProvider,
+        ILogger<PurchasesController> logger) : ControllerBase
     {
         /// <summary>
         /// Purchase books for logged in user

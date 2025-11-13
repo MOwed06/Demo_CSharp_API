@@ -2,7 +2,7 @@
 
 namespace BigBooks.API.Interfaces
 {
-    public interface IBookReviewProvider
+    public interface IBookReviewsProvider
     {
         List<BookReviewDto> GetBookReviews(int bookKey);
     }

@@ -7,16 +7,16 @@ using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Extensions.Logging;
 using Moq;
 
-namespace BigBooks.UnitTest
+namespace BigBooks.UnitTest.ProviderTests
 {
-    public class BookProviderTest : BookStoreTest
+    public class BookProvidersTest : BookStoreTest
     {
-        private BookProvider _bookPrv;
+        private BooksProvider _bookPrv;
 
-        public BookProviderTest() : base()
+        public BookProvidersTest() : base()
         {
-            var mockLogger = new Mock<ILogger<BookProvider>>();
-            _bookPrv = new BookProvider(_ctx, mockLogger.Object);
+            var mockLogger = new Mock<ILogger<BooksProvider>>();
+            _bookPrv = new BooksProvider(_ctx, mockLogger.Object);
         }
 
         [Fact]
@@ -113,7 +113,7 @@ namespace BigBooks.UnitTest
         [InlineData(NEW_BOOK_GUID, null)]  // valid Guid, no error expected
         [InlineData(BOOK2_GUID, "Duplicate ISBN")]
         [InlineData("80F4-403C-B7E5-860BA52B8F99", "invalid ISBN value")]
-        public void BookAddDtoGuidCheck(string isbn, string? expectedError)
+        public void BookAddDtoGuidCheck(string isbn, string expectedError)
         {
             // arrange
             InitializeDatabase();
@@ -153,7 +153,7 @@ namespace BigBooks.UnitTest
         [InlineData("A", null)]
         [InlineData(STRING_150_CHARS, null)]
         [InlineData(STRING_151_CHARS, "Title must be a string or array type with a maximum length of '150'")]
-        public void BookUpdateDtoTitle(string? updateValue, string? expectedError)
+        public void BookUpdateDtoTitle(string updateValue, string expectedError)
         {
             const int BOOK_KEY = 1;
 
@@ -174,7 +174,7 @@ namespace BigBooks.UnitTest
         [InlineData(BOOK1_GUID, null)] // overwrite isbn with original value
         [InlineData(BOOK2_GUID, "Duplicate ISBN")]
         [InlineData("4BB8-8486-07AE475D80B5", "invalid ISBN value")]
-        public void BookUpdateDtoIsbn(string? updateValue, string? expectedError)
+        public void BookUpdateDtoIsbn(string updateValue, string expectedError)
         {
             const int BOOK_KEY = 1;
 
@@ -187,7 +187,7 @@ namespace BigBooks.UnitTest
             ExecuteUpdateTest(BOOK_KEY, patchDoc, expectedError);
         }
 
-        private void ExecuteUpdateTest(int bookKey, JsonPatchDocument<BookAddUpdateDto> patchDoc, string? expectedError)
+        private void ExecuteUpdateTest(int bookKey, JsonPatchDocument<BookAddUpdateDto> patchDoc, string expectedError)
         {
             // act
             var obs = _bookPrv.UpdateBook(bookKey, patchDoc);

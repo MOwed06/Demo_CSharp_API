@@ -3,7 +3,7 @@ using BigBooks.API.Providers;
 
 namespace BigBooks.API.Interfaces
 {
-    public interface IUserProvider
+    public interface IUsersProvider
     {
         UserDetailsDto GetUser(int key);
         public List<UserOverviewDto> GetUsers();

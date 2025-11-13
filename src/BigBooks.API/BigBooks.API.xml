@@ -24,14 +24,14 @@
             <param name="authRequest"></param>
             <returns>authentication response</returns>
         </member>
-        <member name="M:BigBooks.API.Controllers.BookController.GetBook(System.Int32)">
+        <member name="M:BigBooks.API.Controllers.BooksController.GetBook(System.Int32)">
             <summary>
             Get book by key
             </summary>
             <param name="key">key of book to retrieve</param>
             <returns>details of selected book</returns>
         </member>
-        <member name="M:BigBooks.API.Controllers.BookController.GetBooksByGenre(System.String)">
+        <member name="M:BigBooks.API.Controllers.BooksController.GetBooksByGenre(System.String)">
             <summary>
             Get books by genre
             </summary>
@@ -42,14 +42,14 @@
             <returns>matched books</returns>
             <exception cref="T:System.ArgumentException"></exception>
         </member>
-        <member name="M:BigBooks.API.Controllers.BookController.GetBooksByAuthor(System.String)">
+        <member name="M:BigBooks.API.Controllers.BooksController.GetBooksByAuthor(System.String)">
             <summary>
             Books by string match on author name
             </summary>
             <param name="name"></param>
             <returns>list of books</returns>
         </member>
-        <member name="M:BigBooks.API.Controllers.BookController.AddBook(BigBooks.API.Models.BookAddUpdateDto)">
+        <member name="M:BigBooks.API.Controllers.BooksController.AddBook(BigBooks.API.Models.BookAddUpdateDto)">
             <summary>
             Add new book.
             </summary>
@@ -59,7 +59,7 @@
             <param name="dto">details of book to add</param>
             <returns>details of added book</returns>
         </member>
-        <member name="M:BigBooks.API.Controllers.BookController.UpdateBook(System.Int32,Microsoft.AspNetCore.JsonPatch.JsonPatchDocument{BigBooks.API.Models.BookAddUpdateDto})">
+        <member name="M:BigBooks.API.Controllers.BooksController.UpdateBook(System.Int32,Microsoft.AspNetCore.JsonPatch.JsonPatchDocument{BigBooks.API.Models.BookAddUpdateDto})">
             <summary>
             Update properties of existing book.
             </summary>
@@ -70,7 +70,7 @@
             <param name="patchDoc">list of changes</param>
             <returns></returns>
         </member>
-        <member name="M:BigBooks.API.Controllers.PurchaseController.PurchaseBooks(BigBooks.API.Models.PurchaseRequestDto)">
+        <member name="M:BigBooks.API.Controllers.PurchasesController.PurchaseBooks(BigBooks.API.Models.PurchaseRequestDto)">
             <summary>
             Purchase books for logged in user
             </summary>
@@ -81,7 +81,7 @@
             <param name="dto">book key and quantity</param>
             <returns>updated user info</returns>
         </member>
-        <member name="M:BigBooks.API.Controllers.UserController.GetUserInfo(System.Int32)">
+        <member name="M:BigBooks.API.Controllers.UsersController.GetUserInfo(System.Int32)">
             <summary>
             Get user info by key.
             </summary>
@@ -91,7 +91,7 @@
             <param name="key">user account key</param>
             <returns>user details</returns>
         </member>
-        <member name="M:BigBooks.API.Controllers.UserController.GetUsers">
+        <member name="M:BigBooks.API.Controllers.UsersController.GetUsers">
             <summary>
             Get all users
             </summary>
@@ -100,7 +100,7 @@
             </remarks>
             <returns>overview of each user</returns>
         </member>
-        <member name="M:BigBooks.API.Controllers.UserController.AddUser(BigBooks.API.Models.UserAddUpdateDto)">
+        <member name="M:BigBooks.API.Controllers.UsersController.AddUser(BigBooks.API.Models.UserAddUpdateDto)">
             <summary>
             Add new user
             </summary>
@@ -137,7 +137,7 @@
             Simplified book overview
             </summary>
         </member>
-        <member name="M:BigBooks.API.Providers.BookProvider.RemoveFromStock(System.Int32,System.Int32)">
+        <member name="M:BigBooks.API.Providers.BooksProvider.RemoveFromStock(System.Int32,System.Int32)">
             <summary>
             Remove designated quantity of books from available stock
             </summary>
@@ -148,7 +148,7 @@
             False if operation fail, stock unavailable
             </returns>
         </member>
-        <member name="M:BigBooks.API.Providers.PurchaseProvider.PurchaseBooks(System.String,BigBooks.API.Models.PurchaseRequestDto)">
+        <member name="M:BigBooks.API.Providers.PurchasesProvider.PurchaseBooks(System.String,BigBooks.API.Models.PurchaseRequestDto)">
             <summary>
             extract userKey from claim
             refer to AuthService.cs, GenerateToken(), user key embedded in token

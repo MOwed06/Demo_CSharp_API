@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BigBooks.API.Providers
 {
-    public class BookReviewProvider(BigBookDbContext ctx, ILogger<BookReviewProvider> logger) : BigBooksProvider, IBookReviewProvider
+    public class BookReviewsProvider(BigBookDbContext ctx, ILogger<BookReviewsProvider> logger) : BaseProvider, IBookReviewsProvider
     {
         private const string ANONYMOUS_USER = @"Anonymous";
 
@@ -18,6 +18,7 @@ namespace BigBooks.API.Providers
                 .Where(r => r.BookKey == bookKey)
                 .Include(r => r.Book)
                 .Include(r => r.User)
+                .OrderBy(r => r.ReviewDate)
                 .ToList();
 
             return reviews.Select(r => new BookReviewDto
@@ -25,6 +26,7 @@ namespace BigBooks.API.Providers
                 ReviewKey = r.Key,
                 BookTitle = r.Book.Title,
                 Score = r.Score,
+                ReviewDate = r.ReviewDate,
                 User = (r.User == null)
                     ? ANONYMOUS_USER
                     : r.User.UserEmail,

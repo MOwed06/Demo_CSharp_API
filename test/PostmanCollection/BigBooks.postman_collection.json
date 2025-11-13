@@ -23,7 +23,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "https://localhost:{{portNumber}}/api/book/2",
+					"raw": "https://localhost:{{portNumber}}/api/books/2",
 					"protocol": "https",
 					"host": [
 						"localhost"
@@ -31,7 +31,7 @@
 					"port": "{{portNumber}}",
 					"path": [
 						"api",
-						"book",
+						"books",
 						"2"
 					]
 				}
@@ -54,7 +54,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "https://localhost:{{portNumber}}/api/user/8",
+					"raw": "https://localhost:{{portNumber}}/api/users/8",
 					"protocol": "https",
 					"host": [
 						"localhost"
@@ -62,7 +62,7 @@
 					"port": "{{portNumber}}",
 					"path": [
 						"api",
-						"user",
+						"users",
 						"8"
 					]
 				}
@@ -85,7 +85,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "https://localhost:{{portNumber}}/api/user",
+					"raw": "https://localhost:{{portNumber}}/api/users",
 					"protocol": "https",
 					"host": [
 						"localhost"
@@ -93,7 +93,7 @@
 					"port": "{{portNumber}}",
 					"path": [
 						"api",
-						"user"
+						"users"
 					]
 				}
 			},
@@ -115,7 +115,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "https://localhost:{{portNumber}}/api/book/genre?name=childrens",
+					"raw": "https://localhost:{{portNumber}}/api/books/genre?name=childrens",
 					"protocol": "https",
 					"host": [
 						"localhost"
@@ -123,7 +123,7 @@
 					"port": "{{portNumber}}",
 					"path": [
 						"api",
-						"book",
+						"books",
 						"genre"
 					],
 					"query": [
@@ -152,7 +152,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "https://localhost:{{portNumber}}/api/book/genre?name=romance",
+					"raw": "https://localhost:{{portNumber}}/api/books/genre?name=romance",
 					"protocol": "https",
 					"host": [
 						"localhost"
@@ -160,7 +160,7 @@
 					"port": "{{portNumber}}",
 					"path": [
 						"api",
-						"book",
+						"books",
 						"genre"
 					],
 					"query": [
@@ -189,7 +189,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "https://localhost:{{portNumber}}/api/book/author?name=collins",
+					"raw": "https://localhost:{{portNumber}}/api/books/author?name=collins",
 					"protocol": "https",
 					"host": [
 						"localhost"
@@ -197,7 +197,7 @@
 					"port": "{{portNumber}}",
 					"path": [
 						"api",
-						"book",
+						"books",
 						"author"
 					],
 					"query": [
@@ -232,10 +232,10 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"Title\": \"11/22/63: A Novel\",\n    \"Author\": \"Stephen King\",\n    \"Isbn\": \"B74E3696-7668-4A44-9522-ABF958E031E0\",\n    \"Description\": \"It begins with Jake Epping, a thirty-five-year-old English teacher in Lisbon Falls, Maine, whose life is upended when his friend Al, who owns the local diner, divulges a secret: his storeroom is a portal to the past, a particular day in 1958. \",\n    \"Genre\": 1,\n    \"Price\": 19.72,\n    \"StockQuantity\": 16\n}"
+					"raw": "{\n    \"Title\": \"11/22/63: A Novel\",\n    \"Author\": \"Stephen King\",\n    \"Isbn\": \"B74E3696-7668-4A44-9522-ABF958E031E0\",\n    \"Description\": \"It begins with Jake Epping, a thirty-five-year-old English teacher in Lisbon Falls, Maine, whose life is upended when his friend Al, who owns the local diner, divulges a secret: his storeroom is a portal to the past, a particular day in 1958. \",\n    \"Genre\": \"Fiction\",\n    \"Price\": 19.72,\n    \"StockQuantity\": 16\n}"
 				},
 				"url": {
-					"raw": "https://localhost:{{portNumber}}/api/book",
+					"raw": "https://localhost:{{portNumber}}/api/books",
 					"protocol": "https",
 					"host": [
 						"localhost"
@@ -243,7 +243,7 @@
 					"port": "{{portNumber}}",
 					"path": [
 						"api",
-						"book"
+						"books"
 					]
 				}
 			},
@@ -274,7 +274,7 @@
 					"raw": "{\n    \"UserEmail\": \"Dylan.Davis@demo.com\",\n    \"UserName\": \"Dylan P. Davis\",\n    \"Password\": \"N0tV3ryS3cret\",\n    \"Wallet\": 1642.43,\n    \"Role\": \"customer\"\n}"
 				},
 				"url": {
-					"raw": "https://localhost:{{portNumber}}/api/user",
+					"raw": "https://localhost:{{portNumber}}/api/users",
 					"protocol": "https",
 					"host": [
 						"localhost"
@@ -282,7 +282,7 @@
 					"port": "{{portNumber}}",
 					"path": [
 						"api",
-						"user"
+						"users"
 					]
 				}
 			},
@@ -313,7 +313,7 @@
 					"raw": "{\n    \"BookKey\": 9,\n    \"RequestedQuantity\": 1\n}"
 				},
 				"url": {
-					"raw": "https://localhost:{{portNumber}}/api/purchase",
+					"raw": "https://localhost:{{portNumber}}/api/purchases",
 					"protocol": "https",
 					"host": [
 						"localhost"
@@ -321,7 +321,7 @@
 					"port": "{{portNumber}}",
 					"path": [
 						"api",
-						"purchase"
+						"purchases"
 					]
 				}
 			},
@@ -352,7 +352,7 @@
 					"raw": "[\n    {\n      \"op\": \"replace\",\n      \"path\": \"/Author\",\n      \"value\": \"Some Other Guy\"\n    },\n    {\n      \"op\": \"replace\",\n      \"path\": \"/StockQuantity\",\n      \"value\": \"0\"\n    }    \n]"
 				},
 				"url": {
-					"raw": "https://localhost:{{portNumber}}/api/book/7",
+					"raw": "https://localhost:{{portNumber}}/api/books/7",
 					"protocol": "https",
 					"host": [
 						"localhost"
@@ -360,7 +360,7 @@
 					"port": "{{portNumber}}",
 					"path": [
 						"api",
-						"book",
+						"books",
 						"7"
 					]
 				}
@@ -477,7 +477,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "https://localhost:{{portNumber}}/api/book/9/reviews",
+					"raw": "https://localhost:{{portNumber}}/api/books/9/reviews",
 					"protocol": "https",
 					"host": [
 						"localhost"
@@ -485,7 +485,7 @@
 					"port": "{{portNumber}}",
 					"path": [
 						"api",
-						"book",
+						"books",
 						"9",
 						"reviews"
 					]

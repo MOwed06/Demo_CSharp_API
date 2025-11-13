@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.JsonPatch;
 
 namespace BigBooks.API.Interfaces
 {
-    public interface IBookProvider
+    public interface IBooksProvider
     {
         ProviderKeyResponse AddBook(BookAddUpdateDto dto);
         bool BookExists(int key);
