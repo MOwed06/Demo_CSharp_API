@@ -5,12 +5,12 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BigBooks.API.Controllers
 {
-    [Route("api/book/{book}/reviews")]
+    [Route("api/books/{book}/reviews")]
     [ApiController]
     [Authorize]
-    public class BookReviewController(IBookReviewProvider bookReviewPrv,
-        IBookProvider bookPrv,
-        ILogger<BookReviewController> logger) : ControllerBase
+    public class BookReviewsController(IBookReviewsProvider bookReviewPrv,
+        IBooksProvider bookPrv,
+        ILogger<BookReviewsController> logger) : ControllerBase
     {
 
         [HttpGet]

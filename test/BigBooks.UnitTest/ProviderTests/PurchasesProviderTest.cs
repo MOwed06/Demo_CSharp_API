@@ -9,9 +9,9 @@ using Moq;
 
 namespace BigBooks.UnitTest.ProviderTests
 {
-    public class PurchaseProviderTest : BookStoreTest
+    public class PurchasesProviderTest : BookStoreTest
     {
-        private readonly PurchaseProvider _purchaseProvider;
+        private readonly PurchasesProvider _purchaseProvider;
 
         private const int CUSTOMER_KEY = 3;
         private const decimal CUSTOMER_WALLET = 40.0m;
@@ -19,14 +19,14 @@ namespace BigBooks.UnitTest.ProviderTests
         private const int RARE_BOOK_KEY = 3;
         private const int PRE_RELEASE_BOOK_KEY = 4;
 
-        public PurchaseProviderTest()
+        public PurchasesProviderTest()
         {
-            var mockPurchasePrvLogger = new Mock<ILogger<PurchaseProvider>>();
-            var mockBookPrvLogger = new Mock<ILogger<BookProvider>>();
+            var mockPurchasePrvLogger = new Mock<ILogger<PurchasesProvider>>();
+            var mockBookPrvLogger = new Mock<ILogger<BooksProvider>>();
 
-            var bookPrv = new BookProvider(_ctx, mockBookPrvLogger.Object);
+            var bookPrv = new BooksProvider(_ctx, mockBookPrvLogger.Object);
 
-            _purchaseProvider = new PurchaseProvider(
+            _purchaseProvider = new PurchasesProvider(
                 ctx: _ctx,
                 bookProvider: bookPrv,
                 logger: mockPurchasePrvLogger.Object);

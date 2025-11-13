@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BigBooks.API.Providers 
 {
-    public class BookProvider(BigBookDbContext ctx, ILogger<BookProvider> logger) : BigBooksProvider, IBookProvider
+    public class BooksProvider(BigBookDbContext ctx, ILogger<BooksProvider> logger) : BaseProvider, IBooksProvider
     {
         public bool BookExists(int key)
         {
