@@ -1,4 +1,5 @@
-﻿using BigBooks.API.Models;
+﻿using BigBooks.API.Entities;
+using BigBooks.API.Models;
 using BigBooks.API.Providers;
 
 namespace BigBooks.API.Interfaces
@@ -8,5 +9,7 @@ namespace BigBooks.API.Interfaces
         UserDetailsDto GetUser(int key);
         public List<UserOverviewDto> GetUsers();
         ProviderKeyResponse AddUser(UserAddUpdateDto dto);
+        ProviderKeyResponse GetUserKeyFromToken(string currentUserKeyValue);
+        public UserDetailsDto GetCurrentUser(string currentUserKeyValue);
     }
 }

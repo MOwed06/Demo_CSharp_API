@@ -15,7 +15,7 @@ namespace BigBooks.IntegrationTest
         private readonly HttpClient? _client;
 
         private const string AUTH_URI = @"/api/authentication/authenticate";
-        private const string USERS_URI = @"/api/users";
+        private const string USERS_URI = @"/api/accounts";
         private const string BOOK_3_GET_URI = @"/api/books/3";
 
         private const double MESSAGE_TIMEOUT_SEC = 2.5;       

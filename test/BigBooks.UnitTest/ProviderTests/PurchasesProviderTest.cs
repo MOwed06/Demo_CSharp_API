@@ -11,7 +11,7 @@ namespace BigBooks.UnitTest.ProviderTests
 {
     public class PurchasesProviderTest : BookStoreTest
     {
-        private readonly PurchasesProvider _purchaseProvider;
+        private readonly PurchasesProvider _purchasesProvider;
 
         private const int CUSTOMER_KEY = 3;
         private const decimal CUSTOMER_WALLET = 40.0m;
@@ -23,12 +23,15 @@ namespace BigBooks.UnitTest.ProviderTests
         {
             var mockPurchasePrvLogger = new Mock<ILogger<PurchasesProvider>>();
             var mockBookPrvLogger = new Mock<ILogger<BooksProvider>>();
+            var mockUsersPrvLogger = new Mock<ILogger<UsersProvider>>();
 
-            var bookPrv = new BooksProvider(_ctx, mockBookPrvLogger.Object);
+            var booksPrv = new BooksProvider(_ctx, mockBookPrvLogger.Object);
+            var usersPrv = new UsersProvider(_ctx, mockUsersPrvLogger.Object);
 
-            _purchaseProvider = new PurchasesProvider(
+            _purchasesProvider = new PurchasesProvider(
                 ctx: _ctx,
-                bookProvider: bookPrv,
+                booksProvider: booksPrv,
+                usersProvider: usersPrv,
                 logger: mockPurchasePrvLogger.Object);
 
             var extraBooks = new List<Book>()
@@ -97,7 +100,7 @@ namespace BigBooks.UnitTest.ProviderTests
             };
 
             // act
-            var response = _purchaseProvider.PurchaseBooks(currentUserKey, purchaseDto);
+            var response = _purchasesProvider.PurchaseBooks(currentUserKey, purchaseDto);
 
             // assert
             Assert.Contains(expectedError, response.Error);
@@ -121,7 +124,7 @@ namespace BigBooks.UnitTest.ProviderTests
             };
 
             // act
-            var response = _purchaseProvider.PurchaseBooks(USER_KEY_VALUE, purchaseDto);
+            var response = _purchasesProvider.PurchaseBooks(USER_KEY_VALUE, purchaseDto);
 
             var observedUser = _ctx.AppUsers
                 .AsNoTracking()
