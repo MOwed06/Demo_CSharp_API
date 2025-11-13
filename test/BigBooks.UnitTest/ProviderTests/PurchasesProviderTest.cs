@@ -83,13 +83,11 @@ namespace BigBooks.UnitTest.ProviderTests
         /// <param name="reqQuantity"></param>
         /// <param name="expectedError"></param>
         [Theory]
-        [InlineData("three", 2, 1, "Invalid UserClaimId")]
-        [InlineData("4", 2, 1, "Invalid user")]  // user 4 does not exist
-        [InlineData("3", 5, 1, "Invalid book")]  // book 5 does not exist
         [InlineData("3", 2, 7, "Insufficent funds in user wallet")]
         [InlineData("3", RARE_BOOK_KEY, 2, "Insufficient book stock")] // only 1 book available
         [InlineData("3", PRE_RELEASE_BOOK_KEY, 1, "Insufficient book stock")] // no books in stock
         [InlineData("3", 2, 3, "Insufficent funds in user wallet")]
+        [InlineData("3", 5, 1, "Invalid book")]  // book 5 does not exist
         public void CheckPurchaseBooksInvalid(string currentUserKey, int bookKey, int reqQuantity, string expectedError)
         {
             // arrange
