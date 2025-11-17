@@ -9,11 +9,11 @@ using Moq;
 
 namespace BigBooks.UnitTest.ProviderTests
 {
-    public class BookProvidersTest : BookStoreTest
+    public class BooksProvidersTest : BookStoreTest
     {
         private BooksProvider _bookPrv;
 
-        public BookProvidersTest() : base()
+        public BooksProvidersTest() : base()
         {
             var mockLogger = new Mock<ILogger<BooksProvider>>();
             _bookPrv = new BooksProvider(_ctx, mockLogger.Object);
@@ -46,6 +46,24 @@ namespace BigBooks.UnitTest.ProviderTests
             // assert
             Assert.Null(obs);
         }
+
+        [Theory]
+        [InlineData(-1, false)]
+        [InlineData(0, false)]
+        [InlineData(1, true)]
+        [InlineData(11, false)]
+        public void CheckBookExists(int bookKey, bool expected)
+        {
+            // arrange
+            InitializeDatabase();
+
+            // act
+            var obs = _bookPrv.BookExists(bookKey);
+
+            // assert
+            Assert.Equal(expected, obs);
+        }
+
 
         [Theory]
         [InlineData(new int [0], null)]

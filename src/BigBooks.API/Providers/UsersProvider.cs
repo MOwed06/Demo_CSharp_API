@@ -2,6 +2,7 @@
 using BigBooks.API.Interfaces;
 using BigBooks.API.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace BigBooks.API.Providers
 {
@@ -64,6 +65,26 @@ namespace BigBooks.API.Providers
                 .ToList();
         }
 
+        /// <summary>
+        /// Allow current user to view their full details
+        /// </summary>
+        /// <param name="currentUserKeyValue"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        public UserDetailsDto GetCurrentUserDetails(string currentUserKeyValue)
+        {
+            logger.LogDebug("GetCurrentUser");
+
+            var currentUser = GetUserKeyFromToken(currentUserKeyValue);
+
+            if (!currentUser.Key.HasValue)
+            {
+                throw new Exception(currentUser.Error);
+            }
+
+            return GetUser(currentUser.Key.Value);
+        }
+
         public ProviderKeyResponse AddUser(UserAddUpdateDto dto)
         {
             logger.LogDebug($"AddUser {dto.UserEmail}");
@@ -88,6 +109,22 @@ namespace BigBooks.API.Providers
             ctx.SaveChanges();
 
             return new ProviderKeyResponse(nextUser.Key, string.Empty);
+        }
+
+        public ProviderKeyResponse GetUserKeyFromToken(string currentUserValue)
+        {
+            logger.LogDebug($"GetUserKeyFromToken, {currentUserValue}");
+
+            var appUser = ctx.AppUsers
+                .AsNoTracking()
+                .SingleOrDefault(u => u.UserEmail == currentUserValue);
+
+            if (appUser == null)
+            {
+                return new ProviderKeyResponse(null, $"Invalid user {currentUserValue}");
+            }
+
+            return new ProviderKeyResponse(appUser.Key, string.Empty);
         }
     }
 }

@@ -39,7 +39,7 @@
 			"response": []
 		},
 		{
-			"name": "GET UserDetails",
+			"name": "GET AccountDetails",
 			"request": {
 				"auth": {
 					"type": "bearer",
@@ -54,7 +54,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "https://localhost:{{portNumber}}/api/users/8",
+					"raw": "https://localhost:{{portNumber}}/api/accounts/8",
 					"protocol": "https",
 					"host": [
 						"localhost"
@@ -62,7 +62,7 @@
 					"port": "{{portNumber}}",
 					"path": [
 						"api",
-						"users",
+						"accounts",
 						"8"
 					]
 				}
@@ -70,7 +70,7 @@
 			"response": []
 		},
 		{
-			"name": "GET Users",
+			"name": "GET AccountInfo",
 			"request": {
 				"auth": {
 					"type": "bearer",
@@ -85,7 +85,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "https://localhost:{{portNumber}}/api/users",
+					"raw": "https://localhost:{{portNumber}}/api/accounts",
 					"protocol": "https",
 					"host": [
 						"localhost"
@@ -93,14 +93,14 @@
 					"port": "{{portNumber}}",
 					"path": [
 						"api",
-						"users"
+						"accounts"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "GET BooksByGenreMultiple",
+			"name": "GET BooksByGenre_Multiple",
 			"request": {
 				"auth": {
 					"type": "bearer",
@@ -137,7 +137,7 @@
 			"response": []
 		},
 		{
-			"name": "GET BooksByGenreEmpty",
+			"name": "GET BooksByGenre_Empty",
 			"request": {
 				"auth": {
 					"type": "bearer",
@@ -250,7 +250,7 @@
 			"response": []
 		},
 		{
-			"name": "POST AddUser",
+			"name": "POST AddAccount",
 			"request": {
 				"auth": {
 					"type": "bearer",
@@ -271,10 +271,10 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"UserEmail\": \"Dylan.Davis@demo.com\",\n    \"UserName\": \"Dylan P. Davis\",\n    \"Password\": \"N0tV3ryS3cret\",\n    \"Wallet\": 1642.43,\n    \"Role\": \"customer\"\n}"
+					"raw": "{\n    \"UserEmail\": \"Frank.Fallen@demo.com\",\n    \"UserName\": \"Frank R. Fallen\",\n    \"Password\": \"N0tV3ryS3cret\",\n    \"Wallet\": 82.43,\n    \"Role\": \"customer\"\n}"
 				},
 				"url": {
-					"raw": "https://localhost:{{portNumber}}/api/users",
+					"raw": "https://localhost:{{portNumber}}/api/accounts",
 					"protocol": "https",
 					"host": [
 						"localhost"
@@ -282,7 +282,7 @@
 					"port": "{{portNumber}}",
 					"path": [
 						"api",
-						"users"
+						"accounts"
 					]
 				}
 			},
@@ -368,7 +368,7 @@
 			"response": []
 		},
 		{
-			"name": "POST AuthenticationRequest_Customer",
+			"name": "POST AuthRequest_Customer",
 			"event": [
 				{
 					"listen": "test",
@@ -415,7 +415,7 @@
 			"response": []
 		},
 		{
-			"name": "POST AuthenticationRequest_Admin",
+			"name": "POST AuthRequest_Admin",
 			"event": [
 				{
 					"listen": "test",

@@ -6,34 +6,28 @@ using Microsoft.EntityFrameworkCore;
 namespace BigBooks.API.Providers
 {
     public class PurchasesProvider(BigBookDbContext ctx,
-        IBooksProvider bookProvider,
+        IBooksProvider booksProvider,
+        IUsersProvider usersProvider,
         ILogger<PurchasesProvider> logger) : BaseProvider, IPurchasesProvider
     {
         /// <summary>
         /// extract userKey from claim
         /// refer to AuthService.cs, GenerateToken(), user key embedded in token
         /// </summary>
-        /// <param name="currentUserKeyValue"></param>
+        /// <param name="currentUserValue"></param>
         /// <param name="bookKey"></param>
         /// <param name="requestedQuantity"></param>
         /// <returns>user key associated with purchase</returns>
-        public ProviderKeyResponse PurchaseBooks(string currentUserKeyValue, PurchaseRequestDto dto)
+        public ProviderKeyResponse PurchaseBooks(string currentUserValue, PurchaseRequestDto dto)
         {
-            logger.LogDebug($"PurchaseBooks, user: {currentUserKeyValue}, book: {dto.BookKey}, qty: {dto.RequestedQuantity}");
+            logger.LogDebug($"PurchaseBooks, user: {currentUserValue}, book: {dto.BookKey}, qty: {dto.RequestedQuantity}");
 
-            var userKey = -1;
+            var userMatch = usersProvider.GetUserKeyFromToken(currentUserValue);
 
-            if (!int.TryParse(currentUserKeyValue, out userKey))
+            if (!userMatch.Key.HasValue)
             {
-                return new ProviderKeyResponse(null, $"Invalid UserClaimId {currentUserKeyValue}");
-            }
-
-            var appUser = ctx.AppUsers
-                .SingleOrDefault(u => u.Key == userKey);
-
-            if (appUser == null)
-            {
-                return new ProviderKeyResponse(null, $"Invalid user {userKey}");
+                // no match to user
+                return new ProviderKeyResponse(null, userMatch.Error);
             }
 
             var book = ctx.Books
@@ -47,20 +41,24 @@ namespace BigBooks.API.Providers
 
             var purchaseAmount = book.Price * dto.RequestedQuantity;
 
-            if (appUser.Wallet < purchaseAmount)
+            var currentUser = ctx.AppUsers
+                .Include(u => u.BookPurchases)
+                .Single(u => u.Key == userMatch.Key);
+
+            if (currentUser.Wallet < purchaseAmount)
             {
                 return new ProviderKeyResponse(null, $"Insufficent funds in user wallet");
             }
 
-            if (!bookProvider.RemoveFromStock(dto.BookKey, dto.RequestedQuantity))
+            if (!booksProvider.RemoveFromStock(dto.BookKey, dto.RequestedQuantity))
             {
                 return new ProviderKeyResponse(null, $"Insufficient book stock");
             }
 
             // valid purchase, stock available
-            appUser.Wallet -= purchaseAmount;
+            currentUser.Wallet -= purchaseAmount;
 
-            appUser.BookPurchases.Add(new BookPurchase
+            currentUser.BookPurchases.Add(new BookPurchase
             {
                 PurchaseDate = DateTime.Now,
                 PurchaseQuantity = dto.RequestedQuantity,
@@ -69,7 +67,7 @@ namespace BigBooks.API.Providers
 
             ctx.SaveChanges();
 
-            return new ProviderKeyResponse(userKey, string.Empty);
+            return new ProviderKeyResponse(currentUser.Key, string.Empty);
         }
     }
 }

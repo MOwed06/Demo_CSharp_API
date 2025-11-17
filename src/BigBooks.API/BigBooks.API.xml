@@ -13,6 +13,53 @@
             <param name="password"></param>
             <returns></returns>
         </member>
+        <member name="T:BigBooks.API.Controllers.AccountsController">
+            <summary>
+            Accounts controller shares provider with Users controller
+            Authorization is intentionally different
+            Accounts offers Admin high-level access to all users
+            </summary>
+            <param name="users"></param>
+            <param name="logger"></param>
+        </member>
+        <member name="M:BigBooks.API.Controllers.AccountsController.#ctor(BigBooks.API.Interfaces.IUsersProvider,Microsoft.Extensions.Logging.ILogger{BigBooks.API.Controllers.AccountsController})">
+            <summary>
+            Accounts controller shares provider with Users controller
+            Authorization is intentionally different
+            Accounts offers Admin high-level access to all users
+            </summary>
+            <param name="users"></param>
+            <param name="logger"></param>
+        </member>
+        <member name="M:BigBooks.API.Controllers.AccountsController.GetAccountInfo(System.Int32)">
+            <summary>
+            Get user account info by key.
+            </summary>
+            <remarks>
+            Requires authenticated user with Admin role
+            </remarks>
+            <param name="key">user account key</param>
+            <returns>user details</returns>
+        </member>
+        <member name="M:BigBooks.API.Controllers.AccountsController.GetAccounts">
+            <summary>
+            Get all user acounts
+            </summary>
+            <remarks>
+            Requires authenticated user with Admin role
+            </remarks>
+            <returns>overview of each user</returns>
+        </member>
+        <member name="M:BigBooks.API.Controllers.AccountsController.AddAccount(BigBooks.API.Models.UserAddUpdateDto)">
+            <summary>
+            Add new user account
+            </summary>
+            <remarks>
+            Requires authenticated user with Admin role
+            </remarks>         
+            <param name="dto">user parameters</param>
+            <returns>user details</returns>
+        </member>
         <member name="M:BigBooks.API.Controllers.AuthenticationController.Authenticate(BigBooks.API.Authentication.AuthRequest)">
             <summary>
             Request token for user.
@@ -81,33 +128,13 @@
             <param name="dto">book key and quantity</param>
             <returns>updated user info</returns>
         </member>
-        <member name="M:BigBooks.API.Controllers.UsersController.GetUserInfo(System.Int32)">
+        <member name="M:BigBooks.API.Controllers.UsersController.GetCurrentUser">
             <summary>
-            Get user info by key.
+            Get UserDetails for current user
             </summary>
             <remarks>
-            Requires authenticated user with Admin role
+            Current user identified via token
             </remarks>
-            <param name="key">user account key</param>
-            <returns>user details</returns>
-        </member>
-        <member name="M:BigBooks.API.Controllers.UsersController.GetUsers">
-            <summary>
-            Get all users
-            </summary>
-            <remarks>
-            Requires authenticated user with Admin role
-            </remarks>
-            <returns>overview of each user</returns>
-        </member>
-        <member name="M:BigBooks.API.Controllers.UsersController.AddUser(BigBooks.API.Models.UserAddUpdateDto)">
-            <summary>
-            Add new user
-            </summary>
-            <remarks>
-            Requires authenticated user with Admin role
-            </remarks>         
-            <param name="dto">user parameters</param>
             <returns>user details</returns>
         </member>
         <member name="P:BigBooks.API.Entities.AppUser.UserEmail">
@@ -153,10 +180,18 @@
             extract userKey from claim
             refer to AuthService.cs, GenerateToken(), user key embedded in token
             </summary>
-            <param name="currentUserKeyValue"></param>
+            <param name="currentUserValue"></param>
             <param name="bookKey"></param>
             <param name="requestedQuantity"></param>
             <returns>user key associated with purchase</returns>
+        </member>
+        <member name="M:BigBooks.API.Providers.UsersProvider.GetCurrentUserDetails(System.String)">
+            <summary>
+            Allow current user to view their full details
+            </summary>
+            <param name="currentUserKeyValue"></param>
+            <returns></returns>
+            <exception cref="T:System.Exception"></exception>
         </member>
     </members>
 </doc>

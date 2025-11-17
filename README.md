@@ -34,13 +34,6 @@ I will continue to evolve this project as my bandwidth allows. I will keep the m
     - Simmplified token authorization
 
 - Intentional complexities
-    - PurchaseController, PurchaseBooks() indentifies user from token claim
-    - Admin user required for:
-        - BookController, AddBook()
-        - BookController, UpdateBook()
-        - UserController, GetUserInfo()
-        - UserController, GetUsers()
-    - Validation of modified object in BookProvider.cs UpdateBook()    
     - BookAddUpdateDto.Isbn must be valid Guid
     - UserAddUpdateDto.UserEmail must be valid email
 
@@ -61,9 +54,9 @@ I will continue to evolve this project as my bandwidth allows. I will keep the m
 ### BigBooks.UnitTest
 
 - xunit tests of project elements exercised in isolation.
-    - AuthenticationServiceTest.cs
-    - BookProviderTest.cs
-    - PurchaseProviderTest.cs
+    - Authentication
+    - Providers
+    - Models
 - InMemory DbContext created for each test case.
     - Refer to BigBookTest.cs constructor.
 
@@ -83,7 +76,14 @@ I will continue to evolve this project as my bandwidth allows. I will keep the m
 Things yet to do ...
 
 1. Lots more unit tests
-1. UserController, Modify User
+1. Add AccountHistory entity
+    - Navigation to AppUser
+    - Replace Purchase History?
+    - Track Wallet desosits
+1. Create UserController.AddToWallet method
+    - Amount
+    - Transaction Confirmation Guid
+1. AccountController, Modify(Patch) Account
 1. BookReviewController, Add Review
 1. BookReviewController, Delete Review
 1. Convert Controller methods to async.
