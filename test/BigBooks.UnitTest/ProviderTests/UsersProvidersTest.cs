@@ -21,9 +21,8 @@ namespace BigBooks.UnitTest.ProviderTests
         }
 
         [Theory]
-        [InlineData("three", null, "Invalid UserClaimId")]
-        [InlineData("4", null, "Invalid user")]               // user 4 does not exist
-        [InlineData("2", 2, "")]
+        [InlineData("Some.User@demo.com", null, "Invalid user")]               // user does not exist
+        [InlineData(CUSTOMER_2_EMAIL, 2, "")]
         public void ConfirmGetUserKeyFromToken(string userKeyValue, int? expectedKey, string expectedError)
         {
             // arrange

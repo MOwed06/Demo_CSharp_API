@@ -71,7 +71,7 @@ namespace BigBooks.API.Providers
         /// <param name="currentUserKeyValue"></param>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
-        public UserDetailsDto GetCurrentUser(string currentUserKeyValue)
+        public UserDetailsDto GetCurrentUserDetails(string currentUserKeyValue)
         {
             logger.LogDebug("GetCurrentUser");
 
@@ -111,24 +111,17 @@ namespace BigBooks.API.Providers
             return new ProviderKeyResponse(nextUser.Key, string.Empty);
         }
 
-        public ProviderKeyResponse GetUserKeyFromToken(string currentUserKeyValue)
+        public ProviderKeyResponse GetUserKeyFromToken(string currentUserValue)
         {
-            logger.LogDebug($"GetUserKeyFromToken, {currentUserKeyValue}");
-
-            var userKey = -1;
-
-            if (!int.TryParse(currentUserKeyValue, out userKey))
-            {
-                return new ProviderKeyResponse(null, $"Invalid UserClaimId {currentUserKeyValue}");
-            }
+            logger.LogDebug($"GetUserKeyFromToken, {currentUserValue}");
 
             var appUser = ctx.AppUsers
                 .AsNoTracking()
-                .SingleOrDefault(u => u.Key == userKey);
+                .SingleOrDefault(u => u.UserEmail == currentUserValue);
 
             if (appUser == null)
             {
-                return new ProviderKeyResponse(null, $"Invalid user {userKey}");
+                return new ProviderKeyResponse(null, $"Invalid user {currentUserValue}");
             }
 
             return new ProviderKeyResponse(appUser.Key, string.Empty);

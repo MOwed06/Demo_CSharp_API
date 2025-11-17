@@ -180,12 +180,12 @@
             extract userKey from claim
             refer to AuthService.cs, GenerateToken(), user key embedded in token
             </summary>
-            <param name="currentUserKeyValue"></param>
+            <param name="currentUserValue"></param>
             <param name="bookKey"></param>
             <param name="requestedQuantity"></param>
             <returns>user key associated with purchase</returns>
         </member>
-        <member name="M:BigBooks.API.Providers.UsersProvider.GetCurrentUser(System.String)">
+        <member name="M:BigBooks.API.Providers.UsersProvider.GetCurrentUserDetails(System.String)">
             <summary>
             Allow current user to view their full details
             </summary>

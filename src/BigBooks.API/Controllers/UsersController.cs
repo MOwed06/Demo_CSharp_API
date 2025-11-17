@@ -25,10 +25,11 @@ namespace BigBooks.API.Controllers
 
             try
             {
-                // extract appUser key from active user claims
+                // extract appUser email from active user claims 
+                // corresponds to JwtRegisteredClaimNames.Sub value
                 var currentUserKeyValue = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-                var userDto = usersProvider.GetCurrentUser(currentUserKeyValue);
+                var userDto = usersProvider.GetCurrentUserDetails(currentUserKeyValue);
                 return Ok(userDto);
             }
             catch (Exception ex)

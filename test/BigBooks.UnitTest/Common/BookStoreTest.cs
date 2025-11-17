@@ -17,6 +17,8 @@ namespace BigBooks.UnitTest.Common
         protected const string STRING_150_CHARS = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, q";
         protected const string STRING_151_CHARS = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, qu";
 
+        protected const string CUSTOMER_2_EMAIL = "Jessica.Jones@test.com";
+
         protected readonly BigBookDbContext _ctx;
 
         protected void InitializeDatabase(List<Book>? extraBooks = null,
@@ -96,7 +98,7 @@ namespace BigBooks.UnitTest.Common
                 {
                     Key = 2,
                     UserName = "Jessica Jones",
-                    UserEmail = "Jessica.Jones@test.com",
+                    UserEmail = CUSTOMER_2_EMAIL,
                     Password = ApplicationConstant.USER_PASSWORD,
                     Role = Role.Customer
                 }

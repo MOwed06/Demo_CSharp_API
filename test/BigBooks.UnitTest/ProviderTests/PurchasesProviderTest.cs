@@ -14,6 +14,7 @@ namespace BigBooks.UnitTest.ProviderTests
         private readonly PurchasesProvider _purchasesProvider;
 
         private const int CUSTOMER_KEY = 3;
+        private const string CUSTOMER_EMAIL = "Zachary.Zimmer@demo.com";
         private const decimal CUSTOMER_WALLET = 40.0m;
 
         private const int RARE_BOOK_KEY = 3;
@@ -64,7 +65,7 @@ namespace BigBooks.UnitTest.ProviderTests
                 {
                     Key = CUSTOMER_KEY,
                     UserName = "Zachary Zimmer",
-                    UserEmail = "Zachary.Zimmer@demo.com",
+                    UserEmail = CUSTOMER_EMAIL,
                     Wallet = CUSTOMER_WALLET,
                     Password = ApplicationConstant.USER_PASSWORD
                 }
@@ -78,17 +79,16 @@ namespace BigBooks.UnitTest.ProviderTests
         /// <summary>
         /// note that book 2 has cost of 17.11 and stock of 6
         /// </summary>
-        /// <param name="currentUserKey"></param>
         /// <param name="bookKey"></param>
         /// <param name="reqQuantity"></param>
         /// <param name="expectedError"></param>
         [Theory]
-        [InlineData("3", 2, 7, "Insufficent funds in user wallet")]
-        [InlineData("3", RARE_BOOK_KEY, 2, "Insufficient book stock")] // only 1 book available
-        [InlineData("3", PRE_RELEASE_BOOK_KEY, 1, "Insufficient book stock")] // no books in stock
-        [InlineData("3", 2, 3, "Insufficent funds in user wallet")]
-        [InlineData("3", 5, 1, "Invalid book")]  // book 5 does not exist
-        public void CheckPurchaseBooksInvalid(string currentUserKey, int bookKey, int reqQuantity, string expectedError)
+        [InlineData(2, 7, "Insufficent funds in user wallet")]
+        [InlineData(RARE_BOOK_KEY, 2, "Insufficient book stock")] // only 1 book available
+        [InlineData(PRE_RELEASE_BOOK_KEY, 1, "Insufficient book stock")] // no books in stock
+        [InlineData(2, 3, "Insufficent funds in user wallet")]
+        [InlineData(5, 1, "Invalid book")]  // book 5 does not exist
+        public void CheckPurchaseBooksInvalid(int bookKey, int reqQuantity, string expectedError)
         {
             // arrange
             var purchaseDto = new PurchaseRequestDto
@@ -98,7 +98,7 @@ namespace BigBooks.UnitTest.ProviderTests
             };
 
             // act
-            var response = _purchasesProvider.PurchaseBooks(currentUserKey, purchaseDto);
+            var response = _purchasesProvider.PurchaseBooks(CUSTOMER_EMAIL, purchaseDto);
 
             // assert
             Assert.Contains(expectedError, response.Error);
@@ -113,8 +113,6 @@ namespace BigBooks.UnitTest.ProviderTests
         public void CheckPurchaseBooksValid(int bookKey, int reqQuantity, decimal expectedWallet, int expectedStock)
         {
             // arrange
-            const string USER_KEY_VALUE = "3";
-
             var purchaseDto = new PurchaseRequestDto
             {
                 BookKey = bookKey,
@@ -122,7 +120,7 @@ namespace BigBooks.UnitTest.ProviderTests
             };
 
             // act
-            var response = _purchasesProvider.PurchaseBooks(USER_KEY_VALUE, purchaseDto);
+            var response = _purchasesProvider.PurchaseBooks(CUSTOMER_EMAIL, purchaseDto);
 
             var observedUser = _ctx.AppUsers
                 .AsNoTracking()

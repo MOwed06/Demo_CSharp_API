@@ -48,6 +48,24 @@ namespace BigBooks.UnitTest.ProviderTests
         }
 
         [Theory]
+        [InlineData(-1, false)]
+        [InlineData(0, false)]
+        [InlineData(1, true)]
+        [InlineData(11, false)]
+        public void CheckBookExists(int bookKey, bool expected)
+        {
+            // arrange
+            InitializeDatabase();
+
+            // act
+            var obs = _bookPrv.BookExists(bookKey);
+
+            // assert
+            Assert.Equal(expected, obs);
+        }
+
+
+        [Theory]
         [InlineData(new int [0], null)]
         [InlineData(new int[] { 3 }, 3.0)]
         [InlineData(new int[] { 3, 4 }, 3.5)]

@@ -58,9 +58,9 @@ namespace BigBooks.API.Services
                     securityKey, SecurityAlgorithms.HmacSha256);
 
                 var claimsForToken = new List<Claim>();
-                claimsForToken.Add(new Claim(JwtRegisteredClaimNames.Sub, user.Key.ToString()));
+                claimsForToken.Add(new Claim(JwtRegisteredClaimNames.Sub, user.UserEmail));
                 claimsForToken.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
-                claimsForToken.Add(new Claim(ClaimTypes.Name, user.UserEmail));
+                claimsForToken.Add(new Claim(ClaimTypes.Name, user.UserName));
                 claimsForToken.Add(new Claim(ClaimTypes.Role, user.Role.ToString()));
 
                 var tokenExpiration = DateTime.Now.AddHours(0.5);
