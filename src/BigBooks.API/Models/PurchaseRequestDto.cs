@@ -4,5 +4,6 @@
     {
         public int BookKey { get; set; }
         public int RequestedQuantity { get; set; }
+        public Guid TransactionConfirmation { get; set; }
     }
 }

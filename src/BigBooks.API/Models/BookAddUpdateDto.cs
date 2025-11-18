@@ -16,8 +16,7 @@ namespace BigBooks.API.Models
         public string Author { get; set; } = string.Empty;
 
         [Required]
-        [MaxLength(50)]
-        public string Isbn { get; set; } = string.Empty;
+        public Guid Isbn { get; set; } = Guid.Empty;
 
         [MaxLength(500)]
         public string? Description { get; set; }
@@ -36,13 +35,14 @@ namespace BigBooks.API.Models
         {
             var vResults = new List<ValidationResult>();
 
-            // isbn value must be valid guid
-            var isValid = Guid.TryParse(Isbn, out _);
+            // TODO ~ fix this
+            //// isbn value must be valid guid
+            //var isValid = Guid.TryParse(Isbn, out _);
 
-            if (!isValid)
-            {
-                vResults.Add(new ValidationResult($"invalid ISBN value: {Isbn}"));
-            }
+            //if (!isValid)
+            //{
+            //    vResults.Add(new ValidationResult($"invalid ISBN value: {Isbn}"));
+            //}
 
             return vResults;
         }

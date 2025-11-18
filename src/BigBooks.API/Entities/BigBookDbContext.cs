@@ -8,7 +8,7 @@ namespace BigBooks.API.Entities
         public DbSet<Book> Books { get; set; }
         public DbSet<BookReview> BookReviews { get; set; }
         public DbSet<AppUser> AppUsers { get; set; }
-        public DbSet<BookPurchase> BookPurchases { get; set; }
+        public DbSet<AccountTransaction> Transactions { get; set; }
 
 
         public BigBookDbContext(DbContextOptions<BigBookDbContext> options) : base(options)
@@ -302,56 +302,88 @@ namespace BigBooks.API.Entities
                     Wallet = 20.0m
                 });
 
-            modelBuilder.Entity<BookPurchase>()
+            modelBuilder.Entity<AccountTransaction>()
                 .HasData(
-                new BookPurchase 
+                new AccountTransaction
                 {
                     Key = 1,
-                    PurchaseDate = DateTime.Parse("2025-03-15").Date,
+                    TransactionDate = DateTime.Parse("2025-03-15").Date,
                     UserKey = 4,
+                    TransactionAmount = -17.23m,
+                    TransactionConfirmation = Guid.Parse("962B4F1A-7520-4392-BFA7-11BEA52517E8"),
                     BookKey = 1,
                     PurchaseQuantity = 1
                 },
-                new BookPurchase
+                new AccountTransaction
                 {
                     Key = 2,
-                    PurchaseDate = DateTime.Parse("2025-03-16").Date,
+                    TransactionDate = DateTime.Parse("2025-03-16").Date,
                     UserKey = 4,
+                    TransactionAmount = 50.00m,
+                    TransactionConfirmation = Guid.Parse("DB9B9784-CA26-4869-9A84-AF2DE7886F00"),
+                    BookKey = null,
+                    PurchaseQuantity = null
+                },
+                new AccountTransaction
+                {
+                    Key = 3,
+                    TransactionDate = DateTime.Parse("2025-03-17").Date,
+                    UserKey = 4,
+                    TransactionAmount = -13.91m,
+                    TransactionConfirmation = Guid.Parse("962B4F1A-7520-4392-BFA7-11BEA52517E8"),
                     BookKey = 3,
                     PurchaseQuantity = 1
                 },
-                new BookPurchase
+                new AccountTransaction
                 {
-                    Key = 3,
-                    PurchaseDate = DateTime.Parse("2025-04-01").Date,
+                    Key = 4,
+                    TransactionDate = DateTime.Parse("2025-04-01").Date,
                     UserKey = 5,
+                    TransactionAmount = -33.21m,
+                    TransactionConfirmation = Guid.Parse("491ADFCB-D596-4B46-8D6C-C395E8EC3611"),
                     BookKey = 2,
                     PurchaseQuantity = 3
                 },
-                new BookPurchase
+                new AccountTransaction
                 {
-                    Key = 4,
-                    PurchaseDate = DateTime.Parse("2025-04-02").Date,
+                    Key = 5,
+                    TransactionDate = DateTime.Parse("2025-04-02").Date,
                     UserKey = 5,
+                    TransactionAmount = -16.71m,
+                    TransactionConfirmation = Guid.Parse("10A61E73-FADA-472A-9589-3D784D190264"),
                     BookKey = 8,
                     PurchaseQuantity = 2
                 },
-                new BookPurchase
+                new AccountTransaction
                 {
-                    Key = 5,
-                    PurchaseDate = DateTime.Parse("2025-04-03").Date,
+                    Key = 6,
+                    TransactionDate = DateTime.Parse("2025-04-03").Date,
                     UserKey = 5,
+                    TransactionAmount = -9.07m,
+                    TransactionConfirmation = Guid.Parse("3A3532DE-CDB2-47B5-ADD3-209B4BA0991E"),
                     BookKey = 9,
                     PurchaseQuantity = 1
                 },
-                new BookPurchase
+                new AccountTransaction
                 {
                     // same book, same user, different purchase date
-                    Key = 6,
-                    PurchaseDate = DateTime.Parse("2025-06-03").Date,
+                    Key = 7,
+                    TransactionDate = DateTime.Parse("2025-06-03").Date,
                     UserKey = 5,
+                    TransactionAmount = -9.17m,
+                    TransactionConfirmation = Guid.Parse("69E93A9D-9D39-49FC-967A-4F0A3916A0BA"),
                     BookKey = 9,
                     PurchaseQuantity = 1
+                },
+                new AccountTransaction
+                {
+                    Key = 8,
+                    TransactionDate = DateTime.Parse("2025-06-04").Date,
+                    UserKey = 5,
+                    TransactionAmount = 75.00m,
+                    TransactionConfirmation = Guid.Parse("1A6B39CB-131A-4B34-AA98-1C3E00327302"),
+                    BookKey = null,
+                    PurchaseQuantity = null
                 });
 
             base.OnModelCreating(modelBuilder);

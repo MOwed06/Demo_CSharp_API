@@ -42,7 +42,7 @@ namespace BigBooks.API.Providers
             var purchaseAmount = book.Price * dto.RequestedQuantity;
 
             var currentUser = ctx.AppUsers
-                .Include(u => u.BookPurchases)
+                .Include(u => u.Transactions)
                 .Single(u => u.Key == userMatch.Key);
 
             if (currentUser.Wallet < purchaseAmount)
@@ -58,12 +58,13 @@ namespace BigBooks.API.Providers
             // valid purchase, stock available
             currentUser.Wallet -= purchaseAmount;
 
-            currentUser.BookPurchases.Add(new BookPurchase
-            {
-                PurchaseDate = DateTime.Now,
-                PurchaseQuantity = dto.RequestedQuantity,
-                BookKey = dto.BookKey
-            });
+            // TODO ~ fix this!
+            //currentUser.BookPurchases.Add(new BookPurchase
+            //{
+            //    PurchaseDate = DateTime.Now,
+            //    PurchaseQuantity = dto.RequestedQuantity,
+            //    BookKey = dto.BookKey
+            //});
 
             ctx.SaveChanges();
 

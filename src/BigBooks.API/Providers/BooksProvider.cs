@@ -96,17 +96,18 @@ namespace BigBooks.API.Providers
         {
             logger.LogDebug($"AddBook, {dto.Title}");
 
-            var isbnCheck = CheckIsbn(dto.Isbn, null);
-            if (!isbnCheck.BookIsbn.HasValue)
-            {
-                return new ProviderKeyResponse(null, isbnCheck.Error);
-            }
+            // TODO ~ fix this
+            //var isbnCheck = CheckIsbn(dto.Isbn, null);
+            //if (!isbnCheck.BookIsbn.HasValue)
+            //{
+            //    return new ProviderKeyResponse(null, isbnCheck.Error);
+            //}
 
             var addedBook = new Book
             {
                 Title = dto.Title,
                 Author = dto.Author,
-                Isbn = isbnCheck.BookIsbn.Value,
+                Isbn = dto.Isbn,
                 Description = dto.Description,
                 Genre = dto.Genre,
                 Price = dto.Price,
@@ -132,12 +133,13 @@ namespace BigBooks.API.Providers
                 return new ProviderKeyResponse(null, $"Book key {key} not found");
             }
 
+            // TODO ~ fix this
             // transform from entity to dto
             var updateDto = new BookAddUpdateDto
             {
                 Title = existingBook.Title,
                 Author = existingBook.Author,
-                Isbn = existingBook.Isbn.ToString("D").ToUpper(),
+                Isbn = existingBook.Isbn,
                 Description = existingBook.Description,
                 Genre = existingBook.Genre,
                 Price = existingBook.Price,
@@ -153,16 +155,17 @@ namespace BigBooks.API.Providers
                 return new ProviderKeyResponse(null, validationCheck.Error);
             }
 
-            var isbnCheck = CheckIsbn(updateDto.Isbn, key);
-            if (!isbnCheck.BookIsbn.HasValue)
-            {
-                return new ProviderKeyResponse(null, isbnCheck.Error);
-            }
+            // TODO ~ this this
+            //var isbnCheck = CheckIsbn(updateDto.Isbn, key);
+            //if (!isbnCheck.BookIsbn.HasValue)
+            //{
+            //    return new ProviderKeyResponse(null, isbnCheck.Error);
+            //}
 
             var modifiedBook = ctx.Books.Single(b => b.Key == key);
             modifiedBook.Title = updateDto.Title;
             modifiedBook.Author = updateDto.Author;
-            modifiedBook.Isbn = isbnCheck.BookIsbn.Value;
+            modifiedBook.Isbn = updateDto.Isbn;
             modifiedBook.Genre = updateDto.Genre;
             modifiedBook.Price = updateDto.Price;
             modifiedBook.StockQuantity = updateDto.StockQuantity;

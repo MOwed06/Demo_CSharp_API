@@ -18,9 +18,6 @@ namespace BigBooks.API.Entities
         [MaxLength(100)]
         public string Author { get; set; } = string.Empty;
 
-        [Required]
-        public Guid Isbn { get; set; }
-
         [MaxLength(500)]
         public string? Description { get; set; }
 
@@ -31,6 +28,9 @@ namespace BigBooks.API.Entities
 
         [Required]
         public int StockQuantity { get; set; }
+
+        [Required]
+        public Guid Isbn { get; set; }
 
         public IList<BookReview> Reviews { get; set; } = new List<BookReview>();
     }

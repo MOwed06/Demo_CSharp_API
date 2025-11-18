@@ -122,9 +122,10 @@ namespace BigBooks.UnitTest.ProviderTests
             // act
             var response = _purchasesProvider.PurchaseBooks(CUSTOMER_EMAIL, purchaseDto);
 
+            // TODO ~ fix this
             var observedUser = _ctx.AppUsers
                 .AsNoTracking()
-                .Include(u => u.BookPurchases)
+                //.Include(u => u.BookPurchases)
                 .Single(u => u.Key == response.Key.Value);
 
             var observedBook = _ctx.Books
@@ -132,7 +133,8 @@ namespace BigBooks.UnitTest.ProviderTests
                 .Single(b => b.Key == bookKey);
 
             // assert
-            var obsUserBookKeys = observedUser.BookPurchases
+            // TODO ~ fix this
+            var obsUserBookKeys = observedUser.Transactions
                 .Select(u => u.BookKey)
                 .ToHashSet();
            

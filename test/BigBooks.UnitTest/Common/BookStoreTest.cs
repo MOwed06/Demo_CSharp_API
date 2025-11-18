@@ -23,8 +23,9 @@ namespace BigBooks.UnitTest.Common
 
         protected void InitializeDatabase(List<Book>? extraBooks = null,
             List<BookReview>? extraBookReviews = null,
-            List<AppUser>? extraAppUsers = null,
-            List<BookPurchase>? extraBookPurchases = null)
+            List<AppUser>? extraAppUsers = null)
+            // TODO ~ fix this
+            //List<BookPurchase>? extraBookPurchases = null)
         {
             // two books
             var books = new List<Book>
@@ -109,36 +110,36 @@ namespace BigBooks.UnitTest.Common
                 users.AddRange(extraAppUsers);
             }
 
-            // two book purchases for user 1
-            var bookPurchases = new List<BookPurchase>
-            {
-                new BookPurchase
-                {
-                    Key = 1,
-                    PurchaseDate = DateTime.Parse("2025-03-15").Date,
-                    UserKey = 1,
-                    BookKey = 1,
-                    PurchaseQuantity = 2
-                },
-                new BookPurchase
-                {
-                    Key = 2,
-                    PurchaseDate = DateTime.Parse("2025-03-16").Date,
-                    UserKey = 1,
-                    BookKey = 2,
-                    PurchaseQuantity = 1
-                }
-            };
+            //// two book purchases for user 1
+            //var bookPurchases = new List<BookPurchase>
+            //{
+            //    new BookPurchase
+            //    {
+            //        Key = 1,
+            //        PurchaseDate = DateTime.Parse("2025-03-15").Date,
+            //        UserKey = 1,
+            //        BookKey = 1,
+            //        PurchaseQuantity = 2
+            //    },
+            //    new BookPurchase
+            //    {
+            //        Key = 2,
+            //        PurchaseDate = DateTime.Parse("2025-03-16").Date,
+            //        UserKey = 1,
+            //        BookKey = 2,
+            //        PurchaseQuantity = 1
+            //    }
+            //};
 
-            if (extraBookPurchases != null)
-            {
-                bookPurchases.AddRange(extraBookPurchases);
-            }
+            //if (extraBookPurchases != null)
+            //{
+            //    bookPurchases.AddRange(extraBookPurchases);
+            //}
 
             _ctx.Books.AddRange(books);
             _ctx.BookReviews.AddRange(bookReviews);
             _ctx.AppUsers.AddRange(users);
-            _ctx.BookPurchases.AddRange(bookPurchases);
+            //_ctx.BookPurchases.AddRange(bookPurchases);
             _ctx.SaveChanges();
         }
 

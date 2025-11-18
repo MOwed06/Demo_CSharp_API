@@ -15,7 +15,7 @@ namespace BigBooks.API.Providers
 
             var appUser = ctx.AppUsers
                 .AsNoTracking()
-                .Include(u => u.BookPurchases)
+                .Include(u => u.Transactions)
                 .SingleOrDefault(u => u.Key == key);
 
             if (appUser == null)
@@ -24,7 +24,8 @@ namespace BigBooks.API.Providers
             }
 
             // use hashset to prohibit duplicate entries
-            var userBookKeys = appUser.BookPurchases
+            var userBookKeys = appUser.Transactions
+                .Where(u => u.BookKey != null)
                 .Select(u => u.BookKey)
                 .ToHashSet();
 
@@ -50,7 +51,7 @@ namespace BigBooks.API.Providers
 
             var appUsers = ctx.AppUsers
                 .AsNoTracking()
-                .Include(u => u.BookPurchases)
+                .Include(u => u.Transactions)
                 .ToList();
 
             return appUsers
@@ -60,7 +61,9 @@ namespace BigBooks.API.Providers
                     UserEmail = u.UserEmail,
                     Role = u.Role.ToString(),
                     Wallet = u.Wallet.ToString("C"),
-                    BookCount = u.BookPurchases.Count()
+                    // TODO ~ fix this
+                    //BookCount = u.BookPurchases.Count()
+                    BookCount = 0
                 })
                 .ToList();
         }
@@ -102,7 +105,7 @@ namespace BigBooks.API.Providers
                 Password = dto.Password,
                 Wallet = dto.Wallet,
                 Role = dto.Role,
-                BookPurchases = new List<BookPurchase>()
+                Transactions = new List<AccountTransaction>()
             };
 
             ctx.AppUsers.Add(nextUser);

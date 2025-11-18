@@ -11,14 +11,123 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BigBooks.API.Migrations
 {
     [DbContext(typeof(BigBookDbContext))]
-    [Migration("20251112112857_NewDbSchema")]
-    partial class NewDbSchema
+    [Migration("20251118213011_RestructureAccountTransaction")]
+    partial class RestructureAccountTransaction
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.21");
+
+            modelBuilder.Entity("BigBooks.API.Entities.AccountTransaction", b =>
+                {
+                    b.Property<int>("Key")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("BookKey")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("PurchaseQuantity")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<decimal>("TransactionAmount")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("TransactionConfirmation")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("TransactionDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("UserKey")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Key");
+
+                    b.HasIndex("UserKey");
+
+                    b.ToTable("Transactions");
+
+                    b.HasData(
+                        new
+                        {
+                            Key = 1,
+                            BookKey = 1,
+                            PurchaseQuantity = 1,
+                            TransactionAmount = -17.23m,
+                            TransactionConfirmation = new Guid("962b4f1a-7520-4392-bfa7-11bea52517e8"),
+                            TransactionDate = new DateTime(2025, 3, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            UserKey = 4
+                        },
+                        new
+                        {
+                            Key = 2,
+                            TransactionAmount = 50.00m,
+                            TransactionConfirmation = new Guid("db9b9784-ca26-4869-9a84-af2de7886f00"),
+                            TransactionDate = new DateTime(2025, 3, 16, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            UserKey = 4
+                        },
+                        new
+                        {
+                            Key = 3,
+                            BookKey = 3,
+                            PurchaseQuantity = 1,
+                            TransactionAmount = -13.91m,
+                            TransactionConfirmation = new Guid("962b4f1a-7520-4392-bfa7-11bea52517e8"),
+                            TransactionDate = new DateTime(2025, 3, 17, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            UserKey = 4
+                        },
+                        new
+                        {
+                            Key = 4,
+                            BookKey = 2,
+                            PurchaseQuantity = 3,
+                            TransactionAmount = -33.21m,
+                            TransactionConfirmation = new Guid("491adfcb-d596-4b46-8d6c-c395e8ec3611"),
+                            TransactionDate = new DateTime(2025, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            UserKey = 5
+                        },
+                        new
+                        {
+                            Key = 5,
+                            BookKey = 8,
+                            PurchaseQuantity = 2,
+                            TransactionAmount = -16.71m,
+                            TransactionConfirmation = new Guid("10a61e73-fada-472a-9589-3d784d190264"),
+                            TransactionDate = new DateTime(2025, 4, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            UserKey = 5
+                        },
+                        new
+                        {
+                            Key = 6,
+                            BookKey = 9,
+                            PurchaseQuantity = 1,
+                            TransactionAmount = -9.07m,
+                            TransactionConfirmation = new Guid("3a3532de-cdb2-47b5-add3-209b4ba0991e"),
+                            TransactionDate = new DateTime(2025, 4, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            UserKey = 5
+                        },
+                        new
+                        {
+                            Key = 7,
+                            BookKey = 9,
+                            PurchaseQuantity = 1,
+                            TransactionAmount = -9.17m,
+                            TransactionConfirmation = new Guid("69e93a9d-9d39-49fc-967a-4f0a3916a0ba"),
+                            TransactionDate = new DateTime(2025, 6, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            UserKey = 5
+                        },
+                        new
+                        {
+                            Key = 8,
+                            TransactionAmount = 75.00m,
+                            TransactionConfirmation = new Guid("1a6b39cb-131a-4b34-aa98-1c3e00327302"),
+                            TransactionDate = new DateTime(2025, 6, 4, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            UserKey = 5
+                        });
+                });
 
             modelBuilder.Entity("BigBooks.API.Entities.AppUser", b =>
                 {
@@ -267,83 +376,6 @@ namespace BigBooks.API.Migrations
                         });
                 });
 
-            modelBuilder.Entity("BigBooks.API.Entities.BookPurchase", b =>
-                {
-                    b.Property<int>("Key")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("BookKey")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("PurchaseDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("PurchaseQuantity")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("UserKey")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Key");
-
-                    b.HasIndex("BookKey");
-
-                    b.HasIndex("UserKey");
-
-                    b.ToTable("BookPurchases");
-
-                    b.HasData(
-                        new
-                        {
-                            Key = 1,
-                            BookKey = 1,
-                            PurchaseDate = new DateTime(2025, 3, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            PurchaseQuantity = 1,
-                            UserKey = 4
-                        },
-                        new
-                        {
-                            Key = 2,
-                            BookKey = 3,
-                            PurchaseDate = new DateTime(2025, 3, 16, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            PurchaseQuantity = 1,
-                            UserKey = 4
-                        },
-                        new
-                        {
-                            Key = 3,
-                            BookKey = 2,
-                            PurchaseDate = new DateTime(2025, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            PurchaseQuantity = 3,
-                            UserKey = 5
-                        },
-                        new
-                        {
-                            Key = 4,
-                            BookKey = 8,
-                            PurchaseDate = new DateTime(2025, 4, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            PurchaseQuantity = 2,
-                            UserKey = 5
-                        },
-                        new
-                        {
-                            Key = 5,
-                            BookKey = 9,
-                            PurchaseDate = new DateTime(2025, 4, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            PurchaseQuantity = 1,
-                            UserKey = 5
-                        },
-                        new
-                        {
-                            Key = 6,
-                            BookKey = 9,
-                            PurchaseDate = new DateTime(2025, 6, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            PurchaseQuantity = 1,
-                            UserKey = 5
-                        });
-                });
-
             modelBuilder.Entity("BigBooks.API.Entities.BookReview", b =>
                 {
                     b.Property<int>("Key")
@@ -478,23 +510,15 @@ namespace BigBooks.API.Migrations
                         });
                 });
 
-            modelBuilder.Entity("BigBooks.API.Entities.BookPurchase", b =>
+            modelBuilder.Entity("BigBooks.API.Entities.AccountTransaction", b =>
                 {
-                    b.HasOne("BigBooks.API.Entities.Book", "Book")
-                        .WithMany()
-                        .HasForeignKey("BookKey")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("BigBooks.API.Entities.AppUser", "AppUser")
-                        .WithMany("BookPurchases")
+                        .WithMany("Transactions")
                         .HasForeignKey("UserKey")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("AppUser");
-
-                    b.Navigation("Book");
                 });
 
             modelBuilder.Entity("BigBooks.API.Entities.BookReview", b =>
@@ -516,7 +540,7 @@ namespace BigBooks.API.Migrations
 
             modelBuilder.Entity("BigBooks.API.Entities.AppUser", b =>
                 {
-                    b.Navigation("BookPurchases");
+                    b.Navigation("Transactions");
                 });
 
             modelBuilder.Entity("BigBooks.API.Entities.Book", b =>

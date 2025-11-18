@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace BigBooks.API.Migrations
 {
     /// <inheritdoc />
-    public partial class NewDbSchema : Migration
+    public partial class RestructureAccountTransaction : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -38,11 +38,11 @@ namespace BigBooks.API.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     Title = table.Column<string>(type: "TEXT", maxLength: 150, nullable: false),
                     Author = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
-                    Isbn = table.Column<Guid>(type: "TEXT", nullable: false),
                     Description = table.Column<string>(type: "TEXT", maxLength: 500, nullable: true),
                     Genre = table.Column<int>(type: "INTEGER", nullable: false),
                     Price = table.Column<decimal>(type: "TEXT", nullable: false),
-                    StockQuantity = table.Column<int>(type: "INTEGER", nullable: false)
+                    StockQuantity = table.Column<int>(type: "INTEGER", nullable: false),
+                    Isbn = table.Column<Guid>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -50,29 +50,25 @@ namespace BigBooks.API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "BookPurchases",
+                name: "Transactions",
                 columns: table => new
                 {
                     Key = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    PurchaseDate = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    PurchaseQuantity = table.Column<int>(type: "INTEGER", nullable: false),
+                    TransactionDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    TransactionAmount = table.Column<decimal>(type: "TEXT", nullable: false),
+                    TransactionConfirmation = table.Column<Guid>(type: "TEXT", nullable: false),
                     UserKey = table.Column<int>(type: "INTEGER", nullable: false),
-                    BookKey = table.Column<int>(type: "INTEGER", nullable: false)
+                    BookKey = table.Column<int>(type: "INTEGER", nullable: true),
+                    PurchaseQuantity = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_BookPurchases", x => x.Key);
+                    table.PrimaryKey("PK_Transactions", x => x.Key);
                     table.ForeignKey(
-                        name: "FK_BookPurchases_AppUsers_UserKey",
+                        name: "FK_Transactions_AppUsers_UserKey",
                         column: x => x.UserKey,
                         principalTable: "AppUsers",
-                        principalColumn: "Key",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_BookPurchases_Books_BookKey",
-                        column: x => x.BookKey,
-                        principalTable: "Books",
                         principalColumn: "Key",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -137,19 +133,6 @@ namespace BigBooks.API.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "BookPurchases",
-                columns: new[] { "Key", "BookKey", "PurchaseDate", "PurchaseQuantity", "UserKey" },
-                values: new object[,]
-                {
-                    { 1, 1, new DateTime(2025, 3, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, 4 },
-                    { 2, 3, new DateTime(2025, 3, 16, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, 4 },
-                    { 3, 2, new DateTime(2025, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 3, 5 },
-                    { 4, 8, new DateTime(2025, 4, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, 5 },
-                    { 5, 9, new DateTime(2025, 4, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, 5 },
-                    { 6, 9, new DateTime(2025, 6, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, 5 }
-                });
-
-            migrationBuilder.InsertData(
                 table: "BookReviews",
                 columns: new[] { "Key", "BookKey", "Description", "ReviewDate", "Score", "UserKey" },
                 values: new object[,]
@@ -169,15 +152,20 @@ namespace BigBooks.API.Migrations
                     { 13, 7, "This book was long and boring.", new DateTime(2024, 5, 18, 0, 0, 0, 0, DateTimeKind.Unspecified), 5, 5 }
                 });
 
-            migrationBuilder.CreateIndex(
-                name: "IX_BookPurchases_BookKey",
-                table: "BookPurchases",
-                column: "BookKey");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_BookPurchases_UserKey",
-                table: "BookPurchases",
-                column: "UserKey");
+            migrationBuilder.InsertData(
+                table: "Transactions",
+                columns: new[] { "Key", "BookKey", "PurchaseQuantity", "TransactionAmount", "TransactionConfirmation", "TransactionDate", "UserKey" },
+                values: new object[,]
+                {
+                    { 1, 1, 1, -17.23m, new Guid("962b4f1a-7520-4392-bfa7-11bea52517e8"), new DateTime(2025, 3, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), 4 },
+                    { 2, null, null, 50.00m, new Guid("db9b9784-ca26-4869-9a84-af2de7886f00"), new DateTime(2025, 3, 16, 0, 0, 0, 0, DateTimeKind.Unspecified), 4 },
+                    { 3, 3, 1, -13.91m, new Guid("962b4f1a-7520-4392-bfa7-11bea52517e8"), new DateTime(2025, 3, 17, 0, 0, 0, 0, DateTimeKind.Unspecified), 4 },
+                    { 4, 2, 3, -33.21m, new Guid("491adfcb-d596-4b46-8d6c-c395e8ec3611"), new DateTime(2025, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 5 },
+                    { 5, 8, 2, -16.71m, new Guid("10a61e73-fada-472a-9589-3d784d190264"), new DateTime(2025, 4, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), 5 },
+                    { 6, 9, 1, -9.07m, new Guid("3a3532de-cdb2-47b5-add3-209b4ba0991e"), new DateTime(2025, 4, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), 5 },
+                    { 7, 9, 1, -9.17m, new Guid("69e93a9d-9d39-49fc-967a-4f0a3916a0ba"), new DateTime(2025, 6, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), 5 },
+                    { 8, null, null, 75.00m, new Guid("1a6b39cb-131a-4b34-aa98-1c3e00327302"), new DateTime(2025, 6, 4, 0, 0, 0, 0, DateTimeKind.Unspecified), 5 }
+                });
 
             migrationBuilder.CreateIndex(
                 name: "IX_BookReviews_BookKey",
@@ -188,22 +176,27 @@ namespace BigBooks.API.Migrations
                 name: "IX_BookReviews_UserKey",
                 table: "BookReviews",
                 column: "UserKey");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Transactions_UserKey",
+                table: "Transactions",
+                column: "UserKey");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "BookPurchases");
-
-            migrationBuilder.DropTable(
                 name: "BookReviews");
 
             migrationBuilder.DropTable(
-                name: "AppUsers");
+                name: "Transactions");
 
             migrationBuilder.DropTable(
                 name: "Books");
+
+            migrationBuilder.DropTable(
+                name: "AppUsers");
         }
     }
 }

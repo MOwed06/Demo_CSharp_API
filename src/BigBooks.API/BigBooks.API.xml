@@ -142,16 +142,16 @@
             UserEmail is user id for API
             </summary>
         </member>
-        <member name="T:BigBooks.API.Migrations.NewDbSchema">
+        <member name="T:BigBooks.API.Migrations.RestructureAccountTransaction">
             <inheritdoc />
         </member>
-        <member name="M:BigBooks.API.Migrations.NewDbSchema.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+        <member name="M:BigBooks.API.Migrations.RestructureAccountTransaction.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
             <inheritdoc />
         </member>
-        <member name="M:BigBooks.API.Migrations.NewDbSchema.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+        <member name="M:BigBooks.API.Migrations.RestructureAccountTransaction.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
             <inheritdoc />
         </member>
-        <member name="M:BigBooks.API.Migrations.NewDbSchema.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+        <member name="M:BigBooks.API.Migrations.RestructureAccountTransaction.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
         <member name="T:BigBooks.API.Models.BookDetailsDto">
