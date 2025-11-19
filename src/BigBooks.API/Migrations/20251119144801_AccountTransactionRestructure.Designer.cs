@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BigBooks.API.Migrations
 {
     [DbContext(typeof(BigBookDbContext))]
-    [Migration("20251118213011_RestructureAccountTransaction")]
-    partial class RestructureAccountTransaction
+    [Migration("20251119144801_AccountTransactionRestructure")]
+    partial class AccountTransactionRestructure
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -45,6 +45,8 @@ namespace BigBooks.API.Migrations
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Key");
+
+                    b.HasIndex("BookKey");
 
                     b.HasIndex("UserKey");
 
@@ -512,6 +514,10 @@ namespace BigBooks.API.Migrations
 
             modelBuilder.Entity("BigBooks.API.Entities.AccountTransaction", b =>
                 {
+                    b.HasOne("BigBooks.API.Entities.Book", "Book")
+                        .WithMany()
+                        .HasForeignKey("BookKey");
+
                     b.HasOne("BigBooks.API.Entities.AppUser", "AppUser")
                         .WithMany("Transactions")
                         .HasForeignKey("UserKey")
@@ -519,6 +525,8 @@ namespace BigBooks.API.Migrations
                         .IsRequired();
 
                     b.Navigation("AppUser");
+
+                    b.Navigation("Book");
                 });
 
             modelBuilder.Entity("BigBooks.API.Entities.BookReview", b =>

@@ -97,7 +97,7 @@ namespace BigBooks.API.Controllers
 
                 if (response.Key == null)
                 {
-                    throw new Exception(response.Error);
+                    return BadRequest(response.Error);
                 }
 
                 return GetAccountInfo(response.Key.Value);

@@ -1,5 +1,4 @@
-﻿using BigBooks.API.Core;
-using BigBooks.API.Entities;
+﻿using BigBooks.API.Entities;
 using BigBooks.API.Interfaces;
 using BigBooks.API.Models;
 using Microsoft.EntityFrameworkCore;
@@ -66,6 +65,38 @@ namespace BigBooks.API.Providers
                 TransactionConfirmation = dto.TransactionConfirmation,
                 BookKey = dto.BookKey,
                 PurchaseQuantity = dto.RequestedQuantity
+            });
+
+            ctx.SaveChanges();
+
+            return new ProviderKeyResponse(currentUser.Key, string.Empty);
+        }
+
+        public ProviderKeyResponse Deposit(string currentUserValue, AccountDepositDto dto)
+        {
+            logger.LogDebug($"Deposit, user: {currentUserValue}, Amount: {dto.Amount}");
+
+            var userMatch = usersProvider.GetUserKeyFromToken(currentUserValue);
+
+            if (!userMatch.Key.HasValue)
+            {
+                // no match to user
+                return new ProviderKeyResponse(null, userMatch.Error);
+            }
+
+            var currentUser = ctx.AppUsers
+                .Include(u => u.Transactions)
+                .Single(u => u.Key == userMatch.Key);
+
+            currentUser.Wallet += dto.Amount;
+
+            currentUser.Transactions.Add(new AccountTransaction
+            {
+                TransactionDate = DateTime.Now,
+                TransactionConfirmation = dto.Confirmation,
+                TransactionAmount = dto.Amount,
+                BookKey = null,
+                PurchaseQuantity = null
             });
 
             ctx.SaveChanges();

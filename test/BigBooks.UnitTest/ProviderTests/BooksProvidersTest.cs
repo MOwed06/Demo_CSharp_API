@@ -128,19 +128,18 @@ namespace BigBooks.UnitTest.ProviderTests
         }
 
         [Theory]
-        [InlineData(NEW_BOOK_GUID, null)]  // valid Guid, no error expected
         [InlineData(BOOK2_GUID, "Duplicate ISBN")]
-        [InlineData("80F4-403C-B7E5-860BA52B8F99", "invalid ISBN value")]
-        public void BookAddDtoGuidCheck(string isbn, string expectedError)
+        [InlineData(NEW_BOOK_GUID, null)]
+        public void BookAddDtoGuidCheck(string isbnValue, string expectedError)
         {
             // arrange
             InitializeDatabase();
-            // TODO ~ fix this
+
             var addDto = new BookAddUpdateDto
             {
                 Title = "Some Cool Idea",
                 Author = "Some Person",
-                //Isbn = isbn,
+                Isbn = Guid.Parse(isbnValue),
                 Description = null,
                 Genre = Genre.Childrens,
                 Price = 17.63m,
@@ -186,12 +185,9 @@ namespace BigBooks.UnitTest.ProviderTests
 
         [Theory]
         [InlineData(NEW_BOOK_GUID, null)] // overwrite isbn with valid valid
-        [InlineData(null, "The Isbn field is required.")]
-        [InlineData("", "The Isbn field is required.")]
-        [InlineData("A", "invalid ISBN value")]
         [InlineData(BOOK1_GUID, null)] // overwrite isbn with original value
         [InlineData(BOOK2_GUID, "Duplicate ISBN")]
-        [InlineData("4BB8-8486-07AE475D80B5", "invalid ISBN value")]
+        [InlineData("00000000-0000-0000-0000-000000000000", "invalid ISBN value")]
         public void BookUpdateDtoIsbn(string updateValue, string expectedError)
         {
             const int BOOK_KEY = 1;
@@ -199,11 +195,12 @@ namespace BigBooks.UnitTest.ProviderTests
             // arrange
             InitializeDatabase();
 
-            // TODO ~ fix this
-            //var patchDoc = new JsonPatchDocument<BookAddUpdateDto>();
-            //patchDoc.Replace(p => p.Isbn, updateValue);
+            var updateGuid = Guid.Parse(updateValue);
 
-            //ExecuteUpdateTest(BOOK_KEY, patchDoc, expectedError);
+            var patchDoc = new JsonPatchDocument<BookAddUpdateDto>();
+            patchDoc.Replace(p => p.Isbn, updateGuid);
+
+            ExecuteUpdateTest(BOOK_KEY, patchDoc, expectedError);
         }
 
         private void ExecuteUpdateTest(int bookKey, JsonPatchDocument<BookAddUpdateDto> patchDoc, string expectedError)

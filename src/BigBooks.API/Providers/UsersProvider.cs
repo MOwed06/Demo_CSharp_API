@@ -54,7 +54,7 @@ namespace BigBooks.API.Providers
 
             return userTransactions.Select(t => new TransactionOverviewDto
             {
-                TransactionKey = t.UserKey,
+                TransactionKey = t.Key,
                 TransactionDate = t.TransactionDate,
                 TransactionAmount = t.TransactionAmount,
                 TransactionType = (t.TransactionAmount < 0)
@@ -62,7 +62,9 @@ namespace BigBooks.API.Providers
                     : TransactionType.Deposit.ToString(),
                 PurchaseBook = t.Book?.Title,
                 PurchaseQuantity = t.PurchaseQuantity
-            }).ToList();
+            })
+            .OrderByDescending(t => t.TransactionDate)
+            .ToList();
         }
 
         public List<UserOverviewDto> GetUsers()

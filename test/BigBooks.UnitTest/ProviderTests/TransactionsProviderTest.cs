@@ -9,9 +9,9 @@ using Moq;
 
 namespace BigBooks.UnitTest.ProviderTests
 {
-    public class PurchasesProviderTest : BookStoreTest
+    public class TransactionsProviderTest : BookStoreTest
     {
-        private readonly TransactionsProvider _purchasesProvider;
+        private readonly TransactionsProvider _transactionsPrv;
 
         private const int CUSTOMER_KEY = 3;
         private const string CUSTOMER_EMAIL = "Zachary.Zimmer@demo.com";
@@ -20,7 +20,7 @@ namespace BigBooks.UnitTest.ProviderTests
         private const int RARE_BOOK_KEY = 3;
         private const int PRE_RELEASE_BOOK_KEY = 4;
 
-        public PurchasesProviderTest()
+        public TransactionsProviderTest()
         {
             var mockPurchasePrvLogger = new Mock<ILogger<TransactionsProvider>>();
             var mockBookPrvLogger = new Mock<ILogger<BooksProvider>>();
@@ -29,7 +29,7 @@ namespace BigBooks.UnitTest.ProviderTests
             var booksPrv = new BooksProvider(_ctx, mockBookPrvLogger.Object);
             var usersPrv = new UsersProvider(_ctx, mockUsersPrvLogger.Object);
 
-            _purchasesProvider = new TransactionsProvider(
+            _transactionsPrv = new TransactionsProvider(
                 ctx: _ctx,
                 booksProvider: booksPrv,
                 usersProvider: usersPrv,
@@ -98,7 +98,7 @@ namespace BigBooks.UnitTest.ProviderTests
             };
 
             // act
-            var response = _purchasesProvider.PurchaseBooks(CUSTOMER_EMAIL, purchaseDto);
+            var response = _transactionsPrv.PurchaseBooks(CUSTOMER_EMAIL, purchaseDto);
 
             // assert
             Assert.Contains(expectedError, response.Error);
@@ -120,12 +120,11 @@ namespace BigBooks.UnitTest.ProviderTests
             };
 
             // act
-            var response = _purchasesProvider.PurchaseBooks(CUSTOMER_EMAIL, purchaseDto);
+            var response = _transactionsPrv.PurchaseBooks(CUSTOMER_EMAIL, purchaseDto);
 
-            // TODO ~ fix this
             var observedUser = _ctx.AppUsers
                 .AsNoTracking()
-                //.Include(u => u.BookPurchases)
+                .Include(u => u.Transactions)
                 .Single(u => u.Key == response.Key.Value);
 
             var observedBook = _ctx.Books
@@ -133,8 +132,8 @@ namespace BigBooks.UnitTest.ProviderTests
                 .Single(b => b.Key == bookKey);
 
             // assert
-            // TODO ~ fix this
             var obsUserBookKeys = observedUser.Transactions
+                .Where(u => u.BookKey != null)
                 .Select(u => u.BookKey)
                 .ToHashSet();
            

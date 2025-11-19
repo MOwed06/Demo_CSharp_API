@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace BigBooks.API.Migrations
 {
     /// <inheritdoc />
-    public partial class RestructureAccountTransaction : Migration
+    public partial class AccountTransactionRestructure : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -50,30 +50,6 @@ namespace BigBooks.API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Transactions",
-                columns: table => new
-                {
-                    Key = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    TransactionDate = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    TransactionAmount = table.Column<decimal>(type: "TEXT", nullable: false),
-                    TransactionConfirmation = table.Column<Guid>(type: "TEXT", nullable: false),
-                    UserKey = table.Column<int>(type: "INTEGER", nullable: false),
-                    BookKey = table.Column<int>(type: "INTEGER", nullable: true),
-                    PurchaseQuantity = table.Column<int>(type: "INTEGER", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Transactions", x => x.Key);
-                    table.ForeignKey(
-                        name: "FK_Transactions_AppUsers_UserKey",
-                        column: x => x.UserKey,
-                        principalTable: "AppUsers",
-                        principalColumn: "Key",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "BookReviews",
                 columns: table => new
                 {
@@ -99,6 +75,35 @@ namespace BigBooks.API.Migrations
                         principalTable: "Books",
                         principalColumn: "Key",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Transactions",
+                columns: table => new
+                {
+                    Key = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    TransactionDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    TransactionAmount = table.Column<decimal>(type: "TEXT", nullable: false),
+                    TransactionConfirmation = table.Column<Guid>(type: "TEXT", nullable: false),
+                    UserKey = table.Column<int>(type: "INTEGER", nullable: false),
+                    BookKey = table.Column<int>(type: "INTEGER", nullable: true),
+                    PurchaseQuantity = table.Column<int>(type: "INTEGER", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Transactions", x => x.Key);
+                    table.ForeignKey(
+                        name: "FK_Transactions_AppUsers_UserKey",
+                        column: x => x.UserKey,
+                        principalTable: "AppUsers",
+                        principalColumn: "Key",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Transactions_Books_BookKey",
+                        column: x => x.BookKey,
+                        principalTable: "Books",
+                        principalColumn: "Key");
                 });
 
             migrationBuilder.InsertData(
@@ -178,6 +183,11 @@ namespace BigBooks.API.Migrations
                 column: "UserKey");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Transactions_BookKey",
+                table: "Transactions",
+                column: "BookKey");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Transactions_UserKey",
                 table: "Transactions",
                 column: "UserKey");
@@ -193,10 +203,10 @@ namespace BigBooks.API.Migrations
                 name: "Transactions");
 
             migrationBuilder.DropTable(
-                name: "Books");
+                name: "AppUsers");
 
             migrationBuilder.DropTable(
-                name: "AppUsers");
+                name: "Books");
         }
     }
 }
