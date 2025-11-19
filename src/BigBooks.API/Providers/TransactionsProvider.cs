@@ -1,14 +1,15 @@
-﻿using BigBooks.API.Entities;
+﻿using BigBooks.API.Core;
+using BigBooks.API.Entities;
 using BigBooks.API.Interfaces;
 using BigBooks.API.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace BigBooks.API.Providers
 {
-    public class PurchasesProvider(BigBookDbContext ctx,
+    public class TransactionsProvider(BigBookDbContext ctx,
         IBooksProvider booksProvider,
         IUsersProvider usersProvider,
-        ILogger<PurchasesProvider> logger) : BaseProvider, IPurchasesProvider
+        ILogger<TransactionsProvider> logger) : BaseProvider, ITransactionsProvider
     {
         /// <summary>
         /// extract userKey from claim
@@ -58,13 +59,14 @@ namespace BigBooks.API.Providers
             // valid purchase, stock available
             currentUser.Wallet -= purchaseAmount;
 
-            // TODO ~ fix this!
-            //currentUser.BookPurchases.Add(new BookPurchase
-            //{
-            //    PurchaseDate = DateTime.Now,
-            //    PurchaseQuantity = dto.RequestedQuantity,
-            //    BookKey = dto.BookKey
-            //});
+            currentUser.Transactions.Add(new AccountTransaction
+            {
+                TransactionAmount = -purchaseAmount,
+                TransactionDate = DateTime.Now,
+                TransactionConfirmation = dto.TransactionConfirmation,
+                BookKey = dto.BookKey,
+                PurchaseQuantity = dto.RequestedQuantity
+            });
 
             ctx.SaveChanges();
 

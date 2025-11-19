@@ -57,7 +57,7 @@ namespace BigBooks.API.Controllers
         /// Requires authenticated user with Admin role
         /// </remarks>
         /// <returns>overview of each user</returns>
-        [HttpGet]
+        [HttpGet(Name = "GetAccountList")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public ActionResult<IEnumerable<UserOverviewDto>> GetAccounts()

@@ -1,8 +1,8 @@
-﻿using BigBooks.API.Entities;
+﻿using BigBooks.API.Core;
+using BigBooks.API.Entities;
 using BigBooks.API.Interfaces;
 using BigBooks.API.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace BigBooks.API.Providers
 {
@@ -41,8 +41,28 @@ namespace BigBooks.API.Providers
                 UserName = appUser.UserName,
                 Role = appUser.Role.ToString(),
                 Wallet = appUser.Wallet.ToString("C"),
-                Books = userBooks
+                Transactions = GetUserTransactions(key)
             };
+        }
+
+        private List<TransactionOverviewDto> GetUserTransactions(int userKey)
+        {
+            var userTransactions = ctx.Transactions.Where(t => t.UserKey == userKey)
+                .AsNoTracking()
+                .Include(t => t.Book)
+                .ToList();
+
+            return userTransactions.Select(t => new TransactionOverviewDto
+            {
+                TransactionKey = t.UserKey,
+                TransactionDate = t.TransactionDate,
+                TransactionAmount = t.TransactionAmount,
+                TransactionType = (t.TransactionAmount < 0)
+                    ? TransactionType.Purchase.ToString()
+                    : TransactionType.Deposit.ToString(),
+                PurchaseBook = t.Book?.Title,
+                PurchaseQuantity = t.PurchaseQuantity
+            }).ToList();
         }
 
         public List<UserOverviewDto> GetUsers()
@@ -60,10 +80,11 @@ namespace BigBooks.API.Providers
                     Key = u.Key,
                     UserEmail = u.UserEmail,
                     Role = u.Role.ToString(),
-                    Wallet = u.Wallet.ToString("C"),
-                    // TODO ~ fix this
-                    //BookCount = u.BookPurchases.Count()
-                    BookCount = 0
+                    BookCount = u.Transactions
+                        .Where(t => t.BookKey != null)
+                        .Select(t => t.BookKey)
+                        .Distinct()
+                        .Count()
                 })
                 .ToList();
         }
@@ -129,5 +150,7 @@ namespace BigBooks.API.Providers
 
             return new ProviderKeyResponse(appUser.Key, string.Empty);
         }
+
+
     }
 }

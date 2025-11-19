@@ -117,7 +117,7 @@
             <param name="patchDoc">list of changes</param>
             <returns></returns>
         </member>
-        <member name="M:BigBooks.API.Controllers.PurchasesController.PurchaseBooks(BigBooks.API.Models.PurchaseRequestDto)">
+        <member name="M:BigBooks.API.Controllers.TransactionsController.PurchaseBooks(BigBooks.API.Models.PurchaseRequestDto)">
             <summary>
             Purchase books for logged in user
             </summary>
@@ -175,7 +175,7 @@
             False if operation fail, stock unavailable
             </returns>
         </member>
-        <member name="M:BigBooks.API.Providers.PurchasesProvider.PurchaseBooks(System.String,BigBooks.API.Models.PurchaseRequestDto)">
+        <member name="M:BigBooks.API.Providers.TransactionsProvider.PurchaseBooks(System.String,BigBooks.API.Models.PurchaseRequestDto)">
             <summary>
             extract userKey from claim
             refer to AuthService.cs, GenerateToken(), user key embedded in token

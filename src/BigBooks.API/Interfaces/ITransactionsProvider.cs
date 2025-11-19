@@ -3,7 +3,7 @@ using BigBooks.API.Providers;
 
 namespace BigBooks.API.Interfaces
 {
-    public interface IPurchasesProvider
+    public interface ITransactionsProvider
     {
         ProviderKeyResponse PurchaseBooks(string currentUserKeyValue, PurchaseRequestDto dto);
     }

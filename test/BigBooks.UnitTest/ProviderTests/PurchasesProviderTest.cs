@@ -11,7 +11,7 @@ namespace BigBooks.UnitTest.ProviderTests
 {
     public class PurchasesProviderTest : BookStoreTest
     {
-        private readonly PurchasesProvider _purchasesProvider;
+        private readonly TransactionsProvider _purchasesProvider;
 
         private const int CUSTOMER_KEY = 3;
         private const string CUSTOMER_EMAIL = "Zachary.Zimmer@demo.com";
@@ -22,14 +22,14 @@ namespace BigBooks.UnitTest.ProviderTests
 
         public PurchasesProviderTest()
         {
-            var mockPurchasePrvLogger = new Mock<ILogger<PurchasesProvider>>();
+            var mockPurchasePrvLogger = new Mock<ILogger<TransactionsProvider>>();
             var mockBookPrvLogger = new Mock<ILogger<BooksProvider>>();
             var mockUsersPrvLogger = new Mock<ILogger<UsersProvider>>();
 
             var booksPrv = new BooksProvider(_ctx, mockBookPrvLogger.Object);
             var usersPrv = new UsersProvider(_ctx, mockUsersPrvLogger.Object);
 
-            _purchasesProvider = new PurchasesProvider(
+            _purchasesProvider = new TransactionsProvider(
                 ctx: _ctx,
                 booksProvider: booksPrv,
                 usersProvider: usersPrv,

@@ -24,7 +24,7 @@ builder.Services.AddDbContext<BigBookDbContext>(
 
 builder.Services.AddScoped<IUsersProvider, UsersProvider>();
 builder.Services.AddScoped<IBooksProvider, BooksProvider>();
-builder.Services.AddScoped<IPurchasesProvider, PurchasesProvider>();
+builder.Services.AddScoped<ITransactionsProvider, TransactionsProvider>();
 builder.Services.AddScoped<IBookReviewsProvider, BookReviewsProvider>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 

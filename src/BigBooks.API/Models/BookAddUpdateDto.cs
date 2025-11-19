@@ -35,14 +35,11 @@ namespace BigBooks.API.Models
         {
             var vResults = new List<ValidationResult>();
 
-            // TODO ~ fix this
-            //// isbn value must be valid guid
-            //var isValid = Guid.TryParse(Isbn, out _);
-
-            //if (!isValid)
-            //{
-            //    vResults.Add(new ValidationResult($"invalid ISBN value: {Isbn}"));
-            //}
+            // isbn value must be valid guid
+            if (Guid.Empty.Equals(Isbn))
+            {
+                vResults.Add(new ValidationResult($"invalid ISBN value: {Isbn}"));
+            }
 
             return vResults;
         }

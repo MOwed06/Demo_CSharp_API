@@ -96,12 +96,10 @@ namespace BigBooks.API.Providers
         {
             logger.LogDebug($"AddBook, {dto.Title}");
 
-            // TODO ~ fix this
-            //var isbnCheck = CheckIsbn(dto.Isbn, null);
-            //if (!isbnCheck.BookIsbn.HasValue)
-            //{
-            //    return new ProviderKeyResponse(null, isbnCheck.Error);
-            //}
+            if (IsDuplicateIsbn(dto.Isbn, null))
+            {
+                return new ProviderKeyResponse(null, $"Duplicate ISBN {dto.Isbn}");
+            }
 
             var addedBook = new Book
             {
@@ -133,7 +131,6 @@ namespace BigBooks.API.Providers
                 return new ProviderKeyResponse(null, $"Book key {key} not found");
             }
 
-            // TODO ~ fix this
             // transform from entity to dto
             var updateDto = new BookAddUpdateDto
             {
@@ -155,12 +152,10 @@ namespace BigBooks.API.Providers
                 return new ProviderKeyResponse(null, validationCheck.Error);
             }
 
-            // TODO ~ this this
-            //var isbnCheck = CheckIsbn(updateDto.Isbn, key);
-            //if (!isbnCheck.BookIsbn.HasValue)
-            //{
-            //    return new ProviderKeyResponse(null, isbnCheck.Error);
-            //}
+            if (IsDuplicateIsbn(updateDto.Isbn, key))
+            {
+                return new ProviderKeyResponse(null, $"Duplicate ISBN {updateDto.Isbn}");
+            }
 
             var modifiedBook = ctx.Books.Single(b => b.Key == key);
             modifiedBook.Title = updateDto.Title;
@@ -208,21 +203,10 @@ namespace BigBooks.API.Providers
                 : null;
         }
 
-        private (Guid? BookIsbn, string Error) CheckIsbn(string inputIsbn, int? existingBookKey)
+        private bool IsDuplicateIsbn(Guid isbnValue, int? existingBookKey)
         {
-            var bookIsbn = Guid.Empty;
-
-            if (!Guid.TryParse(inputIsbn, out bookIsbn))
-            {
-                return (null, $"invalid ISBN value {inputIsbn}");
-            }
-
-            if (ctx.Books.Where(b => b.Key != existingBookKey).Any(b => b.Isbn == bookIsbn))
-            {
-                return (null, $"Duplicate ISBN {inputIsbn}");
-            }
-
-            return (bookIsbn, string.Empty);
+            // for update request, exclude existing isbn in duplicate check
+            return ctx.Books.Where(b => b.Key != existingBookKey).Any(b => b.Isbn == isbnValue);
         }
     }
 }

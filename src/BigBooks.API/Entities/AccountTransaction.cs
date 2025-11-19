@@ -22,6 +22,8 @@ namespace BigBooks.API.Entities
         public AppUser? AppUser { get; set; }
         public int UserKey { get; set; }
 
+        [ForeignKey("BookKey")]
+        public Book? Book { get; set; }
         public int? BookKey { get; set; }
         public int? PurchaseQuantity { get; set; }
     }
