@@ -1,8 +1,8 @@
-﻿using BigBooks.API.Entities;
+﻿using BigBooks.API.Core;
+using BigBooks.API.Entities;
 using BigBooks.API.Interfaces;
 using BigBooks.API.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace BigBooks.API.Providers
 {
@@ -15,7 +15,7 @@ namespace BigBooks.API.Providers
 
             var appUser = ctx.AppUsers
                 .AsNoTracking()
-                .Include(u => u.BookPurchases)
+                .Include(u => u.Transactions)
                 .SingleOrDefault(u => u.Key == key);
 
             if (appUser == null)
@@ -24,7 +24,8 @@ namespace BigBooks.API.Providers
             }
 
             // use hashset to prohibit duplicate entries
-            var userBookKeys = appUser.BookPurchases
+            var userBookKeys = appUser.Transactions
+                .Where(u => u.BookKey != null)
                 .Select(u => u.BookKey)
                 .ToHashSet();
 
@@ -40,8 +41,30 @@ namespace BigBooks.API.Providers
                 UserName = appUser.UserName,
                 Role = appUser.Role.ToString(),
                 Wallet = appUser.Wallet.ToString("C"),
-                Books = userBooks
+                Transactions = GetUserTransactions(key)
             };
+        }
+
+        private List<TransactionOverviewDto> GetUserTransactions(int userKey)
+        {
+            var userTransactions = ctx.Transactions.Where(t => t.UserKey == userKey)
+                .AsNoTracking()
+                .Include(t => t.Book)
+                .ToList();
+
+            return userTransactions.Select(t => new TransactionOverviewDto
+            {
+                TransactionKey = t.Key,
+                TransactionDate = t.TransactionDate,
+                TransactionAmount = t.TransactionAmount,
+                TransactionType = (t.TransactionAmount < 0)
+                    ? TransactionType.Purchase.ToString()
+                    : TransactionType.Deposit.ToString(),
+                PurchaseBook = t.Book?.Title,
+                PurchaseQuantity = t.PurchaseQuantity
+            })
+            .OrderByDescending(t => t.TransactionDate)
+            .ToList();
         }
 
         public List<UserOverviewDto> GetUsers()
@@ -50,7 +73,7 @@ namespace BigBooks.API.Providers
 
             var appUsers = ctx.AppUsers
                 .AsNoTracking()
-                .Include(u => u.BookPurchases)
+                .Include(u => u.Transactions)
                 .ToList();
 
             return appUsers
@@ -59,8 +82,11 @@ namespace BigBooks.API.Providers
                     Key = u.Key,
                     UserEmail = u.UserEmail,
                     Role = u.Role.ToString(),
-                    Wallet = u.Wallet.ToString("C"),
-                    BookCount = u.BookPurchases.Count()
+                    BookCount = u.Transactions
+                        .Where(t => t.BookKey != null)
+                        .Select(t => t.BookKey)
+                        .Distinct()
+                        .Count()
                 })
                 .ToList();
         }
@@ -102,7 +128,7 @@ namespace BigBooks.API.Providers
                 Password = dto.Password,
                 Wallet = dto.Wallet,
                 Role = dto.Role,
-                BookPurchases = new List<BookPurchase>()
+                Transactions = new List<AccountTransaction>()
             };
 
             ctx.AppUsers.Add(nextUser);
@@ -126,5 +152,7 @@ namespace BigBooks.API.Providers
 
             return new ProviderKeyResponse(appUser.Key, string.Empty);
         }
+
+
     }
 }

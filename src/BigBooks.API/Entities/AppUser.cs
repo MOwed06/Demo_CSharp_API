@@ -27,10 +27,10 @@ namespace BigBooks.API.Entities
         [Required]
         [MaxLength(100)]
         public string Password { get; set; } = string.Empty;
-
+        
         [Required]
         public decimal Wallet { get; set; }
 
-        public IList<BookPurchase> BookPurchases { get; set; } = new List<BookPurchase>();
+        public IList<AccountTransaction> Transactions { get; set; } = new List<AccountTransaction>();
     }
 }

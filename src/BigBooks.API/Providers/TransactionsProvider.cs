@@ -5,10 +5,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BigBooks.API.Providers
 {
-    public class PurchasesProvider(BigBookDbContext ctx,
+    public class TransactionsProvider(BigBookDbContext ctx,
         IBooksProvider booksProvider,
         IUsersProvider usersProvider,
-        ILogger<PurchasesProvider> logger) : BaseProvider, IPurchasesProvider
+        ILogger<TransactionsProvider> logger) : BaseProvider, ITransactionsProvider
     {
         /// <summary>
         /// extract userKey from claim
@@ -42,7 +42,7 @@ namespace BigBooks.API.Providers
             var purchaseAmount = book.Price * dto.RequestedQuantity;
 
             var currentUser = ctx.AppUsers
-                .Include(u => u.BookPurchases)
+                .Include(u => u.Transactions)
                 .Single(u => u.Key == userMatch.Key);
 
             if (currentUser.Wallet < purchaseAmount)
@@ -58,11 +58,45 @@ namespace BigBooks.API.Providers
             // valid purchase, stock available
             currentUser.Wallet -= purchaseAmount;
 
-            currentUser.BookPurchases.Add(new BookPurchase
+            currentUser.Transactions.Add(new AccountTransaction
             {
-                PurchaseDate = DateTime.Now,
-                PurchaseQuantity = dto.RequestedQuantity,
-                BookKey = dto.BookKey
+                TransactionAmount = -purchaseAmount,
+                TransactionDate = DateTime.Now,
+                TransactionConfirmation = dto.TransactionConfirmation,
+                BookKey = dto.BookKey,
+                PurchaseQuantity = dto.RequestedQuantity
+            });
+
+            ctx.SaveChanges();
+
+            return new ProviderKeyResponse(currentUser.Key, string.Empty);
+        }
+
+        public ProviderKeyResponse Deposit(string currentUserValue, AccountDepositDto dto)
+        {
+            logger.LogDebug($"Deposit, user: {currentUserValue}, Amount: {dto.Amount}");
+
+            var userMatch = usersProvider.GetUserKeyFromToken(currentUserValue);
+
+            if (!userMatch.Key.HasValue)
+            {
+                // no match to user
+                return new ProviderKeyResponse(null, userMatch.Error);
+            }
+
+            var currentUser = ctx.AppUsers
+                .Include(u => u.Transactions)
+                .Single(u => u.Key == userMatch.Key);
+
+            currentUser.Wallet += dto.Amount;
+
+            currentUser.Transactions.Add(new AccountTransaction
+            {
+                TransactionDate = DateTime.Now,
+                TransactionConfirmation = dto.Confirmation,
+                TransactionAmount = dto.Amount,
+                BookKey = null,
+                PurchaseQuantity = null
             });
 
             ctx.SaveChanges();

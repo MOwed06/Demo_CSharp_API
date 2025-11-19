@@ -54,7 +54,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "https://localhost:{{portNumber}}/api/accounts/8",
+					"raw": "https://localhost:{{portNumber}}/api/accounts/5",
 					"protocol": "https",
 					"host": [
 						"localhost"
@@ -63,14 +63,44 @@
 					"path": [
 						"api",
 						"accounts",
-						"8"
+						"5"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "GET AccountInfo",
+			"name": "GET CurrentUser",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:{{portNumber}}/api/users",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "{{portNumber}}",
+					"path": [
+						"api",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET AccountList",
 			"request": {
 				"auth": {
 					"type": "bearer",
@@ -271,7 +301,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"UserEmail\": \"Frank.Fallen@demo.com\",\n    \"UserName\": \"Frank R. Fallen\",\n    \"Password\": \"N0tV3ryS3cret\",\n    \"Wallet\": 82.43,\n    \"Role\": \"customer\"\n}"
+					"raw": "{\n    \"UserEmail\": \"Gabriella.Grant@demo.com\",\n    \"UserName\": \"Gabby Grant\",\n    \"Password\": \"N0tV3ryS3cret\",\n    \"Wallet\": 121.43,\n    \"Role\": \"customer\"\n}"
 				},
 				"url": {
 					"raw": "https://localhost:{{portNumber}}/api/accounts",
@@ -313,7 +343,7 @@
 					"raw": "{\n    \"BookKey\": 9,\n    \"RequestedQuantity\": 1\n}"
 				},
 				"url": {
-					"raw": "https://localhost:{{portNumber}}/api/purchases",
+					"raw": "https://localhost:{{portNumber}}/api/transactions/purchase",
 					"protocol": "https",
 					"host": [
 						"localhost"
@@ -321,7 +351,48 @@
 					"port": "{{portNumber}}",
 					"path": [
 						"api",
-						"purchases"
+						"transactions",
+						"purchase"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST UserDeposit",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"Amount\": 250,\n    \"Confirmation\": \"9209A6DA-CF08-41DB-9A1F-2864BE759E20\"\n}"
+				},
+				"url": {
+					"raw": "https://localhost:{{portNumber}}/api/transactions/deposit",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "{{portNumber}}",
+					"path": [
+						"api",
+						"transactions",
+						"deposit"
 					]
 				}
 			},

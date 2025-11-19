@@ -117,15 +117,25 @@
             <param name="patchDoc">list of changes</param>
             <returns></returns>
         </member>
-        <member name="M:BigBooks.API.Controllers.PurchasesController.PurchaseBooks(BigBooks.API.Models.PurchaseRequestDto)">
+        <member name="M:BigBooks.API.Controllers.TransactionsController.PurchaseBooks(BigBooks.API.Models.PurchaseRequestDto)">
             <summary>
             Purchase books for logged in user
             </summary>
             <remarks>
-            Purchase is made for logged in user based on claims
+            Purchase is made for logged in user based on token claims
             Purchase is refused if stock unavailable or user wallet is insufficient
             </remarks>
             <param name="dto">book key and quantity</param>
+            <returns>updated user info</returns>
+        </member>
+        <member name="M:BigBooks.API.Controllers.TransactionsController.Deposit(BigBooks.API.Models.AccountDepositDto)">
+            <summary>
+            Add funds to user wallet
+            </summary>
+            <remarks>
+            Deposit is made for logged in user based on token claims
+            </remarks>
+            <param name="dto">ammount and confirmation code</param>
             <returns>updated user info</returns>
         </member>
         <member name="M:BigBooks.API.Controllers.UsersController.GetCurrentUser">
@@ -142,16 +152,16 @@
             UserEmail is user id for API
             </summary>
         </member>
-        <member name="T:BigBooks.API.Migrations.NewDbSchema">
+        <member name="T:BigBooks.API.Migrations.AccountTransactionRestructure">
             <inheritdoc />
         </member>
-        <member name="M:BigBooks.API.Migrations.NewDbSchema.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+        <member name="M:BigBooks.API.Migrations.AccountTransactionRestructure.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
             <inheritdoc />
         </member>
-        <member name="M:BigBooks.API.Migrations.NewDbSchema.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+        <member name="M:BigBooks.API.Migrations.AccountTransactionRestructure.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
             <inheritdoc />
         </member>
-        <member name="M:BigBooks.API.Migrations.NewDbSchema.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+        <member name="M:BigBooks.API.Migrations.AccountTransactionRestructure.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
         <member name="T:BigBooks.API.Models.BookDetailsDto">
@@ -175,7 +185,7 @@
             False if operation fail, stock unavailable
             </returns>
         </member>
-        <member name="M:BigBooks.API.Providers.PurchasesProvider.PurchaseBooks(System.String,BigBooks.API.Models.PurchaseRequestDto)">
+        <member name="M:BigBooks.API.Providers.TransactionsProvider.PurchaseBooks(System.String,BigBooks.API.Models.PurchaseRequestDto)">
             <summary>
             extract userKey from claim
             refer to AuthService.cs, GenerateToken(), user key embedded in token

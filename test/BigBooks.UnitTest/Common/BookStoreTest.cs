@@ -24,7 +24,7 @@ namespace BigBooks.UnitTest.Common
         protected void InitializeDatabase(List<Book>? extraBooks = null,
             List<BookReview>? extraBookReviews = null,
             List<AppUser>? extraAppUsers = null,
-            List<BookPurchase>? extraBookPurchases = null)
+            List<AccountTransaction>? extraTransactions = null)
         {
             // two books
             var books = new List<Book>
@@ -109,36 +109,40 @@ namespace BigBooks.UnitTest.Common
                 users.AddRange(extraAppUsers);
             }
 
-            // two book purchases for user 1
-            var bookPurchases = new List<BookPurchase>
+            // two user transactions for user 1
+            var accountTransactions = new List<AccountTransaction>
             {
-                new BookPurchase
+                new AccountTransaction
                 {
                     Key = 1,
-                    PurchaseDate = DateTime.Parse("2025-03-15").Date,
+                    TransactionDate = DateTime.Parse("2025-03-15").Date,
                     UserKey = 1,
+                    TransactionAmount = -26.23m,
+                    TransactionConfirmation = Guid.Parse("1CC8F708-68A6-4998-AE07-92717392CD4F"),
                     BookKey = 1,
                     PurchaseQuantity = 2
                 },
-                new BookPurchase
+                new AccountTransaction
                 {
                     Key = 2,
-                    PurchaseDate = DateTime.Parse("2025-03-16").Date,
+                    TransactionDate = DateTime.Parse("2025-03-16").Date,
                     UserKey = 1,
+                    TransactionAmount = -17.17m,
+                    TransactionConfirmation = Guid.Parse("AE8A1120-86E2-4CFE-8816-6EBBC273C458"),
                     BookKey = 2,
                     PurchaseQuantity = 1
-                }
+                },
             };
 
-            if (extraBookPurchases != null)
+            if (extraTransactions != null)
             {
-                bookPurchases.AddRange(extraBookPurchases);
+                accountTransactions.AddRange(extraTransactions);
             }
 
             _ctx.Books.AddRange(books);
             _ctx.BookReviews.AddRange(bookReviews);
             _ctx.AppUsers.AddRange(users);
-            _ctx.BookPurchases.AddRange(bookPurchases);
+            _ctx.Transactions.AddRange(accountTransactions);
             _ctx.SaveChanges();
         }
 

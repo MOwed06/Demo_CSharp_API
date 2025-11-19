@@ -96,17 +96,16 @@ namespace BigBooks.API.Providers
         {
             logger.LogDebug($"AddBook, {dto.Title}");
 
-            var isbnCheck = CheckIsbn(dto.Isbn, null);
-            if (!isbnCheck.BookIsbn.HasValue)
+            if (IsDuplicateIsbn(dto.Isbn, null))
             {
-                return new ProviderKeyResponse(null, isbnCheck.Error);
+                return new ProviderKeyResponse(null, $"Duplicate ISBN {dto.Isbn}");
             }
 
             var addedBook = new Book
             {
                 Title = dto.Title,
                 Author = dto.Author,
-                Isbn = isbnCheck.BookIsbn.Value,
+                Isbn = dto.Isbn,
                 Description = dto.Description,
                 Genre = dto.Genre,
                 Price = dto.Price,
@@ -137,7 +136,7 @@ namespace BigBooks.API.Providers
             {
                 Title = existingBook.Title,
                 Author = existingBook.Author,
-                Isbn = existingBook.Isbn.ToString("D").ToUpper(),
+                Isbn = existingBook.Isbn,
                 Description = existingBook.Description,
                 Genre = existingBook.Genre,
                 Price = existingBook.Price,
@@ -153,16 +152,15 @@ namespace BigBooks.API.Providers
                 return new ProviderKeyResponse(null, validationCheck.Error);
             }
 
-            var isbnCheck = CheckIsbn(updateDto.Isbn, key);
-            if (!isbnCheck.BookIsbn.HasValue)
+            if (IsDuplicateIsbn(updateDto.Isbn, key))
             {
-                return new ProviderKeyResponse(null, isbnCheck.Error);
+                return new ProviderKeyResponse(null, $"Duplicate ISBN {updateDto.Isbn}");
             }
 
             var modifiedBook = ctx.Books.Single(b => b.Key == key);
             modifiedBook.Title = updateDto.Title;
             modifiedBook.Author = updateDto.Author;
-            modifiedBook.Isbn = isbnCheck.BookIsbn.Value;
+            modifiedBook.Isbn = updateDto.Isbn;
             modifiedBook.Genre = updateDto.Genre;
             modifiedBook.Price = updateDto.Price;
             modifiedBook.StockQuantity = updateDto.StockQuantity;
@@ -205,21 +203,10 @@ namespace BigBooks.API.Providers
                 : null;
         }
 
-        private (Guid? BookIsbn, string Error) CheckIsbn(string inputIsbn, int? existingBookKey)
+        private bool IsDuplicateIsbn(Guid isbnValue, int? existingBookKey)
         {
-            var bookIsbn = Guid.Empty;
-
-            if (!Guid.TryParse(inputIsbn, out bookIsbn))
-            {
-                return (null, $"invalid ISBN value {inputIsbn}");
-            }
-
-            if (ctx.Books.Where(b => b.Key != existingBookKey).Any(b => b.Isbn == bookIsbn))
-            {
-                return (null, $"Duplicate ISBN {inputIsbn}");
-            }
-
-            return (bookIsbn, string.Empty);
+            // for update request, exclude existing isbn in duplicate check
+            return ctx.Books.Where(b => b.Key != existingBookKey).Any(b => b.Isbn == isbnValue);
         }
     }
 }

@@ -5,7 +5,6 @@
         public int Key { get; set; }
         public string UserEmail { get; set; }
         public string Role { get; set; }
-        public string Wallet { get; set; }
         public int BookCount { get; set; }
     }
 }

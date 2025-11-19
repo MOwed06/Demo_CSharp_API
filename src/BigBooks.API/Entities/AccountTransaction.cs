@@ -3,16 +3,20 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BigBooks.API.Entities
 {
-    public class BookPurchase
+    public class AccountTransaction
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Key { get; set; }
 
         [Required]
-        public DateTime PurchaseDate { get; set; }
+        public DateTime TransactionDate { get; set; }
 
-        public int PurchaseQuantity { get; set; }
+        [Required]
+        public decimal TransactionAmount { get; set; }
+
+        [Required]
+        public Guid TransactionConfirmation { get; set; }
 
         [ForeignKey("UserKey")]
         public AppUser? AppUser { get; set; }
@@ -20,6 +24,7 @@ namespace BigBooks.API.Entities
 
         [ForeignKey("BookKey")]
         public Book? Book { get; set; }
-        public int BookKey { get; set; }
+        public int? BookKey { get; set; }
+        public int? PurchaseQuantity { get; set; }
     }
 }

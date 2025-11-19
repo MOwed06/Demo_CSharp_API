@@ -57,7 +57,7 @@ namespace BigBooks.API.Controllers
         /// Requires authenticated user with Admin role
         /// </remarks>
         /// <returns>overview of each user</returns>
-        [HttpGet]
+        [HttpGet(Name = "GetAccountList")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public ActionResult<IEnumerable<UserOverviewDto>> GetAccounts()
@@ -97,7 +97,7 @@ namespace BigBooks.API.Controllers
 
                 if (response.Key == null)
                 {
-                    throw new Exception(response.Error);
+                    return BadRequest(response.Error);
                 }
 
                 return GetAccountInfo(response.Key.Value);
