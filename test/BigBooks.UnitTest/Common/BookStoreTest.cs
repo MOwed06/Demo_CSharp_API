@@ -92,7 +92,8 @@ namespace BigBooks.UnitTest.Common
                     UserName = "Bruce Banner",
                     UserEmail = "Bruce.Banner@test.com",
                     Password = ApplicationConstant.USER_PASSWORD,
-                    Role = Role.Admin
+                    Role = Role.Admin,
+                    Wallet = 1m
                 },
                 new AppUser
                 {
@@ -100,7 +101,8 @@ namespace BigBooks.UnitTest.Common
                     UserName = "Jessica Jones",
                     UserEmail = CUSTOMER_2_EMAIL,
                     Password = ApplicationConstant.USER_PASSWORD,
-                    Role = Role.Customer
+                    Role = Role.Customer,
+                    Wallet = 100m
                 }
             };
 

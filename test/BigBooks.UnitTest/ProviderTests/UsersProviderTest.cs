@@ -1,4 +1,6 @@
-﻿using BigBooks.API.Entities;
+﻿using BigBooks.API.Core;
+using BigBooks.API.Entities;
+using BigBooks.API.Models;
 using BigBooks.API.Providers;
 using BigBooks.UnitTest.Common;
 using Microsoft.Extensions.Logging;
@@ -102,6 +104,41 @@ namespace BigBooks.UnitTest.ProviderTests
             var obsKeys = obs.Select(o => o.TransactionKey).ToList();
 
             Assert.Equal(expectedSortKeyOrder, obsKeys);
+        }
+
+        [Theory]
+        [InlineData(CUSTOMER_2_EMAIL, "Duplicate UserEmail")]
+        [InlineData("Wanda.Maximoff@demo.com", null)]
+        public void CheckAddUser(string userEmail, string expectedError)
+        {
+            // arrange
+            const int EXPECTED_NEXT_USER_KEY = 3;
+
+            InitializeDatabase();
+
+            var addDto = new UserAddUpdateDto
+            {
+                UserEmail = userEmail,
+                UserName = "Wanda Maximoff",
+                Password = "12341234",
+                Wallet = 100m,
+                Role = Role.Customer
+            };
+
+            // act
+            var response = _usersProvider.AddUser(addDto);
+
+            // assert
+            if (string.IsNullOrEmpty(expectedError))
+            {
+                Assert.Equal(EXPECTED_NEXT_USER_KEY, response.Key);
+                Assert.Empty(response.Error);
+            }
+            else
+            {
+                Assert.Null(response.Key);
+                Assert.Equal(expectedError, response.Error);
+            }
         }
     }
 }

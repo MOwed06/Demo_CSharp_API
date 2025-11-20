@@ -12,6 +12,7 @@ namespace BigBooks.UnitTest.ProviderTests
     public class TransactionsProviderTest : BookStoreTest
     {
         private readonly TransactionsProvider _transactionsPrv;
+        private readonly UsersProvider _usersPrv;
 
         private const int CUSTOMER_KEY = 3;
         private const string CUSTOMER_EMAIL = "Zachary.Zimmer@demo.com";
@@ -27,12 +28,12 @@ namespace BigBooks.UnitTest.ProviderTests
             var mockUsersPrvLogger = new Mock<ILogger<UsersProvider>>();
 
             var booksPrv = new BooksProvider(_ctx, mockBookPrvLogger.Object);
-            var usersPrv = new UsersProvider(_ctx, mockUsersPrvLogger.Object);
+            _usersPrv = new UsersProvider(_ctx, mockUsersPrvLogger.Object);
 
             _transactionsPrv = new TransactionsProvider(
                 ctx: _ctx,
                 booksProvider: booksPrv,
-                usersProvider: usersPrv,
+                usersProvider: _usersPrv,
                 logger: mockPurchasePrvLogger.Object);
 
             var extraBooks = new List<Book>()
@@ -71,9 +72,24 @@ namespace BigBooks.UnitTest.ProviderTests
                 }
             };
 
+            var extraTransactions = new List<AccountTransaction>
+            {
+                new AccountTransaction
+                {
+                    Key = 3,
+                    TransactionDate = DateTime.Parse("2025-03-15").Date,
+                    UserKey = CUSTOMER_KEY,
+                    TransactionAmount = 25.00m,
+                    TransactionConfirmation = Guid.Parse("A139F559-742A-4ED1-8B0F-F9C9D3A2264A"),
+                    BookKey = null,
+                    PurchaseQuantity = null
+                }
+            };
+
             InitializeDatabase(
                 extraBooks: extraBooks,
-                extraAppUsers: extraUsers);
+                extraAppUsers: extraUsers,
+                extraTransactions: extraTransactions);
         }
 
         /// <summary>
@@ -140,6 +156,27 @@ namespace BigBooks.UnitTest.ProviderTests
             Assert.Contains(bookKey, obsUserBookKeys); // book now associated with user
             Assert.Equal(expectedStock, observedBook.StockQuantity);
             Assert.Equal(expectedWallet, observedUser.Wallet);
+        }
+
+        [Fact]
+        public void CheckPurchaseTransactionCreated()
+        {
+            // arrange
+            var expectedAmount = -34.22m;   // $17.11 x 2 books
+
+            var purchaseDto = new PurchaseRequestDto
+            {
+                BookKey = 2,
+                RequestedQuantity = 2
+            };
+
+            // act
+            var response = _transactionsPrv.PurchaseBooks(CUSTOMER_EMAIL, purchaseDto);
+            var obsUser = _usersPrv.GetUser(response.Key.Value); // get user info
+            var obsTransaction = obsUser.Transactions.First();  // expect most recent is first
+
+            // assert
+            Assert.Equal(expectedAmount, obsTransaction.TransactionAmount);
         }
     }
 }
