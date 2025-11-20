@@ -45,7 +45,7 @@ namespace BigBooks.API.Providers
             };
         }
 
-        private List<TransactionOverviewDto> GetUserTransactions(int userKey)
+        internal List<TransactionOverviewDto> GetUserTransactions(int userKey)
         {
             var userTransactions = ctx.Transactions.Where(t => t.UserKey == userKey)
                 .AsNoTracking()

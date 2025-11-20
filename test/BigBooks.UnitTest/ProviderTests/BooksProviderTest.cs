@@ -9,11 +9,11 @@ using Moq;
 
 namespace BigBooks.UnitTest.ProviderTests
 {
-    public class BooksProvidersTest : BookStoreTest
+    public class BooksProviderTest : BookStoreTest
     {
         private BooksProvider _bookPrv;
 
-        public BooksProvidersTest() : base()
+        public BooksProviderTest() : base()
         {
             var mockLogger = new Mock<ILogger<BooksProvider>>();
             _bookPrv = new BooksProvider(_ctx, mockLogger.Object);

@@ -131,7 +131,7 @@ namespace BigBooks.UnitTest.Common
                     TransactionConfirmation = Guid.Parse("AE8A1120-86E2-4CFE-8816-6EBBC273C458"),
                     BookKey = 2,
                     PurchaseQuantity = 1
-                },
+                }
             };
 
             if (extraTransactions != null)
