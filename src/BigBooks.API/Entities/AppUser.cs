@@ -27,7 +27,7 @@ namespace BigBooks.API.Entities
         [Required]
         [MaxLength(100)]
         public string Password { get; set; } = string.Empty;
-        
+
         [Required]
         public decimal Wallet { get; set; }
 

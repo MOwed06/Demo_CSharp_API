@@ -136,7 +136,7 @@ namespace BigBooks.UnitTest.ProviderTests
                 .Where(u => u.BookKey != null)
                 .Select(u => u.BookKey)
                 .ToHashSet();
-           
+
             Assert.Contains(bookKey, obsUserBookKeys); // book now associated with user
             Assert.Equal(expectedStock, observedBook.StockQuantity);
             Assert.Equal(expectedWallet, observedUser.Wallet);

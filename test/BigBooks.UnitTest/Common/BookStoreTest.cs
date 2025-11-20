@@ -21,10 +21,10 @@ namespace BigBooks.UnitTest.Common
 
         protected readonly BigBookDbContext _ctx;
 
-        protected void InitializeDatabase(List<Book>? extraBooks = null,
-            List<BookReview>? extraBookReviews = null,
-            List<AppUser>? extraAppUsers = null,
-            List<AccountTransaction>? extraTransactions = null)
+        protected void InitializeDatabase(List<Book> extraBooks = null,
+            List<BookReview> extraBookReviews = null,
+            List<AppUser> extraAppUsers = null,
+            List<AccountTransaction> extraTransactions = null)
         {
             // two books
             var books = new List<Book>
@@ -81,7 +81,7 @@ namespace BigBooks.UnitTest.Common
             if (extraBookReviews != null)
             {
                 bookReviews.AddRange(extraBookReviews);
-            }            
+            }
 
             // two users
             var users = new List<AppUser>

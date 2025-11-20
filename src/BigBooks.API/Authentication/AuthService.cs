@@ -14,12 +14,13 @@ namespace BigBooks.API.Services
         /// return token for user
         /// return null if invalid/rejected
         /// </summary>
-        /// <param name="userId"></param>
-        /// <param name="password"></param>
+        /// <param name="request">authorization request</param>
         /// <returns></returns>
         public AuthResponse GenerateToken(AuthRequest request)
         {
-            logger.LogDebug($"GenerateToken, {request.UserId}, {request.Password}");
+            logger.LogDebug("GenerateToken, {0}, {1}",
+                request.UserId,
+                request.Password);
 
             try
             {
@@ -84,7 +85,9 @@ namespace BigBooks.API.Services
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, $"GenerateToken Fail, {request.UserId}, {request.Password}");
+                logger.LogError(ex, "GenerateToken Fail, {0}, {1}",
+                    request.UserId,
+                    request.Password);
                 return new AuthResponse
                 {
                     Token = null,

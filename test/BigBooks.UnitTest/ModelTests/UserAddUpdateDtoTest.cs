@@ -28,7 +28,7 @@ namespace BigBooks.UnitTest.ModelTests
         [InlineData("", "UserEmail field is required")]
         [InlineData("A.B@", "invalid UserEmail")]
         [InlineData("Alice.Barbara.Claire.Diana.Eliana.Fiona.Gabriella.Hailey.Isabella.Jennifer.Katherine.Lillian@demo.com", "maximum length of '100'")]
-        public void ConfirmUserEmailValidation(string? emailInput, string? expectedError)
+        public void ConfirmUserEmailValidation(string emailInput, string expectedError)
         {
             // arrange
             _testObject.UserEmail = emailInput;
@@ -54,7 +54,7 @@ namespace BigBooks.UnitTest.ModelTests
         [InlineData(1.00, null)]
         [InlineData(5000, null)]
         [InlineData(5001, "must be between 1 and 5000")]
-        public void ConfirmWalletValidation(decimal walletInput, string? expectedError)
+        public void ConfirmWalletValidation(decimal walletInput, string expectedError)
         {
             // arrange
             _testObject.Wallet = walletInput;
@@ -80,7 +80,7 @@ namespace BigBooks.UnitTest.ModelTests
         [InlineData("A", null)]
         [InlineData(STRING_100_CHARS, null)]
         [InlineData(STRING_101_CHARS, "maximum length of '100'")]
-        public void ConfirmUserNameValidation(string? nameInput, string? expectedError)
+        public void ConfirmUserNameValidation(string nameInput, string expectedError)
         {
             // arrange
             _testObject.UserName = nameInput;

@@ -34,7 +34,8 @@ namespace BigBooks.API.Controllers
             }
             catch (Exception ex)
             {
-                logger.LogCritical("GetCurrentUser", ex);
+                logger.LogCritical(message: "GetCurrentUser",
+                    exception: ex);
                 return BadRequest();
             }
         }

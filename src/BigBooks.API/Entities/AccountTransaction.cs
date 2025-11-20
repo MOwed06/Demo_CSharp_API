@@ -19,11 +19,11 @@ namespace BigBooks.API.Entities
         public Guid TransactionConfirmation { get; set; }
 
         [ForeignKey("UserKey")]
-        public AppUser? AppUser { get; set; }
+        public AppUser AppUser { get; set; }
         public int UserKey { get; set; }
 
         [ForeignKey("BookKey")]
-        public Book? Book { get; set; }
+        public Book Book { get; set; }
         public int? BookKey { get; set; }
         public int? PurchaseQuantity { get; set; }
     }

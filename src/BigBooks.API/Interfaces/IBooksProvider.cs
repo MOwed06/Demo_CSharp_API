@@ -9,7 +9,7 @@ namespace BigBooks.API.Interfaces
     {
         ProviderKeyResponse AddBook(BookAddUpdateDto dto);
         bool BookExists(int key);
-        BookDetailsDto? GetBook(int key);
+        BookDetailsDto GetBook(int key);
         List<BookOverviewDto> GetBooksByAuthor(string author);
         List<BookOverviewDto> GetBooksByGenre(Genre genre);
         ProviderKeyResponse UpdateBook(int key, JsonPatchDocument<BookAddUpdateDto> patchDoc);

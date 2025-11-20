@@ -19,7 +19,7 @@ namespace BigBooks.API.Entities
         public string Author { get; set; } = string.Empty;
 
         [MaxLength(500)]
-        public string? Description { get; set; }
+        public string Description { get; set; }
 
         public Genre Genre { get; set; }
 

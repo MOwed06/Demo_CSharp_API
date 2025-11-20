@@ -66,7 +66,7 @@ namespace BigBooks.UnitTest.ProviderTests
 
 
         [Theory]
-        [InlineData(new int [0], null)]
+        [InlineData(new int[0], null)]
         [InlineData(new int[] { 3 }, 3.0)]
         [InlineData(new int[] { 3, 4 }, 3.5)]
         [InlineData(new int[] { 3, 4, 5, 6, 7, 8, 9, 10 }, 6.5)]
