@@ -9,7 +9,7 @@ namespace BigBooks.UnitTest.Common
         public const string SECRET_KEY = @"z3f8zmAGOIbmUggCAi20xNIctPmrUw2OSPI269pieM4=";
         public const string ISSUER = "unittest";
         public const string AUDIENCE = "BigBooksApi";
-       
+
         public MockConfiguration()
         {
             var configData = new Dictionary<string, string>

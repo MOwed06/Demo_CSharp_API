@@ -9,8 +9,7 @@
             return token for user
             return null if invalid/rejected
             </summary>
-            <param name="userId"></param>
-            <param name="password"></param>
+            <param name="request">authorization request</param>
             <returns></returns>
         </member>
         <member name="T:BigBooks.API.Controllers.AccountsController">
@@ -19,7 +18,7 @@
             Authorization is intentionally different
             Accounts offers Admin high-level access to all users
             </summary>
-            <param name="users"></param>
+            <param name="usersProvider"></param>
             <param name="logger"></param>
         </member>
         <member name="M:BigBooks.API.Controllers.AccountsController.#ctor(BigBooks.API.Interfaces.IUsersProvider,Microsoft.Extensions.Logging.ILogger{BigBooks.API.Controllers.AccountsController})">
@@ -28,7 +27,7 @@
             Authorization is intentionally different
             Accounts offers Admin high-level access to all users
             </summary>
-            <param name="users"></param>
+            <param name="usersProvider"></param>
             <param name="logger"></param>
         </member>
         <member name="M:BigBooks.API.Controllers.AccountsController.GetAccountInfo(System.Int32)">
@@ -164,6 +163,18 @@
         <member name="M:BigBooks.API.Migrations.AccountTransactionRestructure.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
+        <member name="T:BigBooks.API.Migrations.LintEntities">
+            <inheritdoc />
+        </member>
+        <member name="M:BigBooks.API.Migrations.LintEntities.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:BigBooks.API.Migrations.LintEntities.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:BigBooks.API.Migrations.LintEntities.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
         <member name="T:BigBooks.API.Models.BookDetailsDto">
             <summary>
             Book detail information
@@ -190,16 +201,15 @@
             extract userKey from claim
             refer to AuthService.cs, GenerateToken(), user key embedded in token
             </summary>
-            <param name="currentUserValue"></param>
-            <param name="bookKey"></param>
-            <param name="requestedQuantity"></param>
+            <param name="currentUserValue">user email from token</param>
+            <param name="dto">purchase params</param>
             <returns>user key associated with purchase</returns>
         </member>
         <member name="M:BigBooks.API.Providers.UsersProvider.GetCurrentUserDetails(System.String)">
             <summary>
             Allow current user to view their full details
             </summary>
-            <param name="currentUserKeyValue"></param>
+            <param name="currentUserValue"></param>
             <returns></returns>
             <exception cref="T:System.Exception"></exception>
         </member>

@@ -10,7 +10,7 @@ namespace BigBooks.API.Controllers
     /// Authorization is intentionally different
     /// Accounts offers Admin high-level access to all users
     /// </summary>
-    /// <param name="users"></param>
+    /// <param name="usersProvider"></param>
     /// <param name="logger"></param>
     [Route("api/[controller]")]
     [ApiController]
@@ -30,7 +30,7 @@ namespace BigBooks.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public ActionResult<UserDetailsDto> GetAccountInfo(int key)
         {
-            logger.LogTrace($"GetUserInfo, {key}");
+            logger.LogTrace("GetUserInfo, {0}", key);
 
             try
             {
@@ -45,7 +45,9 @@ namespace BigBooks.API.Controllers
             }
             catch (Exception ex)
             {
-                logger.LogCritical($"GetUserInfo, {key}", ex);
+                var errorMsg = $"GetUserInfo, {key}";
+                logger.LogCritical(message: errorMsg,
+                    exception: ex);
                 return BadRequest();
             }
         }
@@ -71,7 +73,8 @@ namespace BigBooks.API.Controllers
             }
             catch (Exception ex)
             {
-                logger.LogCritical("GetUsers", ex);
+                logger.LogCritical(message: "GetUsers",
+                    exception: ex);
                 return BadRequest();
             }
         }

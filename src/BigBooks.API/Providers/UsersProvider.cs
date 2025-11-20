@@ -9,9 +9,9 @@ namespace BigBooks.API.Providers
     public class UsersProvider(BigBookDbContext ctx,
         ILogger<UsersProvider> logger) : BaseProvider, IUsersProvider
     {
-        public UserDetailsDto? GetUser(int key)
+        public UserDetailsDto GetUser(int key)
         {
-            logger.LogDebug($"GetUser, {key}");
+            logger.LogDebug("GetUser, {0}", key);
 
             var appUser = ctx.AppUsers
                 .AsNoTracking()
@@ -45,7 +45,7 @@ namespace BigBooks.API.Providers
             };
         }
 
-        private List<TransactionOverviewDto> GetUserTransactions(int userKey)
+        internal List<TransactionOverviewDto> GetUserTransactions(int userKey)
         {
             var userTransactions = ctx.Transactions.Where(t => t.UserKey == userKey)
                 .AsNoTracking()
@@ -94,14 +94,14 @@ namespace BigBooks.API.Providers
         /// <summary>
         /// Allow current user to view their full details
         /// </summary>
-        /// <param name="currentUserKeyValue"></param>
+        /// <param name="currentUserValue"></param>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
-        public UserDetailsDto GetCurrentUserDetails(string currentUserKeyValue)
+        public UserDetailsDto GetCurrentUserDetails(string currentUserValue)
         {
             logger.LogDebug("GetCurrentUser");
 
-            var currentUser = GetUserKeyFromToken(currentUserKeyValue);
+            var currentUser = GetUserKeyFromToken(currentUserValue);
 
             if (!currentUser.Key.HasValue)
             {
@@ -152,7 +152,5 @@ namespace BigBooks.API.Providers
 
             return new ProviderKeyResponse(appUser.Key, string.Empty);
         }
-
-
     }
 }

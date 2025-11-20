@@ -14,13 +14,15 @@ namespace BigBooks.API.Providers
         /// extract userKey from claim
         /// refer to AuthService.cs, GenerateToken(), user key embedded in token
         /// </summary>
-        /// <param name="currentUserValue"></param>
-        /// <param name="bookKey"></param>
-        /// <param name="requestedQuantity"></param>
+        /// <param name="currentUserValue">user email from token</param>
+        /// <param name="dto">purchase params</param>
         /// <returns>user key associated with purchase</returns>
         public ProviderKeyResponse PurchaseBooks(string currentUserValue, PurchaseRequestDto dto)
         {
-            logger.LogDebug($"PurchaseBooks, user: {currentUserValue}, book: {dto.BookKey}, qty: {dto.RequestedQuantity}");
+            logger.LogDebug("PurchaseBooks, user: {0}, book: {1}, qty: {2}",
+                currentUserValue,
+                dto.BookKey,
+                dto.RequestedQuantity);
 
             var userMatch = usersProvider.GetUserKeyFromToken(currentUserValue);
 
@@ -74,7 +76,9 @@ namespace BigBooks.API.Providers
 
         public ProviderKeyResponse Deposit(string currentUserValue, AccountDepositDto dto)
         {
-            logger.LogDebug($"Deposit, user: {currentUserValue}, Amount: {dto.Amount}");
+            logger.LogDebug("Deposit, user: {0}, Amount: {2}",
+                currentUserValue,
+                dto.Amount);
 
             var userMatch = usersProvider.GetUserKeyFromToken(currentUserValue);
 

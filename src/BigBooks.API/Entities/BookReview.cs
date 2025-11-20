@@ -17,14 +17,14 @@ namespace BigBooks.API.Entities
         public DateTime ReviewDate { get; set; }
 
         [MaxLength(500)]
-        public string? Description { get; set; }
+        public string Description { get; set; }
 
         [ForeignKey("UserKey")]
-        public AppUser? User { get; set; }
+        public AppUser User { get; set; }
         public int? UserKey { get; set; } // UserKey null for anonymous review
 
         [ForeignKey("BookKey")]
-        public Book? Book { get; set; }
+        public Book Book { get; set; }
         public int BookKey { get; set; }
     }
 }

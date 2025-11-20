@@ -5,20 +5,20 @@ using BigBooks.API.Models;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.EntityFrameworkCore;
 
-namespace BigBooks.API.Providers 
+namespace BigBooks.API.Providers
 {
     public class BooksProvider(BigBookDbContext ctx, ILogger<BooksProvider> logger) : BaseProvider, IBooksProvider
     {
         public bool BookExists(int key)
         {
-            logger.LogDebug($"BookExists, {key}");
+            logger.LogDebug("BookExists, {0}", key);
 
             return ctx.Books.Any(b => b.Key == key);
         }
 
-        public BookDetailsDto? GetBook(int key)
+        public BookDetailsDto GetBook(int key)
         {
-            logger.LogDebug($"GetBook, {key}");
+            logger.LogDebug("GetBook, {0}", key);
 
             var book = ctx.Books
                 .Include(b => b.Reviews)
@@ -50,7 +50,7 @@ namespace BigBooks.API.Providers
 
         public List<BookOverviewDto> GetBooksByGenre(Genre genre)
         {
-            logger.LogDebug($"GetBooksByGenre, {genre}");
+            logger.LogDebug("GetBooksByGenre, {0}", genre);
 
             var books = ctx.Books
                 .Where(b => b.Genre == genre)
@@ -72,7 +72,7 @@ namespace BigBooks.API.Providers
 
         public List<BookOverviewDto> GetBooksByAuthor(string author)
         {
-            logger.LogDebug($"GetBooksByAuthor, {author}");
+            logger.LogDebug("GetBooksByAuthor, {0}", author);
 
             var books = ctx.Books
                 .Where(b => b.Author.ToLower().Contains(author.ToLower()))
@@ -94,7 +94,7 @@ namespace BigBooks.API.Providers
 
         public ProviderKeyResponse AddBook(BookAddUpdateDto dto)
         {
-            logger.LogDebug($"AddBook, {dto.Title}");
+            logger.LogDebug("AddBook, {0}", dto.Title);
 
             if (IsDuplicateIsbn(dto.Isbn, null))
             {
@@ -120,7 +120,7 @@ namespace BigBooks.API.Providers
 
         public ProviderKeyResponse UpdateBook(int key, JsonPatchDocument<BookAddUpdateDto> patchDoc)
         {
-            logger.LogDebug($"UpdateBook, {key}");
+            logger.LogDebug("UpdateBook, {0}", key);
 
             var existingBook = ctx.Books
                 .AsNoTracking()
@@ -180,7 +180,9 @@ namespace BigBooks.API.Providers
         /// </returns>
         public bool RemoveFromStock(int bookKey, int requestedQuantity)
         {
-            logger.LogDebug($"RemoveFromStock, {bookKey}, {requestedQuantity}");
+            logger.LogDebug("RemoveFromStock, {0}, {1}",
+                bookKey,
+                requestedQuantity);
 
             var selectedBook = ctx.Books
                 .Single(b => b.Key == bookKey);

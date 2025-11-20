@@ -9,11 +9,11 @@ using Moq;
 
 namespace BigBooks.UnitTest.ProviderTests
 {
-    public class BooksProvidersTest : BookStoreTest
+    public class BooksProviderTest : BookStoreTest
     {
         private BooksProvider _bookPrv;
 
-        public BooksProvidersTest() : base()
+        public BooksProviderTest() : base()
         {
             var mockLogger = new Mock<ILogger<BooksProvider>>();
             _bookPrv = new BooksProvider(_ctx, mockLogger.Object);
@@ -66,7 +66,7 @@ namespace BigBooks.UnitTest.ProviderTests
 
 
         [Theory]
-        [InlineData(new int [0], null)]
+        [InlineData(new int[0], null)]
         [InlineData(new int[] { 3 }, 3.0)]
         [InlineData(new int[] { 3, 4 }, 3.5)]
         [InlineData(new int[] { 3, 4, 5, 6, 7, 8, 9, 10 }, 6.5)]

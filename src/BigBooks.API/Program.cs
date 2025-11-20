@@ -1,14 +1,14 @@
 using BigBooks.API.Core;
 using BigBooks.API.Entities;
+using BigBooks.API.Interfaces;
 using BigBooks.API.Providers;
 using BigBooks.API.Services;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using Serilog;
 using System.Reflection;
 using System.Security.Claims;
-using BigBooks.API.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 

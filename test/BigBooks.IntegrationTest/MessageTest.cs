@@ -12,13 +12,13 @@ namespace BigBooks.IntegrationTest
     public class MessageTest : IDisposable
     {
         private readonly BigBookWebAppFactory _appFactory;
-        private readonly HttpClient? _client;
+        private readonly HttpClient _client;
 
         private const string AUTH_URI = @"/api/authentication/authenticate";
         private const string USERS_URI = @"/api/accounts";
         private const string BOOK_3_GET_URI = @"/api/books/3";
 
-        private const double MESSAGE_TIMEOUT_SEC = 2.5;       
+        private const double MESSAGE_TIMEOUT_SEC = 2.5;
 
         // this database content established by BigBooksDbContent.cs seed data
         private const string ADMIN_USER_EMAIL = "Bruce.Wayne@demo.com";

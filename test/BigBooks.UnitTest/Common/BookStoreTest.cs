@@ -21,10 +21,10 @@ namespace BigBooks.UnitTest.Common
 
         protected readonly BigBookDbContext _ctx;
 
-        protected void InitializeDatabase(List<Book>? extraBooks = null,
-            List<BookReview>? extraBookReviews = null,
-            List<AppUser>? extraAppUsers = null,
-            List<AccountTransaction>? extraTransactions = null)
+        protected void InitializeDatabase(List<Book> extraBooks = null,
+            List<BookReview> extraBookReviews = null,
+            List<AppUser> extraAppUsers = null,
+            List<AccountTransaction> extraTransactions = null)
         {
             // two books
             var books = new List<Book>
@@ -81,7 +81,7 @@ namespace BigBooks.UnitTest.Common
             if (extraBookReviews != null)
             {
                 bookReviews.AddRange(extraBookReviews);
-            }            
+            }
 
             // two users
             var users = new List<AppUser>
@@ -92,7 +92,8 @@ namespace BigBooks.UnitTest.Common
                     UserName = "Bruce Banner",
                     UserEmail = "Bruce.Banner@test.com",
                     Password = ApplicationConstant.USER_PASSWORD,
-                    Role = Role.Admin
+                    Role = Role.Admin,
+                    Wallet = 1m
                 },
                 new AppUser
                 {
@@ -100,7 +101,8 @@ namespace BigBooks.UnitTest.Common
                     UserName = "Jessica Jones",
                     UserEmail = CUSTOMER_2_EMAIL,
                     Password = ApplicationConstant.USER_PASSWORD,
-                    Role = Role.Customer
+                    Role = Role.Customer,
+                    Wallet = 100m
                 }
             };
 
@@ -131,7 +133,7 @@ namespace BigBooks.UnitTest.Common
                     TransactionConfirmation = Guid.Parse("AE8A1120-86E2-4CFE-8816-6EBBC273C458"),
                     BookKey = 2,
                     PurchaseQuantity = 1
-                },
+                }
             };
 
             if (extraTransactions != null)
