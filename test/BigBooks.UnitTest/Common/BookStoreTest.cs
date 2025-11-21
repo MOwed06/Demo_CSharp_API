@@ -1,6 +1,7 @@
 using BigBooks.API.Core;
 using BigBooks.API.Entities;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
 
 namespace BigBooks.UnitTest.Common
@@ -170,6 +171,33 @@ namespace BigBooks.UnitTest.Common
             var errors = validationResults.Select(v => v.ErrorMessage).ToList();
 
             return (isValid, string.Join(", ", errors));
+        }
+
+        /// <summary>
+        /// Simplified comparison of class properties
+        /// Cast class to json string
+        /// Compare expected and observed json strings
+        /// </summary>
+        /// <param name="expected"></param>
+        /// <param name="observed"></param>
+        protected void CheckObjectsEquivalent(object expected, object observed)
+        {
+            var expectedJson = JsonConvert.SerializeObject(expected);
+            var observedJson = JsonConvert.SerializeObject(observed);
+
+            Assert.Equal(expectedJson, observedJson);
+        }
+
+        protected string ReadSupportFile(string fileName)
+        {
+            var fullName = Path.Combine(Directory.GetCurrentDirectory(), "SupportFiles", fileName);
+            return File.ReadAllText(fullName);
+        }
+
+        protected T GetObjectFromSupportJsonFile<T>(string fileName)
+        {
+            var fileData = ReadSupportFile(fileName);
+            return JsonConvert.DeserializeObject<T>(fileData);
         }
 
         public void Dispose()

@@ -203,6 +203,30 @@ namespace BigBooks.UnitTest.ProviderTests
             ExecuteUpdateTest(BOOK_KEY, patchDoc, expectedError);
         }
 
+        [Theory]
+        [InlineData(1, "Book01DetailsDto.json")]
+        [InlineData(11, null)]
+        public void CheckGetBook(int bookKey, string referenceFile)
+        {
+            // arrange
+            InitializeDatabase();
+
+            // act
+            var observed = _bookPrv.GetBook(bookKey);
+
+            // assert
+            if (referenceFile != null)
+            {
+                var expected = GetObjectFromSupportJsonFile<BookDetailsDto>(referenceFile);
+                CheckObjectsEquivalent(expected, observed);
+            }
+            else
+            {
+                // invalid book
+                Assert.Null(observed);
+            }
+        }
+
         private void ExecuteUpdateTest(int bookKey, JsonPatchDocument<BookAddUpdateDto> patchDoc, string expectedError)
         {
             // act

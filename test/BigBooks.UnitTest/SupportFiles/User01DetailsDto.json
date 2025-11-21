@@ -1,0 +1,25 @@
+{
+  "Key": 1,
+  "UserEmail": "Bruce.Banner@test.com",
+  "UserName": "Bruce Banner",
+  "Role": "Admin",
+  "Wallet": "$1.00",
+  "Transactions": [
+    {
+      "TransactionKey": 2,
+      "TransactionDate": "2025-03-16T00:00:00",
+      "TransactionType": "Purchase",
+      "TransactionAmount": -17.17,
+      "PurchaseBook": "Citizen Soldiers",
+      "PurchaseQuantity": 1
+    },
+    {
+      "TransactionKey": 1,
+      "TransactionDate": "2025-03-15T00:00:00",
+      "TransactionType": "Purchase",
+      "TransactionAmount": -26.23,
+      "PurchaseBook": "Where the Wild Things Are",
+      "PurchaseQuantity": 2
+    }
+  ]
+}

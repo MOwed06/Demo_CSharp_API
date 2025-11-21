@@ -16,13 +16,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <Compile Remove="SupportFiles\**" />
-	  <Content Remove="SupportFiles\**" />
-	  <EmbeddedResource Remove="SupportFiles\**" />
-	  <None Remove="SupportFiles\**" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.21" />
 		<PackageReference Include="Microsoft.AspNetCore.JsonPatch" Version="8.0.21" />
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.21" />		
