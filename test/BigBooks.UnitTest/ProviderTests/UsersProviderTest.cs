@@ -164,5 +164,19 @@ namespace BigBooks.UnitTest.ProviderTests
                 Assert.Null(observed);
             }
         }
+
+        [Fact]
+        public void CheckGetCurrentUserException()
+        {
+            // arrange
+            var expectedError = @"Invalid user Some.Guy@test.com";
+
+            var invalidUserEmail = "Some.Guy@test.com";
+
+            // act & assert
+            var ex = Assert.Throws<Exception>(() => _usersProvider.GetCurrentUserDetails(invalidUserEmail));
+
+            Assert.Equal(expectedError, ex.Message);
+        }
     }
 }

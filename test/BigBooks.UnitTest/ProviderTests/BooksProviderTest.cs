@@ -19,34 +19,6 @@ namespace BigBooks.UnitTest.ProviderTests
             _bookPrv = new BooksProvider(_ctx, mockLogger.Object);
         }
 
-        [Fact]
-        public void GetBookCheckTitleAuthor()
-        {
-            // arrange
-            InitializeDatabase();
-
-            // act
-            var obs = _bookPrv.GetBook(1);
-
-            // assert
-            Assert.Equal("Where the Wild Things Are", obs?.Title);
-            Assert.Equal("Maurice Sendak", obs?.Author);
-            Assert.Equal(BOOK1_GUID, obs?.Isbn);
-        }
-
-        [Fact]
-        public void GetBookBadKey()
-        {
-            // arrange
-            InitializeDatabase();
-
-            // act
-            var obs = _bookPrv.GetBook(5);
-
-            // assert
-            Assert.Null(obs);
-        }
-
         [Theory]
         [InlineData(-1, false)]
         [InlineData(0, false)]

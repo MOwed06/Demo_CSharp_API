@@ -18,6 +18,7 @@ namespace BigBooks.IntegrationTest
         private const string USERS_URI = @"/api/accounts";
         private const string BOOK_3_GET_URI = @"/api/books/3";
 
+        // hard timeout enforced on message response instead of cancelation token
         private const double MESSAGE_TIMEOUT_SEC = 2.5;
 
         // this database content established by BigBooksDbContent.cs seed data
