@@ -81,3 +81,10 @@ Things yet to do ...
 1. BookReviewController, Add Review
 1. BookReviewController, Delete Review
 1. Convert Controller methods to async.
+
+
+<br>
+
+## Launch Command Line
+
+dotnet run --launch-profile https

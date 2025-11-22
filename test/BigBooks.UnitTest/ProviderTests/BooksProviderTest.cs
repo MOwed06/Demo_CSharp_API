@@ -36,7 +36,6 @@ namespace BigBooks.UnitTest.ProviderTests
             Assert.Equal(expected, obs);
         }
 
-
         [Theory]
         [InlineData(new int[0], null)]
         [InlineData(new int[] { 3 }, 3.0)]
@@ -134,7 +133,6 @@ namespace BigBooks.UnitTest.ProviderTests
                 Assert.Null(obs.Key);
             }
         }
-
 
         [Theory]
         [InlineData(null, "The Title field is required")]
