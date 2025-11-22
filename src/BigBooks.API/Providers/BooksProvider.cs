@@ -74,11 +74,17 @@ namespace BigBooks.API.Providers
         {
             logger.LogDebug("GetBooksByAuthor, {0}", author);
 
-            var books = ctx.Books
-                .Where(b => b.Author.ToLower().Contains(author.ToLower()))
-                .Include(b => b.Reviews)
-                .AsNoTracking()
-                .ToList();
+            // if author empty, then return all books
+            var books = string.IsNullOrEmpty(author)
+                ? ctx.Books
+                    .AsNoTracking()
+                    .Include(b => b.Reviews)
+                    .ToList()
+                : ctx.Books
+                    .Where(b => b.Author.ToLower().Contains(author.ToLower()))
+                    .Include(b => b.Reviews)
+                    .AsNoTracking()
+                    .ToList();
 
             return books.Select(b => new BookOverviewDto
             {
