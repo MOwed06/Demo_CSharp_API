@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace BigBooks.IntegrationTest
+namespace BigBooks.IntegrationTest.Common
 {
     public class BigBookWebAppFactory : WebApplicationFactory<Program>
     {

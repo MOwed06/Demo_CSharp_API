@@ -1,7 +1,8 @@
 using BigBooks.API.Authentication;
 using BigBooks.API.Core;
 using BigBooks.API.Models;
-using Microsoft.AspNetCore.Mvc.Testing;
+using BigBooks.IntegrationTest.Common;
+using DataMaker;
 using Newtonsoft.Json;
 using System.Net;
 using System.Net.Http.Headers;
@@ -9,32 +10,10 @@ using System.Text;
 
 namespace BigBooks.IntegrationTest
 {
-    public class MessageTest : IDisposable
+    public class MessageTest : BookIntegrationTest
     {
-        private readonly BigBookWebAppFactory _appFactory;
-        private readonly HttpClient _client;
-
-        private const string AUTH_URI = @"/api/authentication/authenticate";
-        private const string USERS_URI = @"/api/accounts";
-        private const string BOOK_3_GET_URI = @"/api/books/3";
-
-        // hard timeout enforced on message response instead of cancelation token
-        private const double MESSAGE_TIMEOUT_SEC = 2.5;
-
-        // this database content established by BigBooksDbContent.cs seed data
-        private const string ADMIN_USER_EMAIL = "Bruce.Wayne@demo.com";
-        private const string CUSTOMER_USER_EMAIL = "Celeste.Cadwell@demo.com";
-        private const string BOOK_3_TITLE = "Too Many Frogs";
-
-        public MessageTest()
+        public MessageTest(ITestOutputHelper h) : base(h)
         {
-            _appFactory = new BigBookWebAppFactory();
-            _client = _appFactory
-                .CreateClient(new WebApplicationFactoryClientOptions
-                {
-                    AllowAutoRedirect = false
-                });
-            _client.Timeout = TimeSpan.FromSeconds(MESSAGE_TIMEOUT_SEC);
         }
 
         /// <summary>
@@ -65,6 +44,7 @@ namespace BigBooks.IntegrationTest
             var bookDto = JsonConvert.DeserializeObject<BookDetailsDto>(responseBookBody);
 
             // asset
+            WriteToOutput(responseBookBody);
             Assert.NotNull(responseBookBody);
             Assert.Equal(BOOK_3_TITLE, bookDto.Title);
         }
@@ -74,9 +54,11 @@ namespace BigBooks.IntegrationTest
         /// </summary>
         /// <returns></returns>
         [Fact]
-        public async Task ConfirmAdminRoleGetUsersAccess()
+        public async Task ConfirmAdminRoleGetAccountsAccess()
         {
             // arrange
+            const string EXPECTED_EMAIL = "Diana.Prince@demo.com";
+
             var authRequest = new AuthRequest
             {
                 UserId = ADMIN_USER_EMAIL,
@@ -86,10 +68,15 @@ namespace BigBooks.IntegrationTest
             string responseToken = await GetAuthToken(authRequest);
 
             // act
-            var response = await GetUserList(responseToken);
+            var response = await GetAccounts(responseToken);
 
             // assert
+            WriteToOutput(response.StatusCode);
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+            var responseBody = await response.Content.ReadAsStringAsync();
+            WriteToOutput(responseBody);
+            Assert.Contains(EXPECTED_EMAIL, responseBody);
         }
 
         /// <summary>
@@ -97,7 +84,7 @@ namespace BigBooks.IntegrationTest
         /// </summary>
         /// <returns></returns>
         [Fact]
-        public async Task ConfirmCustomerRoleGetUsersNoAccess()
+        public async Task ConfirmCustomerRoleGetAccountsNoAccess()
         {
             // arrange
             var authRequest = new AuthRequest
@@ -109,42 +96,77 @@ namespace BigBooks.IntegrationTest
             string responseToken = await GetAuthToken(authRequest);
 
             // act
-            var response = await GetUserList(responseToken);
+            var response = await GetAccounts(responseToken);
 
             // assert
+            WriteToOutput(response.StatusCode);
             Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
         }
 
-        private async Task<HttpResponseMessage> GetUserList(string responseToken)
+        /// <summary>
+        /// Confirm action of adding a new book
+        /// </summary>
+        /// <returns></returns>
+        [Fact]
+        public async Task ConfirmAddBook()
+        {
+            // arrange
+            var authRequest = new AuthRequest
+            {
+                UserId = ADMIN_USER_EMAIL,
+                Password = ApplicationConstant.USER_PASSWORD
+            };
+
+            // randomly generate book definition
+            var bookAddDto = new BookAddUpdateDto
+            {
+                Title = RandomData.GenerateSentence(),
+                Author = RandomData.GenerateFullName(),
+                Isbn = Guid.NewGuid(),
+                Description = null,
+                Genre = Genre.Fiction,
+                Price = RandomData.GenerateDecimal(9.0m, 21.2m, 2),
+                StockQuantity = RandomData.GenerateInt(1, 13)
+            };
+
+            string responseToken = await GetAuthToken(authRequest);
+
+            // act
+            var response = await AddBookRequest(responseToken, bookAddDto);
+
+            // assert
+            WriteToOutput(response.StatusCode);
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+            var responseBody = await response.Content.ReadAsStringAsync();
+            WriteToOutput(responseBody);
+
+            var observedBook = JsonConvert.DeserializeObject<BookDetailsDto>(responseBody);
+            Assert.Equal(bookAddDto.Title, observedBook.Title);
+            Assert.Equal(bookAddDto.Author, observedBook.Author);
+            Assert.Equal(bookAddDto.Isbn.ToString("D").ToUpper(), observedBook.Isbn);
+        }
+
+        private async Task<HttpResponseMessage> AddBookRequest(string responseToken,
+            BookAddUpdateDto dto)
+        {
+            var reqBody = JsonConvert.SerializeObject(dto);
+
+            var message = new HttpRequestMessage(method: HttpMethod.Post,
+                requestUri: BOOKS_URI);
+            message.Headers.Authorization = new AuthenticationHeaderValue("Bearer", responseToken);
+            message.Content = new StringContent(reqBody, Encoding.UTF8, "application/json");
+
+            return await _client.SendAsync(message);
+        }
+
+        private async Task<HttpResponseMessage> GetAccounts(string responseToken)
         {
             var requestUsers = new HttpRequestMessage(method: HttpMethod.Get,
-                requestUri: USERS_URI);
+                requestUri: ACCOUNT_LIST_URI);
             requestUsers.Headers.Authorization = new AuthenticationHeaderValue("Bearer", responseToken);
 
             return await _client.SendAsync(requestUsers);
-        }
-
-        private async Task<string> GetAuthToken(AuthRequest authRequest)
-        {
-            var reqBody = JsonConvert.SerializeObject(authRequest);
-
-            var message = new HttpRequestMessage(method: HttpMethod.Post,
-                requestUri: AUTH_URI);
-            message.Content = new StringContent(reqBody, Encoding.UTF8, "application/json");
-
-            var response = await _client.SendAsync(message);
-
-            var responseBody = await response.Content.ReadAsStringAsync();
-
-            var authResponse = JsonConvert.DeserializeObject<AuthResponse>(responseBody);
-
-            return authResponse.Token;
-        }
-
-        public void Dispose()
-        {
-            _client?.Dispose();
-            _appFactory.Dispose();
         }
     }
 }

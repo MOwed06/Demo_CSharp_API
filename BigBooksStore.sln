@@ -13,6 +13,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{02EA681E
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Application", "Application", "{915B630D-025D-410A-8B6C-4091276D34C1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataMaker", "test\DataMaker\DataMaker.csproj", "{2E7F50ED-778E-30A0-F94C-CCD0D96AB79B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +33,10 @@ Global
 		{3B9138C3-5050-49EA-971A-77A8795FB50E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3B9138C3-5050-49EA-971A-77A8795FB50E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3B9138C3-5050-49EA-971A-77A8795FB50E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2E7F50ED-778E-30A0-F94C-CCD0D96AB79B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E7F50ED-778E-30A0-F94C-CCD0D96AB79B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2E7F50ED-778E-30A0-F94C-CCD0D96AB79B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2E7F50ED-778E-30A0-F94C-CCD0D96AB79B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -39,6 +45,7 @@ Global
 		{D6BAD28B-0AF3-D448-D3AB-222F5DE7D579} = {915B630D-025D-410A-8B6C-4091276D34C1}
 		{87812339-0FF8-4D16-BCAE-D48957A7319C} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{3B9138C3-5050-49EA-971A-77A8795FB50E} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{2E7F50ED-778E-30A0-F94C-CCD0D96AB79B} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B9C1B890-7DC9-44B1-A9EA-133ADDD9FBBF}
