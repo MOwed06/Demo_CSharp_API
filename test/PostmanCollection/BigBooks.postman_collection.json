@@ -262,7 +262,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"Title\": \"11/22/63: A Novel\",\n    \"Author\": \"Stephen King\",\n    \"Isbn\": \"B74E3696-7668-4A44-9522-ABF958E031E0\",\n    \"Description\": \"It begins with Jake Epping, a thirty-five-year-old English teacher in Lisbon Falls, Maine, whose life is upended when his friend Al, who owns the local diner, divulges a secret: his storeroom is a portal to the past, a particular day in 1958. \",\n    \"Genre\": \"Fiction\",\n    \"Price\": 19.72,\n    \"StockQuantity\": 16\n}"
+					"raw": "{\n    \"Title\": \"The Great Contradiction: The Tragic Side of the American Founding\",\n    \"Author\": \"Joseph J. Ellis\",\n    \"Isbn\": \"03DF5850-E814-4E7F-A6C1-1F2A986D271F\",\n    \"Description\": \"On the eve of the American Revolution, half a million enslaved African Americans were embedded in the North American population. The slave trade was flourishing, even as the thirteen colonies armed themselves to defend against the idea of being governed without consent.\",\n    \"Genre\": \"History\",\n    \"Price\": 23.92,\n    \"StockQuantity\": 7\n}"
 				},
 				"url": {
 					"raw": "https://localhost:{{portNumber}}/api/books",

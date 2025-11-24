@@ -140,5 +140,43 @@ namespace BigBooks.UnitTest.ProviderTests
                 Assert.Equal(expectedError, response.Error);
             }
         }
+
+        [Theory]
+        [InlineData(1, "User01DetailsDto.json")]
+        [InlineData(6, null)]
+        public void CheckGetUser(int userKey, string referenceFile)
+        {
+            // arrange
+            InitializeDatabase();
+
+            // act
+            var observed = _usersProvider.GetUser(userKey);
+
+            // assert
+            if (referenceFile != null)
+            {
+                var expected = GetObjectFromSupportJsonFile<UserDetailsDto>(referenceFile);
+                CheckObjectsEquivalent(expected, observed);
+            }
+            else
+            {
+                // invalid user
+                Assert.Null(observed);
+            }
+        }
+
+        [Fact]
+        public void CheckGetCurrentUserException()
+        {
+            // arrange
+            var expectedError = @"Invalid user Some.Guy@test.com";
+
+            var invalidUserEmail = "Some.Guy@test.com";
+
+            // act & assert
+            var ex = Assert.Throws<Exception>(() => _usersProvider.GetCurrentUserDetails(invalidUserEmail));
+
+            Assert.Equal(expectedError, ex.Message);
+        }
     }
 }

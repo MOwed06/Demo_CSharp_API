@@ -11,7 +11,7 @@ namespace BigBooks.API.Providers
 
         public List<BookReviewDto> GetBookReviews(int bookKey)
         {
-            logger.LogDebug($"GetBookReviews {bookKey}");
+            logger.LogDebug("GetBookReviews {0}", bookKey);
 
             var reviews = ctx.BookReviews
                 .AsNoTracking()

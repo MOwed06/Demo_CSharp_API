@@ -39,4 +39,8 @@
     <ProjectReference Include="..\..\src\BigBooks.API\BigBooks.API.csproj" />
   </ItemGroup>
 
+	<ItemGroup>
+		<Content Include="SupportFiles/**/*" CopyToOutputDirectory="PreserveNewest" />
+	</ItemGroup>	
+	
 </Project>

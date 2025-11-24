@@ -5,7 +5,7 @@ namespace BigBooks.API.Interfaces
 {
     public interface ITransactionsProvider
     {
-        ProviderKeyResponse PurchaseBooks(string currentUserKeyValue, PurchaseRequestDto dto);
+        ProviderKeyResponse PurchaseBooks(string currentUserValue, PurchaseRequestDto dto);
         ProviderKeyResponse Deposit(string currentUserValue, AccountDepositDto dto);
     }
 }

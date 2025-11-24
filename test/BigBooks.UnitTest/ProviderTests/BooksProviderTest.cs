@@ -13,38 +13,71 @@ namespace BigBooks.UnitTest.ProviderTests
     {
         private BooksProvider _bookPrv;
 
+        private readonly List<Book> _extraBooks;
+
         public BooksProviderTest() : base()
         {
             var mockLogger = new Mock<ILogger<BooksProvider>>();
             _bookPrv = new BooksProvider(_ctx, mockLogger.Object);
-        }
 
-        [Fact]
-        public void GetBookCheckTitleAuthor()
-        {
-            // arrange
-            InitializeDatabase();
-
-            // act
-            var obs = _bookPrv.GetBook(1);
-
-            // assert
-            Assert.Equal("Where the Wild Things Are", obs?.Title);
-            Assert.Equal("Maurice Sendak", obs?.Author);
-            Assert.Equal(BOOK1_GUID, obs?.Isbn);
-        }
-
-        [Fact]
-        public void GetBookBadKey()
-        {
-            // arrange
-            InitializeDatabase();
-
-            // act
-            var obs = _bookPrv.GetBook(5);
-
-            // assert
-            Assert.Null(obs);
+            _extraBooks = new List<Book>()
+            {
+                new Book
+                {
+                    Key = 3,
+                    Title = "My Life as a Frog",
+                    Author = "Kermit Muppet",
+                    Isbn = Guid.Parse("C735CD21-8BCB-453E-A12B-E13569E4E470"),
+                    Genre = Genre.Childrens,
+                    Description = null,
+                    Price = 10.23m,
+                    StockQuantity = 3
+                },
+                new Book
+                {
+                    Key = 4,
+                    Title = "My Life in the Garbage Can",
+                    Author = "Oscar Muppet",
+                    Isbn = Guid.Parse("A09CF646-C734-4D29-9A46-AE000774CCC1"),
+                    Genre = Genre.Childrens,
+                    Description = null,
+                    Price = 10.23m,
+                    StockQuantity = 3
+                },
+                new Book
+                {
+                    Key = 5,
+                    Title = "Better Living Through Cookies",
+                    Author = "C. Monster",
+                    Isbn = Guid.Parse("4D976E7C-DBAD-4255-9C58-4C11C992316A"),
+                    Genre = Genre.Childrens,
+                    Description = null,
+                    Price = 10.23m,
+                    StockQuantity = 3
+                },
+                new Book
+                {
+                    Key = 6,
+                    Title = "Still Green after all these Years",
+                    Author = "Kermit Muppet",
+                    Isbn = Guid.Parse("3C0F4670-A7F5-4769-BF1A-460B3B7A3312"),
+                    Genre = Genre.Undefined,
+                    Description = null,
+                    Price = 10.23m,
+                    StockQuantity = 3
+                },
+                new Book
+                {
+                    Key = 7,
+                    Title = "Flying Fast and Building Things",
+                    Author = "Tony Stark",
+                    Isbn = Guid.Parse("25E14B0A-01B7-49C1-BD15-0A8A29315C73"),
+                    Genre = Genre.Fantasy,
+                    Description = null,
+                    Price = 10.23m,
+                    StockQuantity = 3
+                }
+            };
         }
 
         [Theory]
@@ -63,7 +96,6 @@ namespace BigBooks.UnitTest.ProviderTests
             // assert
             Assert.Equal(expected, obs);
         }
-
 
         [Theory]
         [InlineData(new int[0], null)]
@@ -163,7 +195,6 @@ namespace BigBooks.UnitTest.ProviderTests
             }
         }
 
-
         [Theory]
         [InlineData(null, "The Title field is required")]
         [InlineData("", "The Title field is required")]
@@ -201,6 +232,66 @@ namespace BigBooks.UnitTest.ProviderTests
             patchDoc.Replace(p => p.Isbn, updateGuid);
 
             ExecuteUpdateTest(BOOK_KEY, patchDoc, expectedError);
+        }
+
+        [Theory]
+        [InlineData(1, "Book01DetailsDto.json")]
+        [InlineData(11, null)]
+        public void CheckGetBook(int bookKey, string referenceFile)
+        {
+            // arrange
+            InitializeDatabase();
+
+            // act
+            var observed = _bookPrv.GetBook(bookKey);
+
+            // assert
+            if (referenceFile != null)
+            {
+                var expected = GetObjectFromSupportJsonFile<BookDetailsDto>(referenceFile);
+                CheckObjectsEquivalent(expected, observed);
+            }
+            else
+            {
+                // invalid book
+                Assert.Null(observed);
+            }
+        }
+
+        [Theory]
+        [InlineData(Genre.Childrens, new int[] { 1, 3, 4, 5 })]
+        [InlineData(Genre.Romance, new int[0])]
+        [InlineData(Genre.Fantasy, new int[] { 7 })]
+        public void CheckGetBooksByGenre(Genre searchGenre, int[] expectedKeys)
+        {
+            // arrange
+            InitializeDatabase(extraBooks: _extraBooks);
+
+            // act
+            var obs = _bookPrv.GetBooksByGenre(searchGenre);
+
+            // assert
+            var obsKeys = obs.Select(b => b.Key).ToList();
+
+            Assert.Equal(expectedKeys, obsKeys);
+        }
+
+        [Theory]
+        [InlineData("Muppet", new int[] { 3, 4, 6 })]
+        [InlineData("Gonzo", new int[0])]
+        [InlineData("", new int[] { 1, 2, 3, 4, 5, 6, 7 })]
+        public void CheckGetBooksByAuthor(string searchAuthor, int[] expectedKeys)
+        {
+            // arrange
+            InitializeDatabase(extraBooks: _extraBooks);
+
+            // act
+            var obs = _bookPrv.GetBooksByAuthor(searchAuthor);
+
+            // assert
+            var obsKeys = obs.Select(b => b.Key).ToList();
+
+            Assert.Equal(expectedKeys, obsKeys);
         }
 
         private void ExecuteUpdateTest(int bookKey, JsonPatchDocument<BookAddUpdateDto> patchDoc, string expectedError)
