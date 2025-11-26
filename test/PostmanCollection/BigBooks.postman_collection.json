@@ -439,6 +439,46 @@
 			"response": []
 		},
 		{
+			"name": "PATCH UpdateAccount",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n    {\n      \"op\": \"replace\",\n      \"path\": \"/Wallet\",\n      \"value\": \"552.23\"\n    },\n    {\n      \"op\": \"replace\",\n      \"path\": \"/UserName\",\n      \"value\": \"F.R. Fallen\"\n    }    \n]"
+				},
+				"url": {
+					"raw": "https://localhost:{{portNumber}}/api/accounts/7",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "{{portNumber}}",
+					"path": [
+						"api",
+						"accounts",
+						"7"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "POST AuthRequest_Customer",
 			"event": [
 				{

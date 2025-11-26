@@ -1,5 +1,6 @@
 ﻿using BigBooks.API.Models;
 using BigBooks.API.Providers;
+using Microsoft.AspNetCore.JsonPatch;
 
 namespace BigBooks.API.Interfaces
 {
@@ -10,5 +11,6 @@ namespace BigBooks.API.Interfaces
         ProviderKeyResponse AddUser(UserAddUpdateDto dto);
         ProviderKeyResponse GetUserKeyFromToken(string currentUserValue);
         UserDetailsDto GetCurrentUserDetails(string currentUserValue);
+        ProviderKeyResponse UpdateAccount(int key, JsonPatchDocument<UserAddUpdateDto> patchDoc);
     }
 }
