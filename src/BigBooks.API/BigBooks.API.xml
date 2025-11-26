@@ -59,6 +59,17 @@
             <param name="dto">user parameters</param>
             <returns>user details</returns>
         </member>
+        <member name="M:BigBooks.API.Controllers.AccountsController.UpdateAccount(System.Int32,Microsoft.AspNetCore.JsonPatch.JsonPatchDocument{BigBooks.API.Models.UserAddUpdateDto})">
+            <summary>
+            Modify user account info
+            </summary>
+            <remarks>
+            Book reviews are not modified
+            </remarks>
+            <param name="key"></param>
+            <param name="patchDoc"></param>
+            <returns></returns>
+        </member>
         <member name="M:BigBooks.API.Controllers.AuthenticationController.Authenticate(BigBooks.API.Authentication.AuthRequest)">
             <summary>
             Request token for user.

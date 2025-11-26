@@ -1,6 +1,7 @@
 ﻿using BigBooks.API.Interfaces;
 using BigBooks.API.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BigBooks.API.Controllers
@@ -108,6 +109,49 @@ namespace BigBooks.API.Controllers
             catch (Exception ex)
             {
                 logger.LogError($"AddUser, {dto.UserEmail}", ex);
+                return BadRequest();
+            }
+        }
+
+        /// <summary>
+        /// Modify user account info
+        /// </summary>
+        /// <remarks>
+        /// Book reviews are not modified
+        /// </remarks>
+        /// <param name="key"></param>
+        /// <param name="patchDoc"></param>
+        /// <returns></returns>
+        [HttpPatch("{key}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public ActionResult<UserDetailsDto> UpdateAccount(int key, JsonPatchDocument<UserAddUpdateDto> patchDoc)
+        {
+            logger.LogTrace($"UpdateAccount, {key}");
+
+            try
+            {
+                if (usersProvider.GetUser(key) == null)
+                {
+                    var errorMsg = $"Invalid user key {key}";
+                    logger.LogDebug(errorMsg);
+                    return NotFound(errorMsg);
+                }
+
+                var response = usersProvider.UpdateAccount(key, patchDoc);
+
+                if (response.Key.HasValue)
+                {
+                    var userInfo = usersProvider.GetUser(response.Key.Value);
+                    return Ok(userInfo);
+                }
+
+                throw new Exception(response.Error);
+            }
+            catch (Exception ex)
+            {
+                logger.LogCritical($"UpdateAccount, {key}", ex);
                 return BadRequest();
             }
         }

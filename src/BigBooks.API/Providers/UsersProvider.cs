@@ -2,6 +2,7 @@
 using BigBooks.API.Entities;
 using BigBooks.API.Interfaces;
 using BigBooks.API.Models;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.EntityFrameworkCore;
 
 namespace BigBooks.API.Providers
@@ -115,10 +116,10 @@ namespace BigBooks.API.Providers
         {
             logger.LogDebug($"AddUser {dto.UserEmail}");
 
-            if (ctx.AppUsers.Any(u => u.UserEmail == dto.UserEmail))
+            if (IsDuplicateEmail(dto.UserEmail, null))
             {
                 // duplicate email
-                return new ProviderKeyResponse(null, "Duplicate UserEmail");
+                return new ProviderKeyResponse(null, $"Duplicate UserEmail {dto.UserEmail}");
             }
 
             var nextUser = new AppUser
@@ -151,6 +152,63 @@ namespace BigBooks.API.Providers
             }
 
             return new ProviderKeyResponse(appUser.Key, string.Empty);
+        }
+
+        public ProviderKeyResponse UpdateAccount(int key, JsonPatchDocument<UserAddUpdateDto> patchDoc)
+        {
+            logger.LogDebug("UpdateUser, {0}", key);
+
+            var existingAccount = ctx.AppUsers
+                .AsNoTracking()
+                .FirstOrDefault(b => b.Key == key);
+
+            if (existingAccount == null)
+            {
+                return new ProviderKeyResponse(null, $"Account key {key} not found");
+            }
+
+            // transform from entity to dto
+            var updateDto = new UserAddUpdateDto
+            {
+                UserEmail = existingAccount.UserEmail,
+                UserName = existingAccount.UserName,
+                Password = existingAccount.Password,
+                Wallet = existingAccount.Wallet,
+                Role = existingAccount.Role
+            };
+
+            // transform existing object according to json patch
+            patchDoc.ApplyTo(updateDto);
+            // confirm transformed object obeys dto rules
+            var validationCheck = ValidateDto(updateDto);
+            if (!validationCheck.Valid)
+            {
+                return new ProviderKeyResponse(null, validationCheck.Error);
+            }
+
+            if (IsDuplicateEmail(updateDto.UserEmail, key))
+            {
+                return new ProviderKeyResponse(null, $"Duplicate UserEmail {updateDto.UserEmail}");
+            }
+
+            // apply updates
+            var modifiedAccount = ctx.AppUsers.Single(u => u.Key == key);
+            modifiedAccount.UserEmail = updateDto.UserEmail;
+            modifiedAccount.UserName = updateDto.UserName;
+            modifiedAccount.Password = updateDto.Password;
+            modifiedAccount.Wallet = updateDto.Wallet;
+            modifiedAccount.Role = updateDto.Role;
+
+            ctx.SaveChanges();
+            return new ProviderKeyResponse(key, string.Empty);
+        }
+
+        private bool IsDuplicateEmail(string emailValue, int? existingUserKey)
+        {
+            // for update request, exclude existing user's email in duplicate check
+            return ctx.AppUsers
+                .Where(u => u.Key != existingUserKey)
+                .Any(u => u.UserEmail.ToLower() == emailValue);
         }
     }
 }
