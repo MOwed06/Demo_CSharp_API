@@ -208,7 +208,7 @@ namespace BigBooks.API.Providers
             // for update request, exclude existing user's email in duplicate check
             return ctx.AppUsers
                 .Where(u => u.Key != existingUserKey)
-                .Any(u => u.UserEmail.ToLower() == emailValue);
+                .Any(u => u.UserEmail.ToLower() == emailValue.ToLower());
         }
     }
 }
