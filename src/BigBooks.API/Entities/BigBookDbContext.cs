@@ -253,6 +253,7 @@ namespace BigBooks.API.Entities
                     Role = Role.Admin,
                     UserEmail = "Clark.Kent@demo.com",
                     UserName = "Clark Kent",
+                    IsActive = true,
                     Password = ApplicationConstant.USER_PASSWORD,
                     Wallet = 1m
                 },
@@ -262,6 +263,7 @@ namespace BigBooks.API.Entities
                     Role = Role.Admin,
                     UserEmail = "Bruce.Wayne@demo.com",
                     UserName = "Bruce Wayne",
+                    IsActive = true,
                     Password = ApplicationConstant.USER_PASSWORD,
                     Wallet = 1m
                 },
@@ -271,6 +273,7 @@ namespace BigBooks.API.Entities
                     Role = Role.Customer,
                     UserEmail = "Diana.Prince@demo.com",
                     UserName = "Diana Prince",
+                    IsActive = true,
                     Password = ApplicationConstant.USER_PASSWORD,
                     Wallet = 16.50m
                 },
@@ -280,6 +283,7 @@ namespace BigBooks.API.Entities
                     Role = Role.Customer,
                     UserEmail = "Arthur.Anderson@demo.com",
                     UserName = "Arthur Anderson",
+                    IsActive = true,
                     Password = ApplicationConstant.USER_PASSWORD,
                     Wallet = 100.0m
                 },
@@ -289,6 +293,7 @@ namespace BigBooks.API.Entities
                     Role = Role.Customer,
                     UserEmail = "Bella.Barnes@demo.com",
                     UserName = "Bella Barnes",
+                    IsActive = true,
                     Password = ApplicationConstant.USER_PASSWORD,
                     Wallet = 50.0m
                 },
@@ -298,6 +303,7 @@ namespace BigBooks.API.Entities
                     Role = Role.Customer,
                     UserEmail = "Celeste.Cadwell@demo.com",
                     UserName = "Celeste Cadwell",
+                    IsActive = true,
                     Password = ApplicationConstant.USER_PASSWORD,
                     Wallet = 20.0m
                 });

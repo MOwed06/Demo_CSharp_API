@@ -40,6 +40,7 @@ namespace BigBooks.API.Providers
                 Key = key,
                 UserEmail = appUser.UserEmail,
                 UserName = appUser.UserName,
+                IsActive = appUser.IsActive,
                 Role = appUser.Role.ToString(),
                 Wallet = appUser.Wallet.ToString("C"),
                 Transactions = GetUserTransactions(key)
@@ -83,6 +84,7 @@ namespace BigBooks.API.Providers
                     Key = u.Key,
                     UserEmail = u.UserEmail,
                     Role = u.Role.ToString(),
+                    IsActive = u.IsActive,
                     BookCount = u.Transactions
                         .Where(t => t.BookKey != null)
                         .Select(t => t.BookKey)
@@ -127,6 +129,7 @@ namespace BigBooks.API.Providers
                 UserEmail = dto.UserEmail,
                 UserName = dto.UserName,
                 Password = dto.Password,
+                IsActive = dto.IsActive,
                 Wallet = dto.Wallet,
                 Role = dto.Role,
                 Transactions = new List<AccountTransaction>()
@@ -172,6 +175,7 @@ namespace BigBooks.API.Providers
             {
                 UserEmail = existingAccount.UserEmail,
                 UserName = existingAccount.UserName,
+                IsActive = existingAccount.IsActive,
                 Password = existingAccount.Password,
                 Wallet = existingAccount.Wallet,
                 Role = existingAccount.Role
@@ -195,6 +199,7 @@ namespace BigBooks.API.Providers
             var modifiedAccount = ctx.AppUsers.Single(u => u.Key == key);
             modifiedAccount.UserEmail = updateDto.UserEmail;
             modifiedAccount.UserName = updateDto.UserName;
+            modifiedAccount.IsActive = updateDto.IsActive;
             modifiedAccount.Password = updateDto.Password;
             modifiedAccount.Wallet = updateDto.Wallet;
             modifiedAccount.Role = updateDto.Role;

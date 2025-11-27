@@ -186,6 +186,18 @@
         <member name="M:BigBooks.API.Migrations.LintEntities.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
+        <member name="T:BigBooks.API.Migrations.UserIsActive">
+            <inheritdoc />
+        </member>
+        <member name="M:BigBooks.API.Migrations.UserIsActive.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:BigBooks.API.Migrations.UserIsActive.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:BigBooks.API.Migrations.UserIsActive.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
         <member name="T:BigBooks.API.Models.BookDetailsDto">
             <summary>
             Book detail information

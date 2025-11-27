@@ -20,6 +20,8 @@ namespace BigBooks.API.Models
         [MaxLength(20)]
         public string Password { get; set; } = string.Empty;
 
+        public bool IsActive { get; set; } = true;
+
         [Required]
         [Range(1.00, 5000)]
         public decimal Wallet { get; set; }
