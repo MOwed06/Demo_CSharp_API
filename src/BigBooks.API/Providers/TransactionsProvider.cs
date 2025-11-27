@@ -32,6 +32,12 @@ namespace BigBooks.API.Providers
                 return new ProviderKeyResponse(null, userMatch.Error);
             }
 
+            if (!usersProvider.IsUserActive(userMatch.Key.Value))
+            {
+                // inactive user, purchase denied
+                return new ProviderKeyResponse(null, "User is deactivated");
+            }
+
             var book = ctx.Books
                 .AsNoTracking()
                 .SingleOrDefault(b => b.Key == dto.BookKey);
@@ -86,6 +92,12 @@ namespace BigBooks.API.Providers
             {
                 // no match to user
                 return new ProviderKeyResponse(null, userMatch.Error);
+            }
+
+            if (!usersProvider.IsUserActive(userMatch.Key.Value))
+            {
+                // inactive user, action rejected
+                return new ProviderKeyResponse(null, "User is deactivated");
             }
 
             var currentUser = ctx.AppUsers

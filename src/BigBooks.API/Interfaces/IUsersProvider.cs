@@ -12,5 +12,6 @@ namespace BigBooks.API.Interfaces
         ProviderKeyResponse GetUserKeyFromToken(string currentUserValue);
         UserDetailsDto GetCurrentUserDetails(string currentUserValue);
         ProviderKeyResponse UpdateAccount(int key, JsonPatchDocument<UserAddUpdateDto> patchDoc);
+        bool IsUserActive(int key);
     }
 }

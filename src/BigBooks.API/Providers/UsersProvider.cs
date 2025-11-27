@@ -221,5 +221,10 @@ namespace BigBooks.API.Providers
                 .Where(u => u.Key != existingUserKey)
                 .Any(u => u.UserEmail.ToLower() == emailValue.ToLower());
         }
+
+        public bool IsUserActive(int key)
+        {
+            return ctx.AppUsers.Single(u => u.Key == key).IsActive;
+        }
     }
 }

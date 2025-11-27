@@ -2,6 +2,7 @@
   "Key": 1,
   "UserEmail": "Bruce.Banner@test.com",
   "UserName": "Bruce Banner",
+  "IsActive": true,
   "Role": "Admin",
   "Wallet": "$1.00",
   "Transactions": [
