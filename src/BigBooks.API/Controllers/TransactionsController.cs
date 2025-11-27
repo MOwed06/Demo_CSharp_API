@@ -33,9 +33,9 @@ namespace BigBooks.API.Controllers
             try
             {
                 // extract appUser key from active user claims
-                var currentUserKeyValue = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var currentUserValue = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-                var response = transactionsProvider.PurchaseBooks(currentUserKeyValue, dto);
+                var response = transactionsProvider.PurchaseBooks(currentUserValue, dto);
 
                 if (response.Key == null)
                 {
@@ -73,9 +73,9 @@ namespace BigBooks.API.Controllers
             try
             {
                 // extract appUser key from active user claims
-                var currentUserKeyValue = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var currentUserValue = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-                var response = transactionsProvider.Deposit(currentUserKeyValue, dto);
+                var response = transactionsProvider.Deposit(currentUserValue, dto);
 
                 if (response.Key == null)
                 {

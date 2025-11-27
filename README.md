@@ -82,13 +82,13 @@ I will continue to evolve this project as my bandwidth allows. I will keep the m
 Things yet to do ...
 
 1. Lots more unit tests
-1. Add IsActive property to AppUser
-    - modify GetUsers, ModifyAccount, etc.
-1. AccountController, Inactivate Account method
-1. BookReviewController, Add Review
-1. BookReviewController, Delete Review
+1. Get all books, author = none
+1. Delete Account
+    - delete AppUser transactions
+    - modify user's bookreviews to become Anonymous
 1. Convert Controller methods to async.
 1. Apply pagination to controller responses
+1. Refactor redundancies between controller-provider checks for object exists
 
 
 <br>

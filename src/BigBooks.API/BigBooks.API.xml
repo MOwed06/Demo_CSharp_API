@@ -82,6 +82,21 @@
             <param name="authRequest"></param>
             <returns>authentication response</returns>
         </member>
+        <member name="M:BigBooks.API.Controllers.BookReviewsController.GetBookReviews(System.Int32)">
+            <summary>
+            Get book reviews for designaged book
+            </summary>
+            <param name="book"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BigBooks.API.Controllers.BookReviewsController.AddBookReview(System.Int32,BigBooks.API.Models.BookReviewAddDto)">
+            <summary>
+            Add review for current user
+            </summary>
+            <param name="book">book key, taken from route</param>
+            <param name="dto">book review details</param>
+            <returns></returns>
+        </member>
         <member name="M:BigBooks.API.Controllers.BooksController.GetBook(System.Int32)">
             <summary>
             Get book by key

@@ -39,6 +39,38 @@
 			"response": []
 		},
 		{
+			"name": "GET BookReviews",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:{{portNumber}}/api/books/6/reviews",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "{{portNumber}}",
+					"path": [
+						"api",
+						"books",
+						"6",
+						"reviews"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "GET AccountDetails",
 			"request": {
 				"auth": {
@@ -313,6 +345,47 @@
 			"response": []
 		},
 		{
+			"name": "POST AddBookReview",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"Score\": 8,\n    \"IsAnonymous\": false,\n    \"Description\": null\n}"
+				},
+				"url": {
+					"raw": "https://localhost:{{portNumber}}/api/books/5/reviews",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "{{portNumber}}",
+					"path": [
+						"api",
+						"books",
+						"5",
+						"reviews"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "POST AddAccount",
 			"request": {
 				"auth": {
@@ -512,6 +585,46 @@
 			"response": []
 		},
 		{
+			"name": "PATCH DeactiveAccount",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n    {\n      \"op\": \"replace\",\n      \"path\": \"/IsActive\",\n      \"value\": \"false\"\n    }   \n]"
+				},
+				"url": {
+					"raw": "https://localhost:{{portNumber}}/api/accounts/9",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "{{portNumber}}",
+					"path": [
+						"api",
+						"accounts",
+						"9"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "POST AuthRequest_Customer",
 			"event": [
 				{
@@ -535,7 +648,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"UserId\": \"Dylan.Davis@demo.com\",\r\n    \"Password\": \"N0tV3ryS3cret\"\r\n}",
+					"raw": "{\r\n    \"UserId\": \"Celeste.Cadwell@demo.com\",\r\n    \"Password\": \"N0tV3ryS3cret\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
