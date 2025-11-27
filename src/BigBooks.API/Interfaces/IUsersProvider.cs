@@ -7,7 +7,7 @@ namespace BigBooks.API.Interfaces
     public interface IUsersProvider
     {
         UserDetailsDto GetUser(int key);
-        List<UserOverviewDto> GetUsers();
+        List<UserOverviewDto> GetUsers(bool? activeStatus);
         ProviderKeyResponse AddUser(UserAddUpdateDto dto);
         ProviderKeyResponse GetUserKeyFromToken(string currentUserValue);
         UserDetailsDto GetCurrentUserDetails(string currentUserValue);

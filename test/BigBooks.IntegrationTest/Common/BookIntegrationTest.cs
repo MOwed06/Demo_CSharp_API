@@ -9,7 +9,7 @@ namespace BigBooks.IntegrationTest.Common
     public abstract class BookIntegrationTest : IDisposable
     {
         protected const string AUTH_URI = @"/api/authentication/authenticate";
-        protected const string ACCOUNT_LIST_URI = @"/api/accounts";
+        protected const string ACCOUNT_LIST_URI = @"/api/accounts/list";
         protected const string BOOKS_URI = @"/api/books";
         protected const string BOOK_3_GET_URI = @"/api/books/3";
 

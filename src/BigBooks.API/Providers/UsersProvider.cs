@@ -69,14 +69,20 @@ namespace BigBooks.API.Providers
             .ToList();
         }
 
-        public List<UserOverviewDto> GetUsers()
+        public List<UserOverviewDto> GetUsers(bool? activeStatus)
         {
             logger.LogDebug("GetUsers");
 
-            var appUsers = ctx.AppUsers
-                .AsNoTracking()
-                .Include(u => u.Transactions)
-                .ToList();
+            var appUsers = activeStatus.HasValue
+                ? ctx.AppUsers // sort by active status
+                    .AsNoTracking()
+                    .Where(u => u.IsActive == activeStatus.Value)
+                    .Include(u => u.Transactions)
+                    .ToList()
+                : ctx.AppUsers // retrieve all
+                    .AsNoTracking()
+                    .Include(u => u.Transactions)
+                    .ToList();
 
             return appUsers
                 .Select(u => new UserOverviewDto

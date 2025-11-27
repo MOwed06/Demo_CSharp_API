@@ -59,17 +59,22 @@ namespace BigBooks.API.Controllers
         /// <remarks>
         /// Requires authenticated user with Admin role
         /// </remarks>
+        /// <param name="active">filter by active status (1/0/null)</param>
         /// <returns>overview of each user</returns>
-        [HttpGet(Name = "GetAccountList")]
+        [HttpGet("list/{active?}", Name = "GetAccountList")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult<IEnumerable<UserOverviewDto>> GetAccounts()
+        public ActionResult<IEnumerable<UserOverviewDto>> GetAccounts(int? active)
         {
             logger.LogTrace("GetUsers");
 
             try
             {
-                var userDtos = usersProvider.GetUsers();
+                bool? activeFilter = active.HasValue
+                    ? active.Value == 1
+                    : null;
+
+                var userDtos = usersProvider.GetUsers(activeFilter);
                 return Ok(userDtos);
             }
             catch (Exception ex)

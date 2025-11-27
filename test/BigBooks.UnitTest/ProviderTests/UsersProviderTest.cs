@@ -189,6 +189,36 @@ namespace BigBooks.UnitTest.ProviderTests
             Assert.Equal(wallet.ToString("C"), updatedUser.Wallet);
         }
 
+        [Theory]
+        [InlineData(null, new int[] { 1, 2, 3 })]
+        [InlineData(true, new int[] { 1, 2 })]
+        [InlineData(false, new int[] { 3 })]
+        public void GetUserList(bool? activeFilter, int[] expectedKeys)
+        {
+            // arrange
+            var extraUsers = new List<AppUser>
+            {
+                new AppUser
+                {
+                    Key = 3,
+                    UserName = "Isaiah Chapman",
+                    UserEmail = "Isaiah.Chapman@test.com",
+                    Password = ApplicationConstant.USER_PASSWORD,
+                    IsActive = false,
+                    Role = Role.Customer,
+                    Wallet = 45.31m
+                }
+            };
+
+            InitializeDatabase(extraAppUsers: extraUsers);
+
+            // act
+            var obs = _usersProvider.GetUsers(activeFilter);
+            var obsUserKeys = obs.Select(u => u.Key).ToList();
+
+            // assert
+            Assert.Equal(expectedKeys.ToList(), obsUserKeys);
+        }
 
         [Theory]
         [InlineData(1, "User01DetailsDto.json")]

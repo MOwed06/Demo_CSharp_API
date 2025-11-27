@@ -93,6 +93,7 @@ namespace BigBooks.UnitTest.Common
                     UserName = "Bruce Banner",
                     UserEmail = "Bruce.Banner@test.com",
                     Password = ApplicationConstant.USER_PASSWORD,
+                    IsActive = true,
                     Role = Role.Admin,
                     Wallet = 1m
                 },
@@ -101,6 +102,7 @@ namespace BigBooks.UnitTest.Common
                     Key = 2,
                     UserName = "Jessica Jones",
                     UserEmail = CUSTOMER_2_EMAIL,
+                    IsActive = true,
                     Password = ApplicationConstant.USER_PASSWORD,
                     Role = Role.Customer,
                     Wallet = 100m

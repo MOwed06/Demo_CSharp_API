@@ -40,13 +40,14 @@
             <param name="key">user account key</param>
             <returns>user details</returns>
         </member>
-        <member name="M:BigBooks.API.Controllers.AccountsController.GetAccounts">
+        <member name="M:BigBooks.API.Controllers.AccountsController.GetAccounts(System.Nullable{System.Int32})">
             <summary>
             Get all user acounts
             </summary>
             <remarks>
             Requires authenticated user with Admin role
             </remarks>
+            <param name="active">filter by active status (1/0/null)</param>
             <returns>overview of each user</returns>
         </member>
         <member name="M:BigBooks.API.Controllers.AccountsController.AddAccount(BigBooks.API.Models.UserAddUpdateDto)">
