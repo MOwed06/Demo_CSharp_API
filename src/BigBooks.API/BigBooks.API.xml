@@ -40,13 +40,14 @@
             <param name="key">user account key</param>
             <returns>user details</returns>
         </member>
-        <member name="M:BigBooks.API.Controllers.AccountsController.GetAccounts">
+        <member name="M:BigBooks.API.Controllers.AccountsController.GetAccounts(System.Nullable{System.Int32})">
             <summary>
             Get all user acounts
             </summary>
             <remarks>
             Requires authenticated user with Admin role
             </remarks>
+            <param name="active">filter by active status (1/0/null)</param>
             <returns>overview of each user</returns>
         </member>
         <member name="M:BigBooks.API.Controllers.AccountsController.AddAccount(BigBooks.API.Models.UserAddUpdateDto)">
@@ -58,6 +59,17 @@
             </remarks>         
             <param name="dto">user parameters</param>
             <returns>user details</returns>
+        </member>
+        <member name="M:BigBooks.API.Controllers.AccountsController.UpdateAccount(System.Int32,Microsoft.AspNetCore.JsonPatch.JsonPatchDocument{BigBooks.API.Models.UserAddUpdateDto})">
+            <summary>
+            Modify user account info
+            </summary>
+            <remarks>
+            Book reviews are not modified
+            </remarks>
+            <param name="key"></param>
+            <param name="patchDoc"></param>
+            <returns></returns>
         </member>
         <member name="M:BigBooks.API.Controllers.AuthenticationController.Authenticate(BigBooks.API.Authentication.AuthRequest)">
             <summary>
@@ -173,6 +185,18 @@
             <inheritdoc />
         </member>
         <member name="M:BigBooks.API.Migrations.LintEntities.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="T:BigBooks.API.Migrations.UserIsActive">
+            <inheritdoc />
+        </member>
+        <member name="M:BigBooks.API.Migrations.UserIsActive.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:BigBooks.API.Migrations.UserIsActive.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:BigBooks.API.Migrations.UserIsActive.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
         <member name="T:BigBooks.API.Models.BookDetailsDto">

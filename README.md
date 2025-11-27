@@ -33,6 +33,12 @@ I will continue to evolve this project as my bandwidth allows. I will keep the m
     - Dto objects exchanged with controllers
     - Simmplified token authorization
 
+- AccountsController vs UsersController
+    - Under-the-Hood, both the AccountsController and UsersController leverage the UsersProvider
+    - As implemented, these controllers differ by authorization
+        - Only an admin user (with "AccountsAccess) may globally view/add/modify Accounts
+        - Any user my view their own User details via the UsersController
+
 - Intentional complexities
     - BookAddUpdateDto.Isbn must be valid Guid
     - UserAddUpdateDto.UserEmail must be valid email
@@ -76,11 +82,13 @@ I will continue to evolve this project as my bandwidth allows. I will keep the m
 Things yet to do ...
 
 1. Lots more unit tests
-1. Even more unit tests
-1. AccountController, Modify(Patch) Account
+1. Add IsActive property to AppUser
+    - modify GetUsers, ModifyAccount, etc.
+1. AccountController, Inactivate Account method
 1. BookReviewController, Add Review
 1. BookReviewController, Delete Review
 1. Convert Controller methods to async.
+1. Apply pagination to controller responses
 
 
 <br>

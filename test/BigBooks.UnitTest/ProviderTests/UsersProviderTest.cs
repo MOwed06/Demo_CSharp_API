@@ -3,6 +3,7 @@ using BigBooks.API.Entities;
 using BigBooks.API.Models;
 using BigBooks.API.Providers;
 using BigBooks.UnitTest.Common;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Extensions.Logging;
 using Moq;
 
@@ -137,8 +138,86 @@ namespace BigBooks.UnitTest.ProviderTests
             else
             {
                 Assert.Null(response.Key);
-                Assert.Equal(expectedError, response.Error);
+                Assert.Contains(expectedError, response.Error);
             }
+        }
+
+        [Theory]
+        [InlineData(1, CUSTOMER_2_EMAIL, "12345", "Duplicate UserEmail")]
+        [InlineData(5, "SomeNew.Guy@test.com", "12345", "Account key 5 not found")]
+        [InlineData(1, "SomeNew.Guy@test.com", "123", "field Password must be a")]
+        [InlineData(1, "", "12345", "UserEmail field is required")]
+        public void CheckUpdateAccountRejected(int key, string email, string password, string expectedError)
+        {
+            // arrange
+            InitializeDatabase();
+
+            var patchDoc = new JsonPatchDocument<UserAddUpdateDto>();
+            patchDoc.Replace(p => p.UserEmail, email);
+            patchDoc.Replace(p => p.Password, password);
+
+            // act
+            var obs = _usersProvider.UpdateAccount(key, patchDoc);
+
+            // assert
+            Assert.Null(obs.Key);
+            Assert.Contains(expectedError, obs.Error);
+        }
+
+        [Theory]
+        [InlineData("Some.Funny.Name@test.com", "SFName", 45.23)]
+        [InlineData("SF.Name@test.com", "Some Very Long Name For Person", 545.23)]
+        public void CheckUpdateAccountValid(string email, string userName, decimal wallet)
+        {
+            // arrange
+            const int MODIFY_USER_KEY = 2;
+
+            InitializeDatabase();
+
+            var patchDoc = new JsonPatchDocument<UserAddUpdateDto>();
+            patchDoc.Replace(p => p.UserEmail, email);
+            patchDoc.Replace(p => p.UserName, userName);
+            patchDoc.Replace(p => p.Wallet, wallet);
+
+            // act
+            var obs = _usersProvider.UpdateAccount(MODIFY_USER_KEY, patchDoc);
+            var updatedUser = _usersProvider.GetUser(MODIFY_USER_KEY);
+
+            // assert
+            Assert.Equal(email, updatedUser.UserEmail);
+            Assert.Equal(userName, updatedUser.UserName);
+            Assert.Equal(wallet.ToString("C"), updatedUser.Wallet);
+        }
+
+        [Theory]
+        [InlineData(null, new int[] { 1, 2, 3 })]
+        [InlineData(true, new int[] { 1, 2 })]
+        [InlineData(false, new int[] { 3 })]
+        public void GetUserList(bool? activeFilter, int[] expectedKeys)
+        {
+            // arrange
+            var extraUsers = new List<AppUser>
+            {
+                new AppUser
+                {
+                    Key = 3,
+                    UserName = "Isaiah Chapman",
+                    UserEmail = "Isaiah.Chapman@test.com",
+                    Password = ApplicationConstant.USER_PASSWORD,
+                    IsActive = false,
+                    Role = Role.Customer,
+                    Wallet = 45.31m
+                }
+            };
+
+            InitializeDatabase(extraAppUsers: extraUsers);
+
+            // act
+            var obs = _usersProvider.GetUsers(activeFilter);
+            var obsUserKeys = obs.Select(u => u.Key).ToList();
+
+            // assert
+            Assert.Equal(expectedKeys.ToList(), obsUserKeys);
         }
 
         [Theory]

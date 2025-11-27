@@ -14,8 +14,10 @@ namespace BigBooks.UnitTest.ProviderTests
         private readonly TransactionsProvider _transactionsPrv;
         private readonly UsersProvider _usersPrv;
 
-        private const int CUSTOMER_KEY = 3;
-        private const string CUSTOMER_EMAIL = "Zachary.Zimmer@demo.com";
+        private const int ACTIVE_CUSTOMER_KEY = 3;
+        private const int INACTIVE_CUSTOMER_KEY = 4;
+        private const string ACTIVE_CUSTOMER_EMAIL = "Zachary.Zimmer@demo.com";
+        private const string INACTIVE_CUSTOMER_EMAIL = "Matthew.Ferguson@demo.com";
         private const decimal CUSTOMER_WALLET = 40.0m;
 
         private const int RARE_BOOK_KEY = 3;
@@ -64,9 +66,19 @@ namespace BigBooks.UnitTest.ProviderTests
             {
                 new AppUser
                 {
-                    Key = CUSTOMER_KEY,
+                    Key = ACTIVE_CUSTOMER_KEY,
                     UserName = "Zachary Zimmer",
-                    UserEmail = CUSTOMER_EMAIL,
+                    UserEmail = ACTIVE_CUSTOMER_EMAIL,
+                    IsActive = true,
+                    Wallet = CUSTOMER_WALLET,
+                    Password = ApplicationConstant.USER_PASSWORD
+                },
+                new AppUser
+                {
+                    Key = INACTIVE_CUSTOMER_KEY,
+                    UserName = "M. Ferguson",
+                    UserEmail = INACTIVE_CUSTOMER_EMAIL,
+                    IsActive = false,
                     Wallet = CUSTOMER_WALLET,
                     Password = ApplicationConstant.USER_PASSWORD
                 }
@@ -78,7 +90,7 @@ namespace BigBooks.UnitTest.ProviderTests
                 {
                     Key = 3,
                     TransactionDate = DateTime.Parse("2025-03-15").Date,
-                    UserKey = CUSTOMER_KEY,
+                    UserKey = ACTIVE_CUSTOMER_KEY,
                     TransactionAmount = 25.00m,
                     TransactionConfirmation = Guid.Parse("A139F559-742A-4ED1-8B0F-F9C9D3A2264A"),
                     BookKey = null,
@@ -114,10 +126,30 @@ namespace BigBooks.UnitTest.ProviderTests
             };
 
             // act
-            var response = _transactionsPrv.PurchaseBooks(CUSTOMER_EMAIL, purchaseDto);
+            var response = _transactionsPrv.PurchaseBooks(ACTIVE_CUSTOMER_EMAIL, purchaseDto);
 
             // assert
             Assert.Contains(expectedError, response.Error);
+            Assert.Null(response.Key);
+        }
+
+        [Fact]
+        public void CheckInactiveUserPurchaseDenied()
+        {
+            // arrange
+            const string EXPECTED_ERROR = "User is deactivated";
+
+            var purchaseDto = new PurchaseRequestDto
+            {
+                BookKey = 1,
+                RequestedQuantity = 1
+            };
+
+            // act
+            var response = _transactionsPrv.PurchaseBooks(INACTIVE_CUSTOMER_EMAIL, purchaseDto);
+
+            // assert
+            Assert.Contains(EXPECTED_ERROR, response.Error);
             Assert.Null(response.Key);
         }
 
@@ -136,7 +168,7 @@ namespace BigBooks.UnitTest.ProviderTests
             };
 
             // act
-            var response = _transactionsPrv.PurchaseBooks(CUSTOMER_EMAIL, purchaseDto);
+            var response = _transactionsPrv.PurchaseBooks(ACTIVE_CUSTOMER_EMAIL, purchaseDto);
 
             var observedUser = _ctx.AppUsers
                 .AsNoTracking()
@@ -171,7 +203,7 @@ namespace BigBooks.UnitTest.ProviderTests
             };
 
             // act
-            var response = _transactionsPrv.PurchaseBooks(CUSTOMER_EMAIL, purchaseDto);
+            var response = _transactionsPrv.PurchaseBooks(ACTIVE_CUSTOMER_EMAIL, purchaseDto);
             var obsUser = _usersPrv.GetUser(response.Key.Value); // get user info
             var obsTransaction = obsUser.Transactions.First();  // expect most recent is first
 
