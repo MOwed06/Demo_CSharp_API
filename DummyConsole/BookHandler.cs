@@ -1,10 +1,11 @@
-﻿using BigBooks.API.Core;
+﻿using BigBooks.API.Authentication;
+using BigBooks.API.Core;
 using BigBooks.API.Models;
 using DataMaker;
 
 namespace DummyConsole
 {
-    internal class BookHandler
+    internal class BookHandler : MessageHandler
     {
         private readonly List<string> _authors = new List<string>();
 
@@ -41,6 +42,34 @@ namespace DummyConsole
             }
 
             return bookList;
+        }
+
+        internal async Task AddBooks(List<BookAddUpdateDto> bookDtos)
+        {
+            var authRequest = new AuthRequest
+            {
+                UserId = "Bruce.Wayne@demo.com",
+                Password = ApplicationConstant.USER_PASSWORD
+            };
+
+            using (var client = new HttpClient())
+            {
+                var token = await GetAuthToken(client, authRequest);
+
+
+                int bookCount = 0;
+
+                foreach (var dto in bookDtos)
+                {
+                    var response = SendMessage<BookDetailsDto>(client: client,
+                        uri: BOOKS_URI,
+                        method: HttpMethod.Post,
+                        token: token,
+                        body: dto);
+
+                    Console.WriteLine($"key: {response.Result.Key}, title: {response.Result.Title}");
+                }
+            }
         }
 
         private string TruncateString(string source, int max)

@@ -9,4 +9,6 @@ var bookHandler = new BookHandler(20);
 
 var bookDtos = bookHandler.BuildBookDtos(100);
 
+await bookHandler.AddBooks(bookDtos);
+
 Console.WriteLine("Goodbye, Cruel World!");
