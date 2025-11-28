@@ -11,7 +11,7 @@ namespace BigBooksDbGenerator
         protected const string ACCOUNTS_URI = @"https://localhost:7119/api/accounts";
         protected const string BOOKS_URI = @"https://localhost:7119/api/books";
         protected const string AUTH_URI = @"https://localhost:7119/api/authentication/authenticate";
-        
+        protected const string TRANSACTIONS_URI = @"https://localhost:7119/api/transactions/purchase";
         protected async Task<string> GetAuthToken(HttpClient client, AuthRequest authRequest)
         {
             var reqBody = JsonConvert.SerializeObject(authRequest);
@@ -49,7 +49,15 @@ namespace BigBooksDbGenerator
 
             if (HttpStatusCode.OK != response.StatusCode)
             {
-                throw new Exception("This is bad");
+                var errorMsg = $"Message Failure, {uri}";
+
+                if (body != null)
+                {
+                    var reqBody = JsonConvert.SerializeObject(body);
+                    errorMsg += "\n" + reqBody.ToString();
+                }
+
+                throw new Exception(errorMsg);
             }
 
             var responseData = await response.Content.ReadAsStringAsync();

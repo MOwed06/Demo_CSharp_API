@@ -44,7 +44,7 @@ namespace BigBooksDbGenerator
                     Description = TruncateString(description, 500),
                     Genre = (Genre)RandomData.GenerateInt(1, 10),
                     Price = RandomData.GenerateDecimal(9, 31, 2),
-                    StockQuantity = RandomData.GenerateInt(11, 50)
+                    StockQuantity = RandomData.GenerateInt(31, 70)
                 };
 
                 bookList.Add(nextBook);

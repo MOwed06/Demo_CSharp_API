@@ -7,15 +7,17 @@ namespace BigBooksDbGenerator
 {
     internal class AccountHandler : MessageHandler
     {
+        private List<string> _userEmails;
+
         public async Task<List<string>> GenerateUsers(int userCount)
         {
             var userAddDtos = BuildUserDtos(userCount);
 
-            var userEmails = userAddDtos.Select(u => u.UserEmail).ToList();
+            _userEmails = userAddDtos.Select(u => u.UserEmail).ToList();
 
             await CreateUsers(userAddDtos);
 
-            return userEmails;
+            return _userEmails;
         }
 
         private async Task CreateUsers(List<UserAddUpdateDto> userAddDtos)
@@ -63,6 +65,55 @@ namespace BigBooksDbGenerator
                 userDtos.Add(nextUser);
             }
             return userDtos;
+        }
+
+        internal async Task GeneratePurchases(List<int> bKeys, int maxPurchases)
+        {
+            foreach (var userEmail in _userEmails)
+            {
+                var userBookCount = RandomData.GenerateInt(0, maxPurchases+1);
+
+                var authRequest = new AuthRequest
+                {
+                    UserId = userEmail,
+                    Password = ApplicationConstant.USER_PASSWORD
+                };
+
+                var purchasedBookKeys = new HashSet<int>();
+
+                using (var client = new HttpClient())
+                {
+                    var token = await GetAuthToken(client, authRequest);
+
+                    for (int i = 0; i < userBookCount; i++)
+                    {
+                        var selectedBookKey = RandomData.SelectFromList(bKeys);
+
+                        // allow user to purchase book only once
+                        if (purchasedBookKeys.Contains(selectedBookKey))
+                        {
+                            break;
+                        }
+
+                        var purchaseDto = new PurchaseRequestDto
+                        {
+                            BookKey = selectedBookKey,
+                            RequestedQuantity = 1,
+                            TransactionConfirmation = Guid.NewGuid()
+                        };
+
+                        await SendMessage<BookDetailsDto>(client: client,
+                                                uri: TRANSACTIONS_URI,
+                                                method: HttpMethod.Post,
+                                                token: token,
+                                                body: purchaseDto);
+
+                        Console.WriteLine($"User: {userEmail}, BookKey: {selectedBookKey}");
+
+                        purchasedBookKeys.Add(selectedBookKey);
+                    }
+                }
+            }
         }
     }
 }

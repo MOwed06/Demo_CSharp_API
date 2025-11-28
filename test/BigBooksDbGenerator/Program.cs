@@ -2,9 +2,11 @@
 
 using BigBooksDbGenerator;
 
-const int AUTHOR_COUNT = 20;
-const int BOOK_COUNT = 100;
-const int USER_COUNT = 50;
+const int AUTHOR_COUNT = 10;
+const int BOOK_COUNT = 50;
+const int USER_COUNT = 20;
+const int USER_MAX_BOOKS = 4;
+const int USER_MAX_REVIEWS = 3;
 
 Console.WriteLine("Hello, World!");
 
@@ -19,6 +21,8 @@ try
     var userEmails = await acctsHandler.GenerateUsers(USER_COUNT);
 
     Console.WriteLine($"Users: {userEmails.Count()}, LastUser: {userEmails.Last()}\n");
+
+    await acctsHandler.GeneratePurchases(bKeys, USER_MAX_BOOKS);
 }
 catch (Exception ex)
 {
