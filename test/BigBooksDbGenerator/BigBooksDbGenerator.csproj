@@ -8,8 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\BigBooks.API\BigBooks.API.csproj" />
-    <ProjectReference Include="..\test\DataMaker\DataMaker.csproj" />
+    <ProjectReference Include="..\..\src\BigBooks.API\BigBooks.API.csproj" />
+    <ProjectReference Include="..\DataMaker\DataMaker.csproj" />
   </ItemGroup>
 
 </Project>

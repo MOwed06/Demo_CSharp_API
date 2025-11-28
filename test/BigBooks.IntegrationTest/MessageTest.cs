@@ -3,10 +3,7 @@ using BigBooks.API.Core;
 using BigBooks.API.Models;
 using BigBooks.IntegrationTest.Common;
 using DataMaker;
-using Newtonsoft.Json;
 using System.Net;
-using System.Net.Http.Headers;
-using System.Text;
 
 namespace BigBooks.IntegrationTest
 {
@@ -30,23 +27,20 @@ namespace BigBooks.IntegrationTest
                 Password = ApplicationConstant.USER_PASSWORD
             };
 
-            string responseToken = await GetAuthToken(authRequest);
-
-            var requestBook = new HttpRequestMessage(method: HttpMethod.Get,
-                requestUri: BOOK_3_GET_URI);
-            requestBook.Headers.Authorization = new AuthenticationHeaderValue("Bearer", responseToken);
+            string token = await GetAuthToken(authRequest);
 
             // act
-            var bookResponse = await _client.SendAsync(requestBook);
+            var response = await SendMessage(uri: BOOK_3_GET_URI,
+                method: HttpMethod.Get,
+                token: token,
+                body: null);
 
-            var responseBookBody = await bookResponse.Content.ReadAsStringAsync();
-
-            var bookDto = JsonConvert.DeserializeObject<BookDetailsDto>(responseBookBody);
+            var obs = await ReadResponseContent<BookDetailsDto>(response);
 
             // asset
-            WriteToOutput(responseBookBody);
-            Assert.NotNull(responseBookBody);
-            Assert.Equal(BOOK_3_TITLE, bookDto.Title);
+            WriteToOutput(obs);
+            Assert.NotNull(obs);
+            Assert.Equal(BOOK_3_TITLE, obs.Title);
         }
 
         /// <summary>
@@ -65,10 +59,13 @@ namespace BigBooks.IntegrationTest
                 Password = ApplicationConstant.USER_PASSWORD
             };
 
-            string responseToken = await GetAuthToken(authRequest);
+            string token = await GetAuthToken(authRequest);
 
             // act
-            var response = await GetAccounts(responseToken);
+            var response = await SendMessage(uri: ACCOUNT_LIST_URI,
+                method: HttpMethod.Get,
+                token: token,
+                body: null);
 
             // assert
             WriteToOutput(response.StatusCode);
@@ -93,10 +90,13 @@ namespace BigBooks.IntegrationTest
                 Password = ApplicationConstant.USER_PASSWORD
             };
 
-            string responseToken = await GetAuthToken(authRequest);
+            string token = await GetAuthToken(authRequest);
 
             // act
-            var response = await GetAccounts(responseToken);
+            var response = await SendMessage(uri: ACCOUNT_LIST_URI,
+                method: HttpMethod.Get,
+                token: token,
+                body: null);
 
             // assert
             WriteToOutput(response.StatusCode);
@@ -129,44 +129,23 @@ namespace BigBooks.IntegrationTest
                 StockQuantity = RandomData.GenerateInt(1, 13)
             };
 
-            string responseToken = await GetAuthToken(authRequest);
+            string token = await GetAuthToken(authRequest);
 
             // act
-            var response = await AddBookRequest(responseToken, bookAddDto);
+            var response = await SendMessage(uri: BOOKS_URI,
+                method: HttpMethod.Post,
+                token: token,
+                body: bookAddDto);
 
             // assert
             WriteToOutput(response.StatusCode);
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
-            var responseBody = await response.Content.ReadAsStringAsync();
-            WriteToOutput(responseBody);
+            var obs = await ReadResponseContent<BookDetailsDto>(response);
 
-            var observedBook = JsonConvert.DeserializeObject<BookDetailsDto>(responseBody);
-            Assert.Equal(bookAddDto.Title, observedBook.Title);
-            Assert.Equal(bookAddDto.Author, observedBook.Author);
-            Assert.Equal(bookAddDto.Isbn.ToString("D").ToUpper(), observedBook.Isbn);
-        }
-
-        private async Task<HttpResponseMessage> AddBookRequest(string responseToken,
-            BookAddUpdateDto dto)
-        {
-            var reqBody = JsonConvert.SerializeObject(dto);
-
-            var message = new HttpRequestMessage(method: HttpMethod.Post,
-                requestUri: BOOKS_URI);
-            message.Headers.Authorization = new AuthenticationHeaderValue("Bearer", responseToken);
-            message.Content = new StringContent(reqBody, Encoding.UTF8, "application/json");
-
-            return await _client.SendAsync(message);
-        }
-
-        private async Task<HttpResponseMessage> GetAccounts(string responseToken)
-        {
-            var requestUsers = new HttpRequestMessage(method: HttpMethod.Get,
-                requestUri: ACCOUNT_LIST_URI);
-            requestUsers.Headers.Authorization = new AuthenticationHeaderValue("Bearer", responseToken);
-
-            return await _client.SendAsync(requestUsers);
+            Assert.Equal(bookAddDto.Title, obs.Title);
+            Assert.Equal(bookAddDto.Author, obs.Author);
+            Assert.Equal(bookAddDto.Isbn.ToString("D").ToUpper(), obs.Isbn);
         }
     }
 }

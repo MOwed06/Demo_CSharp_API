@@ -4,12 +4,14 @@ using System.Net;
 using System.Net.Http.Headers;
 using System.Text;
 
-namespace DummyConsole
+namespace BigBooksDbGenerator
 {
     internal abstract class MessageHandler
     {
+        protected const string ACCOUNTS_URI = @"https://localhost:7119/api/accounts";
         protected const string BOOKS_URI = @"https://localhost:7119/api/books";
         protected const string AUTH_URI = @"https://localhost:7119/api/authentication/authenticate";
+        
         protected async Task<string> GetAuthToken(HttpClient client, AuthRequest authRequest)
         {
             var reqBody = JsonConvert.SerializeObject(authRequest);

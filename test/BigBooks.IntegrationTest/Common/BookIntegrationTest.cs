@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Testing;
 using Newtonsoft.Json;
 using System.Collections;
+using System.Net.Http.Headers;
 using System.Text;
 
 namespace BigBooks.IntegrationTest.Common
@@ -54,6 +55,31 @@ namespace BigBooks.IntegrationTest.Common
             var authResponse = JsonConvert.DeserializeObject<AuthResponse>(responseBody);
 
             return authResponse.Token;
+        }
+
+        protected async Task<HttpResponseMessage> SendMessage(
+            string uri,
+            HttpMethod method,
+            string token,
+            object body)
+        {
+            var message = new HttpRequestMessage(method: method,
+                requestUri: uri);
+            message.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            if (body != null)
+            {
+                var reqBody = JsonConvert.SerializeObject(body);
+                message.Content = new StringContent(reqBody, Encoding.UTF8, "application/json");
+            }
+
+            return await _client.SendAsync(message);
+        }
+
+        protected async Task<T> ReadResponseContent<T>(HttpResponseMessage response)
+        {
+            var responseData = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<T>(responseData);
         }
 
         protected void WriteToOutput(object dataValue)

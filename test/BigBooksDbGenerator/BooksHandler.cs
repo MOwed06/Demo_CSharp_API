@@ -3,7 +3,7 @@ using BigBooks.API.Core;
 using BigBooks.API.Models;
 using DataMaker;
 
-namespace DummyConsole
+namespace BigBooksDbGenerator
 {
     internal class BookHandler : MessageHandler
     {
@@ -17,7 +17,16 @@ namespace DummyConsole
             }
         }
 
-        public List<BookAddUpdateDto> BuildBookDtos(int bookCount)
+        public async Task<List<int>> GenerateBooks(int bookCount)
+        {
+            List<BookAddUpdateDto> bookDtos = BuildBookDtos(bookCount);
+
+            var createdBooks = await SendAddBooks(bookDtos);
+
+            return createdBooks.Select(b => b.Key).ToList();
+        }
+
+        private List<BookAddUpdateDto> BuildBookDtos(int bookCount)
         {
             var bookList = new List<BookAddUpdateDto>();
 
@@ -44,7 +53,7 @@ namespace DummyConsole
             return bookList;
         }
 
-        internal async Task AddBooks(List<BookAddUpdateDto> bookDtos)
+        private async Task<List<BookDetailsDto>> SendAddBooks(List<BookAddUpdateDto> bookDtos)
         {
             var authRequest = new AuthRequest
             {
@@ -52,12 +61,11 @@ namespace DummyConsole
                 Password = ApplicationConstant.USER_PASSWORD
             };
 
+            var createdBooks = new List<BookDetailsDto>();
+
             using (var client = new HttpClient())
             {
                 var token = await GetAuthToken(client, authRequest);
-
-
-                int bookCount = 0;
 
                 foreach (var dto in bookDtos)
                 {
@@ -67,9 +75,12 @@ namespace DummyConsole
                         token: token,
                         body: dto);
 
-                    Console.WriteLine($"key: {response.Result.Key}, title: {response.Result.Title}");
+                    createdBooks.Add(response.Result);
+                    //Console.WriteLine($"key: {response.Result.Key}, title: {response.Result.Title}");
                 }
             }
+
+            return createdBooks;
         }
 
         private string TruncateString(string source, int max)
