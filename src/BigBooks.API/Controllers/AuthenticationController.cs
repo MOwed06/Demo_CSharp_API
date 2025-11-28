@@ -22,7 +22,8 @@ namespace BigBooks.API.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public IActionResult Authenticate(AuthRequest authRequest)
         {
-            logger.LogTrace($"Authenticate, {authRequest.UserId}");
+            var statusMsg = $"Authenticate, {authRequest.UserId}";
+            logger.LogTrace(statusMsg);
 
             try
             {
@@ -30,7 +31,7 @@ namespace BigBooks.API.Controllers
 
                 if (response.Token == null)
                 {
-                    logger.LogDebug($"Authenticate, {authRequest.UserId}", response.Error);
+                    logger.LogDebug(statusMsg, response.Error);
                     return Unauthorized();
                 }
 
@@ -38,7 +39,8 @@ namespace BigBooks.API.Controllers
             }
             catch (Exception ex)
             {
-                logger.LogCritical($"Authenticate, {authRequest.UserId}", ex);
+                logger.LogCritical(message: statusMsg,
+                    exception: ex);
                 return Unauthorized();
             }
         }

@@ -25,7 +25,8 @@ namespace BigBooks.API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult<IEnumerable<BookReviewDto>> GetBookReviews(int book)
         {
-            logger.LogTrace("GetBookReviews {0}", book);
+            var statusMsg = $"GetBookReviews {book}";
+            logger.LogTrace(statusMsg);
 
             try
             {
@@ -42,8 +43,8 @@ namespace BigBooks.API.Controllers
             }
             catch (Exception ex)
             {
-                var errorMsg = $"GetBookReviews {book}";
-                logger.LogCritical(errorMsg, ex);
+                logger.LogCritical(message: statusMsg,
+                    exception: ex);
                 return BadRequest();
             }
         }
@@ -59,7 +60,8 @@ namespace BigBooks.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public ActionResult<BookReviewDto> AddBookReview(int book, BookReviewAddDto dto)
         {
-            logger.LogTrace("AddBookReview {0}", book);
+            var statusMsg = $"AddBookReview {book}";
+            logger.LogTrace(statusMsg);
 
             try
             {
@@ -86,8 +88,8 @@ namespace BigBooks.API.Controllers
             }
             catch (Exception ex)
             {
-                var errorMsg = $"AddBookReview {book}";
-                logger.LogCritical(errorMsg, ex);
+                logger.LogCritical(message: statusMsg,
+                    exception: ex);
                 return BadRequest();
             }
         }

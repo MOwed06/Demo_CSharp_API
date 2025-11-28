@@ -28,7 +28,8 @@ namespace BigBooks.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public ActionResult<UserDetailsDto> PurchaseBooks(PurchaseRequestDto dto)
         {
-            logger.LogTrace($"PurchaseBooks, book: {dto.BookKey}, qty: {dto.RequestedQuantity}");
+            var statusMsg = $"PurchaseBooks, book: {dto.BookKey}, qty: {dto.RequestedQuantity}";
+            logger.LogTrace(statusMsg);
 
             try
             {
@@ -49,7 +50,8 @@ namespace BigBooks.API.Controllers
             }
             catch (Exception ex)
             {
-                logger.LogCritical($"PurchaseBooks, book: {dto.BookKey}, qty: {dto.RequestedQuantity}", ex);
+                logger.LogCritical(message: statusMsg,
+                    exception: ex);
                 return BadRequest();
             }
         }
@@ -68,7 +70,8 @@ namespace BigBooks.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public ActionResult<UserDetailsDto> Deposit(AccountDepositDto dto)
         {
-            logger.LogTrace($"Deposit, {dto.Amount}");
+            var statusMsg = $"Deposit, {dto.Amount}";
+            logger.LogTrace(statusMsg);
 
             try
             {
@@ -88,7 +91,8 @@ namespace BigBooks.API.Controllers
             }
             catch (Exception ex)
             {
-                logger.LogCritical($"Deposit, {dto.Amount}", ex);
+                logger.LogCritical(message: statusMsg,
+                    exception: ex);
                 return BadRequest();
             }
         }

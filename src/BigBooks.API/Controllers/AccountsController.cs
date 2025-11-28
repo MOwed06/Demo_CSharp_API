@@ -3,6 +3,7 @@ using BigBooks.API.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace BigBooks.API.Controllers
 {
@@ -31,7 +32,8 @@ namespace BigBooks.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public ActionResult<UserDetailsDto> GetAccountInfo(int key)
         {
-            logger.LogTrace("GetUserInfo, {0}", key);
+            var statusMsg = $"GetUserInfo, {key}";
+            logger.LogTrace(statusMsg);
 
             try
             {
@@ -46,8 +48,7 @@ namespace BigBooks.API.Controllers
             }
             catch (Exception ex)
             {
-                var errorMsg = $"GetUserInfo, {key}";
-                logger.LogCritical(message: errorMsg,
+                logger.LogCritical(message: statusMsg,
                     exception: ex);
                 return BadRequest();
             }
@@ -98,7 +99,8 @@ namespace BigBooks.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public ActionResult<UserDetailsDto> AddAccount(UserAddUpdateDto dto)
         {
-            logger.LogTrace($"AddUser, {dto.UserEmail}");
+            var statusMsg = $"AddUser, {dto.UserEmail}";
+            logger.LogTrace(statusMsg);
 
             try
             {
@@ -113,7 +115,8 @@ namespace BigBooks.API.Controllers
             }
             catch (Exception ex)
             {
-                logger.LogError($"AddUser, {dto.UserEmail}", ex);
+                logger.LogCritical(message: statusMsg,
+                    exception: ex);
                 return BadRequest();
             }
         }
@@ -133,7 +136,8 @@ namespace BigBooks.API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult<UserDetailsDto> UpdateAccount(int key, JsonPatchDocument<UserAddUpdateDto> patchDoc)
         {
-            logger.LogTrace($"UpdateAccount, {key}");
+            var statusMsg = $"UpdateAccount, {key}";
+            logger.LogTrace(statusMsg);
 
             try
             {
@@ -156,7 +160,8 @@ namespace BigBooks.API.Controllers
             }
             catch (Exception ex)
             {
-                logger.LogCritical($"UpdateAccount, {key}", ex);
+                logger.LogCritical(message: statusMsg,
+                    exception: ex);
                 return BadRequest();
             }
         }

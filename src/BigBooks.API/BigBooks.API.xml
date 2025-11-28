@@ -117,7 +117,8 @@
         </member>
         <member name="M:BigBooks.API.Controllers.BooksController.GetBooksByAuthor(System.String)">
             <summary>
-            Books by string match on author name
+            Books by string match on author name.
+            If author omitted, return all books
             </summary>
             <param name="name"></param>
             <returns>list of books</returns>
@@ -223,6 +224,15 @@
             <summary>
             Simplified book overview
             </summary>
+        </member>
+        <member name="M:BigBooks.API.Providers.BooksProvider.GetBooks(System.String)">
+            <summary>
+            Return all books
+            Filter by author if author provided
+            Sort by book rating
+            </summary>
+            <param name="author"></param>
+            <returns></returns>
         </member>
         <member name="M:BigBooks.API.Providers.BooksProvider.RemoveFromStock(System.Int32,System.Int32)">
             <summary>

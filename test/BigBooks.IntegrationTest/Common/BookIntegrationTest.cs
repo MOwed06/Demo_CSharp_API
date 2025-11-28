@@ -24,9 +24,9 @@ namespace BigBooks.IntegrationTest.Common
         protected readonly BigBookWebAppFactory _appFactory;
         protected readonly HttpClient _client;
 
-        private readonly ITestOutputHelper? _output;
+        private readonly ITestOutputHelper _output;
 
-        protected BookIntegrationTest(ITestOutputHelper? output)
+        protected BookIntegrationTest(ITestOutputHelper output)
         {
             _output = output;
 

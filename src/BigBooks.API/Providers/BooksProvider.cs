@@ -70,9 +70,16 @@ namespace BigBooks.API.Providers
             .ToList();
         }
 
-        public List<BookOverviewDto> GetBooksByAuthor(string author)
+        /// <summary>
+        /// Return all books
+        /// Filter by author if author provided
+        /// Sort by book rating
+        /// </summary>
+        /// <param name="author"></param>
+        /// <returns></returns>
+        public List<BookOverviewDto> GetBooks(string author)
         {
-            logger.LogDebug("GetBooksByAuthor, {0}", author);
+            logger.LogDebug("GetBooks, {0}", author);
 
             // if author empty, then return all books
             var books = string.IsNullOrEmpty(author)
@@ -206,8 +213,13 @@ namespace BigBooks.API.Providers
 
         private double? CalculateBookRating(ICollection<BookReview> reviews)
         {
-            return reviews.Any()
+            double? score = reviews.Any()
                 ? reviews.Average(r => r.Score)
+                : null;
+
+            return score.HasValue
+                // truncate to 2 decimal places
+                ? Math.Truncate(100 * score.Value) / 100
                 : null;
         }
 
