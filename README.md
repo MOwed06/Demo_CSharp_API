@@ -82,7 +82,6 @@ I will continue to evolve this project as my bandwidth allows. I will keep the m
 Things yet to do ...
 
 1. Lots more unit tests
-1. Get all books, author = none
 1. Delete Account
     - delete AppUser transactions
     - modify user's bookreviews to become Anonymous
