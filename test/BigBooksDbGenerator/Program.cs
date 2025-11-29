@@ -6,7 +6,7 @@ const int AUTHOR_COUNT = 10;
 const int BOOK_COUNT = 50;
 const int USER_COUNT = 20;
 const int USER_MAX_BOOKS = 4;
-const int USER_MAX_REVIEWS = 3;
+const int USER_MAX_REVIEWS = 6;
 
 Console.WriteLine("Hello, World!");
 
@@ -23,6 +23,8 @@ try
     Console.WriteLine($"Users: {userEmails.Count()}, LastUser: {userEmails.Last()}\n");
 
     await acctsHandler.GeneratePurchases(bKeys, USER_MAX_BOOKS);
+
+    await acctsHandler.GenerateReviews(bKeys, USER_MAX_REVIEWS);
 }
 catch (Exception ex)
 {

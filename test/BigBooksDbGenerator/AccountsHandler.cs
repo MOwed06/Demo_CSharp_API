@@ -34,7 +34,7 @@ namespace BigBooksDbGenerator
 
                 foreach (var dto in userAddDtos)
                 {
-                    var response = SendMessage<BookDetailsDto>(client: client,
+                    var response = await SendMessageAsync<BookDetailsDto>(client: client,
                             uri: ACCOUNTS_URI,
                             method: HttpMethod.Post,
                             token: token,
@@ -102,15 +102,68 @@ namespace BigBooksDbGenerator
                             TransactionConfirmation = Guid.NewGuid()
                         };
 
-                        await SendMessage<BookDetailsDto>(client: client,
+                        await SendMessageAsync<BookDetailsDto>(client: client,
                                                 uri: TRANSACTIONS_URI,
                                                 method: HttpMethod.Post,
                                                 token: token,
                                                 body: purchaseDto);
 
-                        Console.WriteLine($"User: {userEmail}, BookKey: {selectedBookKey}");
+                        Console.WriteLine($"User: {userEmail}, PurchasedBookKey: {selectedBookKey}");
 
                         purchasedBookKeys.Add(selectedBookKey);
+                    }
+                }
+            }
+        }
+
+        internal async Task GenerateReviews(List<int> bKeys, int maxReviews)
+        {
+            foreach (var userEmail in _userEmails)
+            {
+                var userReviewCount = RandomData.GenerateInt(0, maxReviews + 1);
+
+                var authRequest = new AuthRequest
+                {
+                    UserId = userEmail,
+                    Password = ApplicationConstant.USER_PASSWORD
+                };
+
+                var reviewedBooks = new HashSet<int>();
+
+                using (var client = new HttpClient())
+                {
+                    var token = await GetAuthToken(client, authRequest);
+
+                    for (int i = 0; i < userReviewCount; i++)
+                    {
+                        var selectedBookKey = RandomData.SelectFromList(bKeys);
+
+                        // allow user to review book only once
+                        if (reviewedBooks.Contains(selectedBookKey))
+                        {
+                            break;
+                        }
+
+                        var bookReviewUri = BOOKS_URI + $"/{selectedBookKey}/reviews";
+
+                        var bookReviewDto = new BookReviewAddDto
+                        {
+                            Score = RandomData.GenerateInt(2, 10),
+                            IsAnonymous = RandomData.Chance(50),
+                            Description = RandomData.Chance(30)
+                                ? RandomData.GenerateSentence()
+                                : null
+                        };
+
+                        await SendMessageAsync<BookReviewDto>(client: client,
+                                                uri: bookReviewUri,
+                                                method: HttpMethod.Post,
+                                                token: token,
+                                                body: bookReviewDto);
+
+                        Console.WriteLine($"User: {userEmail}, ReviewedBookKey: {selectedBookKey}");
+
+                        reviewedBooks.Add(selectedBookKey);
                     }
                 }
             }

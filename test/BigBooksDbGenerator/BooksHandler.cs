@@ -69,14 +69,14 @@ namespace BigBooksDbGenerator
 
                 foreach (var dto in bookDtos)
                 {
-                    var response = SendMessage<BookDetailsDto>(client: client,
+                    var response = await SendMessageAsync<BookDetailsDto>(client: client,
                         uri: BOOKS_URI,
                         method: HttpMethod.Post,
                         token: token,
                         body: dto);
 
-                    createdBooks.Add(response.Result);
-                    //Console.WriteLine($"key: {response.Result.Key}, title: {response.Result.Title}");
+                    createdBooks.Add(response);
+                    Console.WriteLine($"key: {response.Key}, title: {response.Title}");
                 }
             }
 

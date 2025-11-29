@@ -29,7 +29,7 @@ namespace BigBooksDbGenerator
             return authResponse.Token;
         }
 
-        protected async Task<T> SendMessage<T>(HttpClient client,
+        protected async Task<T> SendMessageAsync<T>(HttpClient client,
             string uri,
             HttpMethod method,
             string token,
