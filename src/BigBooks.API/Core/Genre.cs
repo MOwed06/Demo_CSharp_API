@@ -8,6 +8,9 @@ namespace BigBooks.API.Core
         Fantasy = 3,
         Mystery = 4,
         History = 5,
-        Romance = 6
+        Biography = 7,
+        Hobbies = 8,
+        SelfHelp = 9,
+        Romance = 10
     }
 }

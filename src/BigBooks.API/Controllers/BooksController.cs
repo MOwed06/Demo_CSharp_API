@@ -4,6 +4,7 @@ using BigBooks.API.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using System.Xml.Linq;
 
 namespace BigBooks.API.Controllers
 {
@@ -22,7 +23,8 @@ namespace BigBooks.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public ActionResult<BookDetailsDto> GetBook(int key)
         {
-            logger.LogTrace($"GetBook, {key}");
+            var statusMsg = $"GetBook, {key}";
+            logger.LogTrace(statusMsg);
 
             try
             {
@@ -37,7 +39,8 @@ namespace BigBooks.API.Controllers
             }
             catch (Exception ex)
             {
-                logger.LogCritical($"GetBook, {key}", ex);
+                logger.LogCritical(message: statusMsg,
+                    exception: ex);
                 return BadRequest();
             }
         }
@@ -56,12 +59,12 @@ namespace BigBooks.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public ActionResult<IEnumerable<BookOverviewDto>> GetBooksByGenre([FromQuery] string name)
         {
-            logger.LogTrace($"GetBooksByGenre, {name}");
+            var statusMsg = $"GetBooksByGenre, {name}";
+            logger.LogTrace(statusMsg);
 
             try
             {
                 Genre queryGenre = Genre.Undefined;
-
                 var parseOk = Enum.TryParse(name, true, out queryGenre);
 
                 if (!parseOk)
@@ -77,13 +80,15 @@ namespace BigBooks.API.Controllers
             }
             catch (Exception ex)
             {
-                logger.LogCritical($"GetBooksByGenre, {name}", ex);
+                logger.LogCritical(message: statusMsg,
+                    exception: ex);
                 return BadRequest();
             }
         }
 
         /// <summary>
-        /// Books by string match on author name
+        /// Books by string match on author name.
+        /// If author omitted, return all books
         /// </summary>
         /// <param name="name"></param>
         /// <returns>list of books</returns>
@@ -92,17 +97,44 @@ namespace BigBooks.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public ActionResult<IEnumerable<BookOverviewDto>> GetBooksByAuthor([FromQuery] string name)
         {
-            logger.LogTrace($"GetBooksByAuthor, {name}");
+            var statusMsg = $"GetBooksByAuthor, {name}";
+            logger.LogTrace(statusMsg);
 
             try
             {
-                var bookDtos = bookProvider.GetBooksByAuthor(name);
+                var bookDtos = bookProvider.GetBooks(name);
 
                 return Ok(bookDtos);
             }
             catch (Exception ex)
             {
-                logger.LogCritical($"GetBooksByAuthor, {name}", ex);
+                logger.LogCritical(message: statusMsg,
+                    exception: ex);
+                return BadRequest();
+            }
+        }
+
+        /// <summary>
+        /// Retrieve list of authors and number of books
+        /// </summary>
+        /// <returns>author info list</returns>
+        [HttpGet("authorlist")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public ActionResult<IEnumerable<AuthorInfoDto>> GetAuthorList()
+        {
+            logger.LogTrace("GetAuthorList");
+
+            try
+            {
+                var authorDtos = bookProvider.GetBookAuthors();
+
+                return Ok(authorDtos);
+            }
+            catch (Exception ex)
+            {
+                logger.LogCritical(message: "GetAuthorList",
+                    exception: ex);
                 return BadRequest();
             }
         }
@@ -121,7 +153,8 @@ namespace BigBooks.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public ActionResult<BookDetailsDto> AddBook(BookAddUpdateDto dto)
         {
-            logger.LogTrace($"AddBook, {dto.Title}");
+            var statusMsg = $"AddBook, {dto.Title}";
+            logger.LogTrace(statusMsg);
 
             try
             {
@@ -136,7 +169,8 @@ namespace BigBooks.API.Controllers
             }
             catch (Exception ex)
             {
-                logger.LogCritical($"AddBook, {dto.Title}", ex);
+                logger.LogCritical(message: statusMsg,
+                    exception: ex);
                 return BadRequest();
             }
         }
@@ -157,7 +191,8 @@ namespace BigBooks.API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult<BookDetailsDto> UpdateBook(int key, JsonPatchDocument<BookAddUpdateDto> patchDoc)
         {
-            logger.LogTrace($"UpdateBook, {key}");
+            var statusMsg = $"UpdateBook, {key}";
+            logger.LogTrace(statusMsg);
 
             try
             {
@@ -179,7 +214,8 @@ namespace BigBooks.API.Controllers
             }
             catch (Exception ex)
             {
-                logger.LogCritical($"UpdateBook, {key}", ex);
+                logger.LogCritical(message: statusMsg,
+                    exception: ex);
                 return BadRequest();
             }
         }

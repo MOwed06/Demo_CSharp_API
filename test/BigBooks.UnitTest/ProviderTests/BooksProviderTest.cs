@@ -286,7 +286,7 @@ namespace BigBooks.UnitTest.ProviderTests
             InitializeDatabase(extraBooks: _extraBooks);
 
             // act
-            var obs = _bookPrv.GetBooksByAuthor(searchAuthor);
+            var obs = _bookPrv.GetBooks(searchAuthor);
 
             // assert
             var obsKeys = obs.Select(b => b.Key).ToList();

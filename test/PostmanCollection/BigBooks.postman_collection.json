@@ -8,634 +8,797 @@
 	},
 	"item": [
 		{
-			"name": "GET BookDetails",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{accessToken}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "https://localhost:{{portNumber}}/api/books/2",
-					"protocol": "https",
-					"host": [
-						"localhost"
-					],
-					"port": "{{portNumber}}",
-					"path": [
-						"api",
-						"books",
-						"2"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "GET AccountDetails",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{accessToken}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "https://localhost:{{portNumber}}/api/accounts/5",
-					"protocol": "https",
-					"host": [
-						"localhost"
-					],
-					"port": "{{portNumber}}",
-					"path": [
-						"api",
-						"accounts",
-						"5"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "GET CurrentUser",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{accessToken}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "https://localhost:{{portNumber}}/api/users",
-					"protocol": "https",
-					"host": [
-						"localhost"
-					],
-					"port": "{{portNumber}}",
-					"path": [
-						"api",
-						"users"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "GET AccountList_All",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{accessToken}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "https://localhost:{{portNumber}}/api/accounts/list",
-					"protocol": "https",
-					"host": [
-						"localhost"
-					],
-					"port": "{{portNumber}}",
-					"path": [
-						"api",
-						"accounts",
-						"list"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "GET AccountList_Filtered",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{accessToken}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "https://localhost:{{portNumber}}/api/accounts/list/1",
-					"protocol": "https",
-					"host": [
-						"localhost"
-					],
-					"port": "{{portNumber}}",
-					"path": [
-						"api",
-						"accounts",
-						"list",
-						"1"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "GET BooksByGenre_Multiple",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{accessToken}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "https://localhost:{{portNumber}}/api/books/genre?name=childrens",
-					"protocol": "https",
-					"host": [
-						"localhost"
-					],
-					"port": "{{portNumber}}",
-					"path": [
-						"api",
-						"books",
-						"genre"
-					],
-					"query": [
-						{
-							"key": "name",
-							"value": "childrens"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "GET BooksByGenre_Empty",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{accessToken}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "https://localhost:{{portNumber}}/api/books/genre?name=romance",
-					"protocol": "https",
-					"host": [
-						"localhost"
-					],
-					"port": "{{portNumber}}",
-					"path": [
-						"api",
-						"books",
-						"genre"
-					],
-					"query": [
-						{
-							"key": "name",
-							"value": "romance"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "GET BooksByAuthor",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{accessToken}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "https://localhost:{{portNumber}}/api/books/author?name=collins",
-					"protocol": "https",
-					"host": [
-						"localhost"
-					],
-					"port": "{{portNumber}}",
-					"path": [
-						"api",
-						"books",
-						"author"
-					],
-					"query": [
-						{
-							"key": "name",
-							"value": "collins"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "POST AddBook",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{accessToken}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"Title\": \"The Great Contradiction: The Tragic Side of the American Founding\",\n    \"Author\": \"Joseph J. Ellis\",\n    \"Isbn\": \"03DF5850-E814-4E7F-A6C1-1F2A986D271F\",\n    \"Description\": \"On the eve of the American Revolution, half a million enslaved African Americans were embedded in the North American population. The slave trade was flourishing, even as the thirteen colonies armed themselves to defend against the idea of being governed without consent.\",\n    \"Genre\": \"History\",\n    \"Price\": 23.92,\n    \"StockQuantity\": 7\n}"
-				},
-				"url": {
-					"raw": "https://localhost:{{portNumber}}/api/books",
-					"protocol": "https",
-					"host": [
-						"localhost"
-					],
-					"port": "{{portNumber}}",
-					"path": [
-						"api",
-						"books"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "POST AddAccount",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{accessToken}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"UserEmail\": \"Liz.Bell@demo.com\",\n    \"UserName\": \"Elizabeth Bell\",\n    \"IsActive\": true,\n    \"Password\": \"N0tV3ryS3cret\",\n    \"Wallet\": 121.43,\n    \"Role\": \"customer\"\n}"
-				},
-				"url": {
-					"raw": "https://localhost:{{portNumber}}/api/accounts",
-					"protocol": "https",
-					"host": [
-						"localhost"
-					],
-					"port": "{{portNumber}}",
-					"path": [
-						"api",
-						"accounts"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "POST PurchaseBook",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{accessToken}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"BookKey\": 9,\n    \"RequestedQuantity\": 1\n}"
-				},
-				"url": {
-					"raw": "https://localhost:{{portNumber}}/api/transactions/purchase",
-					"protocol": "https",
-					"host": [
-						"localhost"
-					],
-					"port": "{{portNumber}}",
-					"path": [
-						"api",
-						"transactions",
-						"purchase"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "POST UserDeposit",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{accessToken}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"Amount\": 250,\n    \"Confirmation\": \"9209A6DA-CF08-41DB-9A1F-2864BE759E20\"\n}"
-				},
-				"url": {
-					"raw": "https://localhost:{{portNumber}}/api/transactions/deposit",
-					"protocol": "https",
-					"host": [
-						"localhost"
-					],
-					"port": "{{portNumber}}",
-					"path": [
-						"api",
-						"transactions",
-						"deposit"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "PATCH UpdateBook",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{accessToken}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "PATCH",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "[\n    {\n      \"op\": \"replace\",\n      \"path\": \"/Author\",\n      \"value\": \"Some Other Guy\"\n    },\n    {\n      \"op\": \"replace\",\n      \"path\": \"/StockQuantity\",\n      \"value\": \"0\"\n    }    \n]"
-				},
-				"url": {
-					"raw": "https://localhost:{{portNumber}}/api/books/7",
-					"protocol": "https",
-					"host": [
-						"localhost"
-					],
-					"port": "{{portNumber}}",
-					"path": [
-						"api",
-						"books",
-						"7"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "PATCH UpdateAccount",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{accessToken}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "PATCH",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "[\n    {\n      \"op\": \"replace\",\n      \"path\": \"/Wallet\",\n      \"value\": \"552.23\"\n    },\n    {\n      \"op\": \"replace\",\n      \"path\": \"/UserName\",\n      \"value\": \"F.R. Fallen\"\n    }    \n]"
-				},
-				"url": {
-					"raw": "https://localhost:{{portNumber}}/api/accounts/7",
-					"protocol": "https",
-					"host": [
-						"localhost"
-					],
-					"port": "{{portNumber}}",
-					"path": [
-						"api",
-						"accounts",
-						"7"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "POST AuthRequest_Customer",
-			"event": [
+			"name": "Accounts_Users",
+			"item": [
 				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"const responseMessage = pm.response.json();\r",
-							"\r",
-							"const accessToken = responseMessage.token; // Extracts the token from the response body\r",
-							"\r",
-							"pm.collectionVariables.set(\"accessToken\", accessToken); // Saves to a collection variable"
-						],
-						"type": "text/javascript",
-						"packages": {},
-						"requests": {}
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"UserId\": \"Dylan.Davis@demo.com\",\r\n    \"Password\": \"N0tV3ryS3cret\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+					"name": "GET AccountDetails",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:{{portNumber}}/api/accounts/22",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "{{portNumber}}",
+							"path": [
+								"api",
+								"accounts",
+								"22"
+							]
 						}
-					}
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "https://localhost:{{portNumber}}/api/authentication/authenticate",
-					"protocol": "https",
-					"host": [
-						"localhost"
-					],
-					"port": "{{portNumber}}",
-					"path": [
-						"api",
-						"authentication",
-						"authenticate"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "POST AuthRequest_Admin",
-			"event": [
 				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"const responseMessage = pm.response.json();\r",
-							"\r",
-							"const accessToken = responseMessage.token; // Extracts the token from the response body\r",
-							"\r",
-							"pm.collectionVariables.set(\"accessToken\", accessToken); // Saves to a collection variable"
-						],
-						"type": "text/javascript",
-						"packages": {},
-						"requests": {}
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"UserId\": \"Bruce.Wayne@demo.com\",\r\n    \"Password\": \"N0tV3ryS3cret\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+					"name": "GET CurrentUser",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:{{portNumber}}/api/users",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "{{portNumber}}",
+							"path": [
+								"api",
+								"users"
+							]
 						}
-					}
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "https://localhost:{{portNumber}}/api/authentication/authenticate",
-					"protocol": "https",
-					"host": [
-						"localhost"
-					],
-					"port": "{{portNumber}}",
-					"path": [
-						"api",
-						"authentication",
-						"authenticate"
-					]
+				{
+					"name": "GET AccountList_All",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:{{portNumber}}/api/accounts/list",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "{{portNumber}}",
+							"path": [
+								"api",
+								"accounts",
+								"list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET AccountList_Filtered",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:{{portNumber}}/api/accounts/list/0",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "{{portNumber}}",
+							"path": [
+								"api",
+								"accounts",
+								"list",
+								"0"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST AddAccount",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"UserEmail\": \"Liz.Bell@demo.com\",\n    \"UserName\": \"Elizabeth Bell\",\n    \"IsActive\": true,\n    \"Password\": \"N0tV3ryS3cret\",\n    \"Wallet\": 121.43,\n    \"Role\": \"customer\"\n}"
+						},
+						"url": {
+							"raw": "https://localhost:{{portNumber}}/api/accounts",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "{{portNumber}}",
+							"path": [
+								"api",
+								"accounts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PATCH UpdateAccount",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n    {\n      \"op\": \"replace\",\n      \"path\": \"/Wallet\",\n      \"value\": \"552.23\"\n    },\n    {\n      \"op\": \"replace\",\n      \"path\": \"/UserName\",\n      \"value\": \"F.R. Fallen\"\n    }    \n]"
+						},
+						"url": {
+							"raw": "https://localhost:{{portNumber}}/api/accounts/7",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "{{portNumber}}",
+							"path": [
+								"api",
+								"accounts",
+								"7"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PATCH DeactiveAccount",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n    {\n      \"op\": \"replace\",\n      \"path\": \"/IsActive\",\n      \"value\": \"false\"\n    }   \n]"
+						},
+						"url": {
+							"raw": "https://localhost:{{portNumber}}/api/accounts/13",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "{{portNumber}}",
+							"path": [
+								"api",
+								"accounts",
+								"13"
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		},
 		{
-			"name": "GET BookReviews",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "POST Auth_Customer",
+					"event": [
 						{
-							"key": "token",
-							"value": "{{accessToken}}",
-							"type": "string"
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseMessage = pm.response.json();\r",
+									"\r",
+									"const accessToken = responseMessage.token; // Extracts the token from the response body\r",
+									"\r",
+									"pm.collectionVariables.set(\"accessToken\", accessToken); // Saves to a collection variable"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
 						}
-					]
-				},
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "https://localhost:{{portNumber}}/api/books/9/reviews",
-					"protocol": "https",
-					"host": [
-						"localhost"
 					],
-					"port": "{{portNumber}}",
-					"path": [
-						"api",
-						"books",
-						"9",
-						"reviews"
-					]
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"UserId\": \"Savannah.Tucker@demo.com\",\r\n    \"Password\": \"N0tV3ryS3cret\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:{{portNumber}}/api/authentication/authenticate",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "{{portNumber}}",
+							"path": [
+								"api",
+								"authentication",
+								"authenticate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Auth_Admin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseMessage = pm.response.json();\r",
+									"\r",
+									"const accessToken = responseMessage.token; // Extracts the token from the response body\r",
+									"\r",
+									"pm.collectionVariables.set(\"accessToken\", accessToken); // Saves to a collection variable"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"UserId\": \"Bruce.Wayne@demo.com\",\r\n    \"Password\": \"N0tV3ryS3cret\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:{{portNumber}}/api/authentication/authenticate",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "{{portNumber}}",
+							"path": [
+								"api",
+								"authentication",
+								"authenticate"
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
+		},
+		{
+			"name": "Books",
+			"item": [
+				{
+					"name": "GET BookDetails",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:{{portNumber}}/api/books/2",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "{{portNumber}}",
+							"path": [
+								"api",
+								"books",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET BookReviews",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:{{portNumber}}/api/books/6/reviews",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "{{portNumber}}",
+							"path": [
+								"api",
+								"books",
+								"6",
+								"reviews"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET BooksByGenre_Multiple",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:{{portNumber}}/api/books/genre?name=childrens",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "{{portNumber}}",
+							"path": [
+								"api",
+								"books",
+								"genre"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "childrens"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET BooksByGenre_Empty",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:{{portNumber}}/api/books/genre?name=romance",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "{{portNumber}}",
+							"path": [
+								"api",
+								"books",
+								"genre"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "romance"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Books_Filtered",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:{{portNumber}}/api/books/author?name=collins",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "{{portNumber}}",
+							"path": [
+								"api",
+								"books",
+								"author"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "collins"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Books_All",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:{{portNumber}}/api/books/author",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "{{portNumber}}",
+							"path": [
+								"api",
+								"books",
+								"author"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET AuthorList",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:{{portNumber}}/api/books/authorlist",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "{{portNumber}}",
+							"path": [
+								"api",
+								"books",
+								"authorlist"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST AddBook",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"Title\": \"The Great Contradiction: The Tragic Side of the American Founding\",\n    \"Author\": \"Joseph J. Ellis\",\n    \"Isbn\": \"03DF5850-E814-4E7F-A6C1-1F2A986D271F\",\n    \"Description\": \"On the eve of the American Revolution, half a million enslaved African Americans were embedded in the North American population. The slave trade was flourishing, even as the thirteen colonies armed themselves to defend against the idea of being governed without consent.\",\n    \"Genre\": \"History\",\n    \"Price\": 23.92,\n    \"StockQuantity\": 7\n}"
+						},
+						"url": {
+							"raw": "https://localhost:{{portNumber}}/api/books",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "{{portNumber}}",
+							"path": [
+								"api",
+								"books"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST AddBookReview",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"Score\": 8,\n    \"IsAnonymous\": false,\n    \"Description\": null\n}"
+						},
+						"url": {
+							"raw": "https://localhost:{{portNumber}}/api/books/5/reviews",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "{{portNumber}}",
+							"path": [
+								"api",
+								"books",
+								"5",
+								"reviews"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PATCH UpdateBook",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n    {\n      \"op\": \"replace\",\n      \"path\": \"/Author\",\n      \"value\": \"Some Other Guy\"\n    },\n    {\n      \"op\": \"replace\",\n      \"path\": \"/StockQuantity\",\n      \"value\": \"0\"\n    }    \n]"
+						},
+						"url": {
+							"raw": "https://localhost:{{portNumber}}/api/books/7",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "{{portNumber}}",
+							"path": [
+								"api",
+								"books",
+								"7"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Transactions",
+			"item": [
+				{
+					"name": "POST UserDeposit",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"Amount\": 250,\n    \"Confirmation\": \"9209A6DA-CF08-41DB-9A1F-2864BE759E20\"\n}"
+						},
+						"url": {
+							"raw": "https://localhost:{{portNumber}}/api/transactions/deposit",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "{{portNumber}}",
+							"path": [
+								"api",
+								"transactions",
+								"deposit"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST PurchaseBook",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"BookKey\": 9,\n    \"RequestedQuantity\": 1,\n    \"TransactionConfirmation\": \"9AE920EB-308F-41CB-8DFD-16BA3ED7B29D\"\n}"
+						},
+						"url": {
+							"raw": "https://localhost:{{portNumber}}/api/transactions/purchase",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "{{portNumber}}",
+							"path": [
+								"api",
+								"transactions",
+								"purchase"
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	],
 	"event": [

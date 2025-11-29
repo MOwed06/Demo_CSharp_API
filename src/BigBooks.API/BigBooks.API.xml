@@ -82,6 +82,21 @@
             <param name="authRequest"></param>
             <returns>authentication response</returns>
         </member>
+        <member name="M:BigBooks.API.Controllers.BookReviewsController.GetBookReviews(System.Int32)">
+            <summary>
+            Get book reviews for designaged book
+            </summary>
+            <param name="book"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BigBooks.API.Controllers.BookReviewsController.AddBookReview(System.Int32,BigBooks.API.Models.BookReviewAddDto)">
+            <summary>
+            Add review for current user
+            </summary>
+            <param name="book">book key, taken from route</param>
+            <param name="dto">book review details</param>
+            <returns></returns>
+        </member>
         <member name="M:BigBooks.API.Controllers.BooksController.GetBook(System.Int32)">
             <summary>
             Get book by key
@@ -102,10 +117,17 @@
         </member>
         <member name="M:BigBooks.API.Controllers.BooksController.GetBooksByAuthor(System.String)">
             <summary>
-            Books by string match on author name
+            Books by string match on author name.
+            If author omitted, return all books
             </summary>
             <param name="name"></param>
             <returns>list of books</returns>
+        </member>
+        <member name="M:BigBooks.API.Controllers.BooksController.GetAuthorList">
+            <summary>
+            Retrieve list of authors and number of books
+            </summary>
+            <returns>author info list</returns>
         </member>
         <member name="M:BigBooks.API.Controllers.BooksController.AddBook(BigBooks.API.Models.BookAddUpdateDto)">
             <summary>
@@ -208,6 +230,15 @@
             <summary>
             Simplified book overview
             </summary>
+        </member>
+        <member name="M:BigBooks.API.Providers.BooksProvider.GetBooks(System.String)">
+            <summary>
+            Return all books
+            Filter by author if author provided
+            Sort by book rating
+            </summary>
+            <param name="author"></param>
+            <returns></returns>
         </member>
         <member name="M:BigBooks.API.Providers.BooksProvider.RemoveFromStock(System.Int32,System.Int32)">
             <summary>

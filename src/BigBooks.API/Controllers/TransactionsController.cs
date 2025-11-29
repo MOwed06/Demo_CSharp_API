@@ -28,14 +28,15 @@ namespace BigBooks.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public ActionResult<UserDetailsDto> PurchaseBooks(PurchaseRequestDto dto)
         {
-            logger.LogTrace($"PurchaseBooks, book: {dto.BookKey}, qty: {dto.RequestedQuantity}");
+            var statusMsg = $"PurchaseBooks, book: {dto.BookKey}, qty: {dto.RequestedQuantity}";
+            logger.LogTrace(statusMsg);
 
             try
             {
                 // extract appUser key from active user claims
-                var currentUserKeyValue = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var currentUserValue = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-                var response = transactionsProvider.PurchaseBooks(currentUserKeyValue, dto);
+                var response = transactionsProvider.PurchaseBooks(currentUserValue, dto);
 
                 if (response.Key == null)
                 {
@@ -49,7 +50,8 @@ namespace BigBooks.API.Controllers
             }
             catch (Exception ex)
             {
-                logger.LogCritical($"PurchaseBooks, book: {dto.BookKey}, qty: {dto.RequestedQuantity}", ex);
+                logger.LogCritical(message: statusMsg,
+                    exception: ex);
                 return BadRequest();
             }
         }
@@ -68,14 +70,15 @@ namespace BigBooks.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public ActionResult<UserDetailsDto> Deposit(AccountDepositDto dto)
         {
-            logger.LogTrace($"Deposit, {dto.Amount}");
+            var statusMsg = $"Deposit, {dto.Amount}";
+            logger.LogTrace(statusMsg);
 
             try
             {
                 // extract appUser key from active user claims
-                var currentUserKeyValue = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var currentUserValue = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-                var response = transactionsProvider.Deposit(currentUserKeyValue, dto);
+                var response = transactionsProvider.Deposit(currentUserValue, dto);
 
                 if (response.Key == null)
                 {
@@ -88,7 +91,8 @@ namespace BigBooks.API.Controllers
             }
             catch (Exception ex)
             {
-                logger.LogCritical($"Deposit, {dto.Amount}", ex);
+                logger.LogCritical(message: statusMsg,
+                    exception: ex);
                 return BadRequest();
             }
         }
