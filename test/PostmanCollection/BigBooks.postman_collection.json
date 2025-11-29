@@ -259,7 +259,7 @@
 			"name": "Authentication",
 			"item": [
 				{
-					"name": "POST AuthRequest_Customer",
+					"name": "POST Auth_Customer",
 					"event": [
 						{
 							"listen": "test",
@@ -282,7 +282,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"UserId\": \"Omar.Lawson@demo.com\",\r\n    \"Password\": \"N0tV3ryS3cret\"\r\n}",
+							"raw": "{\r\n    \"UserId\": \"Savannah.Tucker@demo.com\",\r\n    \"Password\": \"N0tV3ryS3cret\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -306,7 +306,7 @@
 					"response": []
 				},
 				{
-					"name": "POST AuthRequest_Admin",
+					"name": "POST Auth_Admin",
 					"event": [
 						{
 							"listen": "test",
@@ -557,6 +557,37 @@
 								"api",
 								"books",
 								"author"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET AuthorList",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:{{portNumber}}/api/books/authorlist",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "{{portNumber}}",
+							"path": [
+								"api",
+								"books",
+								"authorlist"
 							]
 						}
 					},

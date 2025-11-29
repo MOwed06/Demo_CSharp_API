@@ -14,5 +14,6 @@ namespace BigBooks.API.Interfaces
         List<BookOverviewDto> GetBooksByGenre(Genre genre);
         ProviderKeyResponse UpdateBook(int key, JsonPatchDocument<BookAddUpdateDto> patchDoc);
         bool RemoveFromStock(int bookKey, int requestedQuantity);
+        List<AuthorInfoDto> GetBookAuthors();
     }
 }

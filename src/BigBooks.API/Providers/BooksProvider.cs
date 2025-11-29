@@ -211,6 +211,19 @@ namespace BigBooks.API.Providers
             return false;
         }
 
+        public List<AuthorInfoDto> GetBookAuthors()
+        {
+            return ctx.Books
+                .GroupBy(b => b.Author)
+                .Select(g => new AuthorInfoDto
+                {
+                    Author = g.Key,
+                    BookCount = g.Count()
+                })
+                .OrderByDescending(b => b.BookCount)
+                .ToList();
+        }
+
         private double? CalculateBookRating(ICollection<BookReview> reviews)
         {
             double? score = reviews.Any()

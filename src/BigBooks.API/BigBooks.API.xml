@@ -123,6 +123,12 @@
             <param name="name"></param>
             <returns>list of books</returns>
         </member>
+        <member name="M:BigBooks.API.Controllers.BooksController.GetAuthorList">
+            <summary>
+            Retrieve list of authors and number of books
+            </summary>
+            <returns>author info list</returns>
+        </member>
         <member name="M:BigBooks.API.Controllers.BooksController.AddBook(BigBooks.API.Models.BookAddUpdateDto)">
             <summary>
             Add new book.

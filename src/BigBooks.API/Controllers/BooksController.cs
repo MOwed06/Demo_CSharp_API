@@ -4,6 +4,7 @@ using BigBooks.API.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using System.Xml.Linq;
 
 namespace BigBooks.API.Controllers
 {
@@ -64,7 +65,6 @@ namespace BigBooks.API.Controllers
             try
             {
                 Genre queryGenre = Genre.Undefined;
-
                 var parseOk = Enum.TryParse(name, true, out queryGenre);
 
                 if (!parseOk)
@@ -109,6 +109,31 @@ namespace BigBooks.API.Controllers
             catch (Exception ex)
             {
                 logger.LogCritical(message: statusMsg,
+                    exception: ex);
+                return BadRequest();
+            }
+        }
+
+        /// <summary>
+        /// Retrieve list of authors and number of books
+        /// </summary>
+        /// <returns>author info list</returns>
+        [HttpGet("authorlist")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public ActionResult<IEnumerable<AuthorInfoDto>> GetAuthorList()
+        {
+            logger.LogTrace("GetAuthorList");
+
+            try
+            {
+                var authorDtos = bookProvider.GetBookAuthors();
+
+                return Ok(authorDtos);
+            }
+            catch (Exception ex)
+            {
+                logger.LogCritical(message: "GetAuthorList",
                     exception: ex);
                 return BadRequest();
             }
