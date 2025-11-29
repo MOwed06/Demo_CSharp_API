@@ -40,7 +40,7 @@ namespace BigBooks.IntegrationTest.Common
             _client.Timeout = TimeSpan.FromSeconds(MESSAGE_TIMEOUT_SEC);
         }
 
-        protected async Task<string> GetAuthToken(AuthRequest authRequest)
+        protected async Task<string> GetAuthTokenAsync(AuthRequest authRequest)
         {
             var reqBody = JsonConvert.SerializeObject(authRequest);
 
@@ -57,7 +57,7 @@ namespace BigBooks.IntegrationTest.Common
             return authResponse.Token;
         }
 
-        protected async Task<HttpResponseMessage> SendMessage(
+        protected async Task<HttpResponseMessage> SendMessageAsync(
             string uri,
             HttpMethod method,
             string token,

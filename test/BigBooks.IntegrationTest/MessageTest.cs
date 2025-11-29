@@ -27,10 +27,10 @@ namespace BigBooks.IntegrationTest
                 Password = ApplicationConstant.USER_PASSWORD
             };
 
-            string token = await GetAuthToken(authRequest);
+            string token = await GetAuthTokenAsync(authRequest);
 
             // act
-            var response = await SendMessage(uri: BOOK_3_GET_URI,
+            var response = await SendMessageAsync(uri: BOOK_3_GET_URI,
                 method: HttpMethod.Get,
                 token: token,
                 body: null);
@@ -59,10 +59,10 @@ namespace BigBooks.IntegrationTest
                 Password = ApplicationConstant.USER_PASSWORD
             };
 
-            string token = await GetAuthToken(authRequest);
+            string token = await GetAuthTokenAsync(authRequest);
 
             // act
-            var response = await SendMessage(uri: ACCOUNT_LIST_URI,
+            var response = await SendMessageAsync(uri: ACCOUNT_LIST_URI,
                 method: HttpMethod.Get,
                 token: token,
                 body: null);
@@ -90,10 +90,10 @@ namespace BigBooks.IntegrationTest
                 Password = ApplicationConstant.USER_PASSWORD
             };
 
-            string token = await GetAuthToken(authRequest);
+            string token = await GetAuthTokenAsync(authRequest);
 
             // act
-            var response = await SendMessage(uri: ACCOUNT_LIST_URI,
+            var response = await SendMessageAsync(uri: ACCOUNT_LIST_URI,
                 method: HttpMethod.Get,
                 token: token,
                 body: null);
@@ -129,10 +129,10 @@ namespace BigBooks.IntegrationTest
                 StockQuantity = RandomData.GenerateInt(1, 13)
             };
 
-            string token = await GetAuthToken(authRequest);
+            string token = await GetAuthTokenAsync(authRequest);
 
             // act
-            var response = await SendMessage(uri: BOOKS_URI,
+            var response = await SendMessageAsync(uri: BOOKS_URI,
                 method: HttpMethod.Post,
                 token: token,
                 body: bookAddDto);

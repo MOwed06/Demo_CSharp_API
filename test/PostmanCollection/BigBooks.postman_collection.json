@@ -26,7 +26,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://localhost:{{portNumber}}/api/accounts/5",
+							"raw": "https://localhost:{{portNumber}}/api/accounts/7",
 							"protocol": "https",
 							"host": [
 								"localhost"
@@ -35,7 +35,7 @@
 							"path": [
 								"api",
 								"accounts",
-								"5"
+								"7"
 							]
 						}
 					},
@@ -282,7 +282,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"UserId\": \"Celeste.Cadwell@demo.com\",\r\n    \"Password\": \"N0tV3ryS3cret\"\r\n}",
+							"raw": "{\r\n    \"UserId\": \"Frank.Fallen@demo.com\",\r\n    \"Password\": \"N0tV3ryS3cret\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -688,46 +688,6 @@
 			"name": "Transactions",
 			"item": [
 				{
-					"name": "POST PurchaseBook",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"BookKey\": 9,\n    \"RequestedQuantity\": 1\n}"
-						},
-						"url": {
-							"raw": "https://localhost:{{portNumber}}/api/transactions/purchase",
-							"protocol": "https",
-							"host": [
-								"localhost"
-							],
-							"port": "{{portNumber}}",
-							"path": [
-								"api",
-								"transactions",
-								"purchase"
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "POST UserDeposit",
 					"request": {
 						"auth": {
@@ -762,6 +722,46 @@
 								"api",
 								"transactions",
 								"deposit"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST PurchaseBook",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"BookKey\": 9,\n    \"RequestedQuantity\": 1,\n    \"TransactionConfirmation\": \"9AE920EB-308F-41CB-8DFD-16BA3ED7B29D\"\n}"
+						},
+						"url": {
+							"raw": "https://localhost:{{portNumber}}/api/transactions/purchase",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "{{portNumber}}",
+							"path": [
+								"api",
+								"transactions",
+								"purchase"
 							]
 						}
 					},

@@ -1,5 +1,4 @@
-﻿using BigBooks.API.Entities;
-using BigBooks.API.Interfaces;
+﻿using BigBooks.API.Interfaces;
 using BigBooks.API.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
