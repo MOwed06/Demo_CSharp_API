@@ -62,7 +62,7 @@ namespace BigBooks.API.Providers
                 TransactionType = (t.TransactionAmount < 0)
                     ? TransactionType.Purchase.ToString()
                     : TransactionType.Deposit.ToString(),
-                PurchaseBook = t.Book?.Title,
+                PurchaseBookKey = t.Book?.Key,
                 PurchaseQuantity = t.PurchaseQuantity
             })
             .OrderByDescending(t => t.TransactionDate)

@@ -7,5 +7,6 @@
   "Genre": "Childrens",
   "Price": "$11.42",
   "InStock": true,
-  "Rating": 4.5
+  "Rating": 4.5,
+  "Reviews": 2
 }

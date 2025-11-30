@@ -294,6 +294,44 @@ namespace BigBooks.UnitTest.ProviderTests
             Assert.Equal(expectedKeys, obsKeys);
         }
 
+        [Fact]
+        public void CheckGetAuthors()
+        {
+            // arrange
+            var expectedAuthorList = new List<AuthorInfoDto>
+            {
+                new AuthorInfoDto
+                {
+                    Author = "Kermit Muppet",
+                    BookCount = 2
+                },
+                new AuthorInfoDto
+                {
+                    Author = "Maurice Sendak",
+                    BookCount = 1
+                },
+                new AuthorInfoDto
+                {
+                    Author = "Oscar Muppet",
+                    BookCount = 1
+                }
+            };
+
+            InitializeDatabase(extraBooks: _extraBooks);
+
+            // act
+            var obs = _bookPrv.GetBookAuthors();
+
+            // assert
+            foreach (var exp in expectedAuthorList)
+            {
+                var obsItem = obs.SingleOrDefault(a => a.Author == exp.Author);
+
+                Assert.NotNull(obsItem);
+                Assert.Equal(exp.BookCount, obsItem.BookCount);
+            }
+        }
+
         private void ExecuteUpdateTest(int bookKey, JsonPatchDocument<BookAddUpdateDto> patchDoc, string expectedError)
         {
             // act
