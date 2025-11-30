@@ -10,5 +10,6 @@ namespace BigBooks.API.Models
         public string Author { get; set; } = string.Empty;
         public string Genre { get; set; } = string.Empty;
         public double? Rating { get; set; }
+        public int Reviews { get; set; }
     }
 }

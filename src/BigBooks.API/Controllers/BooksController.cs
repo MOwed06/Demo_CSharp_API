@@ -1,17 +1,20 @@
 using BigBooks.API.Core;
+using BigBooks.API.Entities;
 using BigBooks.API.Interfaces;
 using BigBooks.API.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
-using System.Xml.Linq;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.Net;
 
 namespace BigBooks.API.Controllers
 {
     [Route("api/[controller]")]
     [Authorize]
     [ApiController]
-    public class BooksController(IBooksProvider bookProvider, ILogger<BooksController> logger) : ControllerBase
+    public class BooksController(IBooksProvider bookProvider,
+        ILogger<BooksController> logger) : BigBooksController(logger)
     {
         /// <summary>
         /// Get book by key
@@ -32,16 +35,15 @@ namespace BigBooks.API.Controllers
 
                 if (bookDto == null)
                 {
-                    return NotFound($"book {key}");
+                    return InvalidRequest(statusCode: HttpStatusCode.NotFound,
+                        errorMessage: $"No book key {key}");
                 }
 
                 return Ok(bookDto);
             }
             catch (Exception ex)
             {
-                logger.LogCritical(message: statusMsg,
-                    exception: ex);
-                return BadRequest();
+                return FailedRequest(statusMsg, ex);
             }
         }
 
@@ -69,9 +71,8 @@ namespace BigBooks.API.Controllers
 
                 if (!parseOk)
                 {
-                    var errorMsg = $"bad genre specification, {name}";
-                    logger.LogDebug(errorMsg);
-                    return BadRequest(errorMsg);
+                    return InvalidRequest(statusCode: HttpStatusCode.BadRequest,
+                        errorMessage: $"bad genre specification, {name}");
                 }
 
                 var bookDtos = bookProvider.GetBooksByGenre(queryGenre);
@@ -80,9 +81,7 @@ namespace BigBooks.API.Controllers
             }
             catch (Exception ex)
             {
-                logger.LogCritical(message: statusMsg,
-                    exception: ex);
-                return BadRequest();
+                return FailedRequest(statusMsg, ex);
             }
         }
 
@@ -108,9 +107,7 @@ namespace BigBooks.API.Controllers
             }
             catch (Exception ex)
             {
-                logger.LogCritical(message: statusMsg,
-                    exception: ex);
-                return BadRequest();
+                return FailedRequest(statusMsg, ex);
             }
         }
 
@@ -133,9 +130,7 @@ namespace BigBooks.API.Controllers
             }
             catch (Exception ex)
             {
-                logger.LogCritical(message: "GetAuthorList",
-                    exception: ex);
-                return BadRequest();
+                return FailedRequest("GetAuthorList", ex);
             }
         }
 
@@ -165,13 +160,12 @@ namespace BigBooks.API.Controllers
                     return GetBook(response.Key.Value);
                 }
 
-                throw new Exception(response.Error);
+                return InvalidRequest(statusCode: HttpStatusCode.BadRequest,
+                    errorMessage: response.Error);
             }
             catch (Exception ex)
             {
-                logger.LogCritical(message: statusMsg,
-                    exception: ex);
-                return BadRequest();
+                return FailedRequest(statusMsg, ex);
             }
         }
 
@@ -198,9 +192,8 @@ namespace BigBooks.API.Controllers
             {
                 if (!bookProvider.BookExists(key))
                 {
-                    var errorMsg = $"Invalid book key {key}";
-                    logger.LogDebug(errorMsg);
-                    return NotFound(errorMsg);
+                    return InvalidRequest(statusCode: HttpStatusCode.NotFound,
+                        errorMessage: $"No book key {key}");
                 }
 
                 var response = bookProvider.UpdateBook(key, patchDoc);
@@ -210,13 +203,12 @@ namespace BigBooks.API.Controllers
                     return GetBook(response.Key.Value);
                 }
 
-                throw new Exception(response.Error);
+                return InvalidRequest(statusCode: HttpStatusCode.BadRequest,
+                    errorMessage: response.Error);
             }
             catch (Exception ex)
             {
-                logger.LogCritical(message: statusMsg,
-                    exception: ex);
-                return BadRequest();
+                return FailedRequest(statusMsg, ex);
             }
         }
     }

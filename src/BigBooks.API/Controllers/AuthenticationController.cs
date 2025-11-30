@@ -1,12 +1,14 @@
 using BigBooks.API.Authentication;
 using BigBooks.API.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace BigBooks.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AuthenticationController(IAuthService authService, ILogger<AuthenticationController> logger) : ControllerBase
+    public class AuthenticationController(IAuthService authService,
+        ILogger<AuthenticationController> logger) : BigBooksController(logger)
     {
         /// <summary>
         /// Request token for user.
@@ -31,17 +33,15 @@ namespace BigBooks.API.Controllers
 
                 if (response.Token == null)
                 {
-                    logger.LogDebug(statusMsg, response.Error);
-                    return Unauthorized();
+                    return InvalidRequest(statusCode: HttpStatusCode.Unauthorized,
+                        errorMessage: response.Error);
                 }
 
                 return Ok(response);
             }
             catch (Exception ex)
             {
-                logger.LogCritical(message: statusMsg,
-                    exception: ex);
-                return Unauthorized();
+                return FailedRequest(statusMsg, ex);
             }
         }
     }

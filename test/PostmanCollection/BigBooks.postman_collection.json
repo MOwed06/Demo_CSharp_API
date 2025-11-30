@@ -238,7 +238,7 @@
 							"raw": "[\n    {\n      \"op\": \"replace\",\n      \"path\": \"/IsActive\",\n      \"value\": \"false\"\n    }   \n]"
 						},
 						"url": {
-							"raw": "https://localhost:{{portNumber}}/api/accounts/13",
+							"raw": "https://localhost:{{portNumber}}/api/accounts/23",
 							"protocol": "https",
 							"host": [
 								"localhost"
@@ -247,7 +247,7 @@
 							"path": [
 								"api",
 								"accounts",
-								"13"
+								"23"
 							]
 						}
 					},
@@ -283,6 +283,53 @@
 						"body": {
 							"mode": "raw",
 							"raw": "{\r\n    \"UserId\": \"Savannah.Tucker@demo.com\",\r\n    \"Password\": \"N0tV3ryS3cret\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:{{portNumber}}/api/authentication/authenticate",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "{{portNumber}}",
+							"path": [
+								"api",
+								"authentication",
+								"authenticate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Auth_Invalid",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseMessage = pm.response.json();\r",
+									"\r",
+									"const accessToken = responseMessage.token; // Extracts the token from the response body\r",
+									"\r",
+									"pm.collectionVariables.set(\"accessToken\", accessToken); // Saves to a collection variable"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"UserId\": \"S.Tucker@demo.com\",\r\n    \"Password\": \"notMyP@ssW0rd\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"

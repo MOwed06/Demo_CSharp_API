@@ -44,7 +44,8 @@ namespace BigBooks.API.Providers
                 InStock = book.StockQuantity > 0,
                 Rating = bookRating.HasValue
                     ? (double?)Math.Round(bookRating.Value, 2)
-                    : null
+                    : null,
+                Reviews = book.Reviews.Count()
             };
         }
 
@@ -64,7 +65,8 @@ namespace BigBooks.API.Providers
                 Title = b.Title,
                 Author = b.Author,
                 Genre = b.Genre.ToString(),
-                Rating = CalculateBookRating(b.Reviews)
+                Rating = CalculateBookRating(b.Reviews),
+                Reviews = b.Reviews.Count()
             })
             .OrderByDescending(b => b.Rating)
             .ToList();
@@ -99,7 +101,8 @@ namespace BigBooks.API.Providers
                 Title = b.Title,
                 Author = b.Author,
                 Genre = b.Genre.ToString(),
-                Rating = CalculateBookRating(b.Reviews)
+                Rating = CalculateBookRating(b.Reviews),
+                Reviews = b.Reviews.Count()
             })
             .OrderByDescending(b => b.Rating)
             .ToList();

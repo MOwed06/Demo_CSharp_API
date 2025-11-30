@@ -3,7 +3,7 @@ using BigBooks.API.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.Net;
 
 namespace BigBooks.API.Controllers
 {
@@ -17,7 +17,8 @@ namespace BigBooks.API.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize(Policy = "AccountAccess")]
-    public class AccountsController(IUsersProvider usersProvider, ILogger<AccountsController> logger) : ControllerBase
+    public class AccountsController(IUsersProvider usersProvider,
+        ILogger<AccountsController> logger) : BigBooksController(logger)
     {
         /// <summary>
         /// Get user account info by key.
@@ -41,16 +42,15 @@ namespace BigBooks.API.Controllers
 
                 if (userDto == null)
                 {
-                    return NotFound($"User {key}");
+                    return InvalidRequest(statusCode: HttpStatusCode.NotFound,
+                        errorMessage: $"No User {key}");
                 }
 
                 return Ok(userDto);
             }
             catch (Exception ex)
             {
-                logger.LogCritical(message: statusMsg,
-                    exception: ex);
-                return BadRequest();
+                return FailedRequest(statusMsg, ex);
             }
         }
 
@@ -80,9 +80,7 @@ namespace BigBooks.API.Controllers
             }
             catch (Exception ex)
             {
-                logger.LogCritical(message: "GetUsers",
-                    exception: ex);
-                return BadRequest();
+                return FailedRequest("GetUsers", ex);
             }
         }
 
@@ -108,16 +106,15 @@ namespace BigBooks.API.Controllers
 
                 if (response.Key == null)
                 {
-                    return BadRequest(response.Error);
+                    return InvalidRequest(statusCode: HttpStatusCode.BadRequest,
+                        errorMessage: response.Error);
                 }
 
                 return GetAccountInfo(response.Key.Value);
             }
             catch (Exception ex)
             {
-                logger.LogCritical(message: statusMsg,
-                    exception: ex);
-                return BadRequest();
+                return FailedRequest(statusMsg, ex);
             }
         }
 
@@ -143,9 +140,8 @@ namespace BigBooks.API.Controllers
             {
                 if (usersProvider.GetUser(key) == null)
                 {
-                    var errorMsg = $"Invalid user key {key}";
-                    logger.LogDebug(errorMsg);
-                    return NotFound(errorMsg);
+                    return InvalidRequest(statusCode: HttpStatusCode.NotFound,
+                        errorMessage: $"Invalid user key {key}");
                 }
 
                 var response = usersProvider.UpdateAccount(key, patchDoc);
@@ -156,13 +152,12 @@ namespace BigBooks.API.Controllers
                     return Ok(userInfo);
                 }
 
-                throw new Exception(response.Error);
+                return InvalidRequest(statusCode: HttpStatusCode.BadRequest,
+                    errorMessage: response.Error);
             }
             catch (Exception ex)
             {
-                logger.LogCritical(message: statusMsg,
-                    exception: ex);
-                return BadRequest();
+                return FailedRequest(statusMsg, ex);
             }
         }
     }
