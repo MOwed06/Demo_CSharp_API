@@ -147,5 +147,66 @@ namespace BigBooks.IntegrationTest
             Assert.Equal(bookAddDto.Author, obs.Author);
             Assert.Equal(bookAddDto.Isbn.ToString("D").ToUpper(), obs.Isbn);
         }
+
+        /// <summary>
+        /// This test has been designed to demonstrate the potential
+        /// ways of leveraging the WebApplicationFactory.
+        /// 
+        /// Direct access to the dbContext may be atypical for a test of
+        /// this kind - but has been exercised in this way to show what is possible.
+        /// 
+        /// The test makes an API call for a customer book purchase.
+        /// The API return will be inspected to confirm the book is added to the customer.
+        /// Then the database will be inspected directly to confirm the book has
+        /// been removed from stock.
+        /// </summary>
+        /// <returns></returns>
+        [Fact]
+        public async Task ConfirmBookPurchase()
+        {
+            // arrange
+            const int PURCHASE_BOOK_KEY = 6;
+            const int EXPECTED_BOOK_STOCK = 16; // available stock after user purchase
+            const string EXPECTED_USER_WALLET = "$88.81"; // $100 - purchase $11.19
+
+            var authRequest = new AuthRequest
+            {
+                UserId = "Arthur.Anderson@demo.com",
+                Password = ApplicationConstant.USER_PASSWORD
+            };
+
+            var purchaseDto = new PurchaseRequestDto
+            {
+                BookKey = PURCHASE_BOOK_KEY,
+                RequestedQuantity = 1,
+                TransactionConfirmation = Guid.NewGuid()
+            };
+
+            // act
+            string token = await GetAuthTokenAsync(authRequest);
+
+            // act
+            var response = await SendMessageAsync(uri: PURCHASE_URI,
+                method: HttpMethod.Post,
+                token: token,
+                body: purchaseDto);
+
+            // assert
+            WriteToOutput(response.StatusCode);
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+            var obs = await ReadResponseContent<UserDetailsDto>(response);
+            var obsTransaction = obs.Transactions
+                .SingleOrDefault(t => t.PurchaseBookKey == PURCHASE_BOOK_KEY);
+
+            Assert.Equal(EXPECTED_USER_WALLET, obs.Wallet); // confirm wallet adjusted
+            Assert.NotNull(obsTransaction); // confirm book possessed by user
+
+            using (var ctx = _appFactory.GenerateDbContext())
+            {
+                var obsBook = ctx.Books.Single(b => b.Key == PURCHASE_BOOK_KEY);
+                Assert.Equal(EXPECTED_BOOK_STOCK, obsBook.StockQuantity);
+            }
+        }
     }
 }

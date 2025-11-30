@@ -9,6 +9,16 @@ namespace BigBooks.IntegrationTest.Common
 {
     public class BigBookWebAppFactory : WebApplicationFactory<Program>
     {
+        /// <summary>
+        /// dispose after use
+        /// </summary>
+        /// <returns></returns>
+        public BigBookDbContext GenerateDbContext()
+        {
+            var scope = base.Services.CreateScope();
+            return scope.ServiceProvider.GetRequiredService<BigBookDbContext>();
+        }
+
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
             builder.ConfigureAppConfiguration((context, config) =>

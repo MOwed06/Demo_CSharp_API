@@ -6,7 +6,7 @@
         public DateTime TransactionDate { get; set; }
         public string TransactionType { get; set; }
         public decimal TransactionAmount { get; set; }
-        public string PurchaseBook { get; set; }
+        public int? PurchaseBookKey { get; set; }
         public int? PurchaseQuantity { get; set; }
     }
 }

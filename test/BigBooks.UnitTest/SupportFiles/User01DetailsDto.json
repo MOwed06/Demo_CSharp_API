@@ -11,7 +11,7 @@
       "TransactionDate": "2025-03-16T00:00:00",
       "TransactionType": "Purchase",
       "TransactionAmount": -17.17,
-      "PurchaseBook": "Citizen Soldiers",
+      "PurchaseBookKey": 2,
       "PurchaseQuantity": 1
     },
     {
@@ -19,7 +19,7 @@
       "TransactionDate": "2025-03-15T00:00:00",
       "TransactionType": "Purchase",
       "TransactionAmount": -26.23,
-      "PurchaseBook": "Where the Wild Things Are",
+      "PurchaseBookKey": 1,
       "PurchaseQuantity": 2
     }
   ]
