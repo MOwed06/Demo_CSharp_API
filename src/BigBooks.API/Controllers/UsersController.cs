@@ -7,7 +7,8 @@ namespace BigBooks.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UsersController(IUsersProvider usersProvider, ILogger<UsersController> logger) : ControllerBase
+    public class UsersController(IUsersProvider usersProvider,
+        ILogger<UsersController> logger) : BigBooksController(logger)
     {
         /// <summary>
         /// Get UserDetails for current user
@@ -34,9 +35,7 @@ namespace BigBooks.API.Controllers
             }
             catch (Exception ex)
             {
-                logger.LogCritical(message: "GetCurrentUser",
-                    exception: ex);
-                return BadRequest();
+                return FailedRequest("GetCurrentUser", ex);
             }
         }
     }

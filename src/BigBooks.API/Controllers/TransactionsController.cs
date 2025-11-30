@@ -2,6 +2,8 @@
 using BigBooks.API.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.Net;
 using System.Security.Claims;
 
 namespace BigBooks.API.Controllers
@@ -11,7 +13,7 @@ namespace BigBooks.API.Controllers
     [Authorize]
     public class TransactionsController(ITransactionsProvider transactionsProvider,
         IUsersProvider userProvider,
-        ILogger<TransactionsController> logger) : ControllerBase
+        ILogger<TransactionsController> logger) : BigBooksController(logger)
     {
         /// <summary>
         /// Purchase books for logged in user
@@ -40,19 +42,16 @@ namespace BigBooks.API.Controllers
 
                 if (response.Key == null)
                 {
-                    logger.LogError(response.Error);
-                    return BadRequest();
+                    return InvalidRequest(statusCode: HttpStatusCode.BadRequest,
+                        errorMessage: response.Error);
                 }
 
                 var updatedUserDto = userProvider.GetUser(response.Key.Value);
                 return Ok(updatedUserDto);
-
             }
             catch (Exception ex)
             {
-                logger.LogCritical(message: statusMsg,
-                    exception: ex);
-                return BadRequest();
+                return FailedRequest(statusMsg, ex);
             }
         }
 
@@ -82,8 +81,8 @@ namespace BigBooks.API.Controllers
 
                 if (response.Key == null)
                 {
-                    logger.LogError(response.Error);
-                    return BadRequest();
+                    return InvalidRequest(statusCode: HttpStatusCode.BadRequest,
+                        errorMessage: response.Error);
                 }
 
                 var updatedUserDto = userProvider.GetUser(response.Key.Value);
@@ -91,9 +90,7 @@ namespace BigBooks.API.Controllers
             }
             catch (Exception ex)
             {
-                logger.LogCritical(message: statusMsg,
-                    exception: ex);
-                return BadRequest();
+                return FailedRequest(statusMsg, ex);
             }
         }
     }

@@ -2,6 +2,8 @@
 using BigBooks.API.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.Net;
 using System.Security.Claims;
 
 namespace BigBooks.API.Controllers
@@ -11,7 +13,7 @@ namespace BigBooks.API.Controllers
     [Authorize]
     public class BookReviewsController(IBookReviewsProvider bookReviewPrv,
         IBooksProvider bookPrv,
-        ILogger<BookReviewsController> logger) : ControllerBase
+        ILogger<BookReviewsController> logger) : BigBooksController(logger)
     {
         /// <summary>
         /// Get book reviews for designaged book
@@ -31,9 +33,8 @@ namespace BigBooks.API.Controllers
             {
                 if (!bookPrv.BookExists(book))
                 {
-                    var errorMsg = $"No book key {book}";
-                    logger.LogDebug(errorMsg);
-                    return NotFound(errorMsg);
+                    return InvalidRequest(statusCode: HttpStatusCode.NotFound,
+                        errorMessage: $"No book key {book}");
                 }
 
                 var reviewDtos = bookReviewPrv.GetBookReviews(book);
@@ -42,9 +43,7 @@ namespace BigBooks.API.Controllers
             }
             catch (Exception ex)
             {
-                logger.LogCritical(message: statusMsg,
-                    exception: ex);
-                return BadRequest();
+                return FailedRequest(statusMsg, ex);
             }
         }
 
@@ -66,9 +65,8 @@ namespace BigBooks.API.Controllers
             {
                 if (!bookPrv.BookExists(book))
                 {
-                    var errorMsg = $"No book key {book}";
-                    logger.LogDebug(errorMsg);
-                    return NotFound(errorMsg);
+                    return InvalidRequest(statusCode: HttpStatusCode.NotFound,
+                        errorMessage: $"No book key {book}");
                 }
 
                 // extract appUser key from active user claims
@@ -78,8 +76,8 @@ namespace BigBooks.API.Controllers
 
                 if (response.Key == null)
                 {
-                    logger.LogError(response.Error);
-                    return BadRequest();
+                    return InvalidRequest(statusCode: HttpStatusCode.BadRequest,
+                        errorMessage: response.Error);
                 }
 
                 var reviewDto = bookReviewPrv.GetBookReview(response.Key.Value);
@@ -87,9 +85,7 @@ namespace BigBooks.API.Controllers
             }
             catch (Exception ex)
             {
-                logger.LogCritical(message: statusMsg,
-                    exception: ex);
-                return BadRequest();
+                return FailedRequest(statusMsg, ex);
             }
         }
     }

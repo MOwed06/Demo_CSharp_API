@@ -15,5 +15,6 @@ namespace BigBooks.API.Models
         public string Price { get; set; } = string.Empty;
         public bool InStock { get; set; }
         public double? Rating { get; set; }
+        public int Reviews { get; set; }
     }
 }
