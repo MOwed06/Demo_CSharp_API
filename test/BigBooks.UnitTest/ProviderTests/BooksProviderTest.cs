@@ -307,7 +307,7 @@ namespace BigBooks.UnitTest.ProviderTests
                 },
                 new AuthorInfoDto
                 {
-                    Author = "Maurice Sendak",
+                    Author = "C. Monster",
                     BookCount = 1
                 },
                 new AuthorInfoDto
