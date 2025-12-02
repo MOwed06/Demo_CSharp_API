@@ -40,8 +40,14 @@ I will continue to evolve this project as my bandwidth allows. I will keep the m
         - Any user my view their own User details via the UsersController
 
 - Intentional complexities
-    - BookAddUpdateDto.Isbn must be valid Guid
-    - UserAddUpdateDto.UserEmail must be valid email
+    - The following object must possess valid Guid:
+        - AccountDepositDto.Confirmation
+        - BookAddUpdateDto.Isbn
+        - PurchaseRequestDto.TransactionConfirmation
+    - UserAddUpdateDto.UserEmail must a unique, valid email  
+
+- Error handling
+    - By design (for testing), failed API requests will return the error content in the message body
 
 - SQLite database, BigBooks.db
 

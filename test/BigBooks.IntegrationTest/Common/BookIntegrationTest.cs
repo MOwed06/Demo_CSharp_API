@@ -20,7 +20,8 @@ namespace BigBooks.IntegrationTest.Common
 
         // this database content established by BigBooksDbContent.cs seed data
         protected const string ADMIN_USER_EMAIL = "Bruce.Wayne@demo.com";
-        protected const string CUSTOMER_USER_EMAIL = "Celeste.Cadwell@demo.com";
+        protected const string CUSTOMER4_EMAIL = "Arthur.Anderson@demo.com";
+        protected const string CUSTOMER6_EMAIL = "Celeste.Cadwell@demo.com";
         protected const string BOOK_3_TITLE = "Too Many Frogs";
 
         protected readonly BigBookWebAppFactory _appFactory;
@@ -83,11 +84,16 @@ namespace BigBooks.IntegrationTest.Common
             return JsonConvert.DeserializeObject<T>(responseData);
         }
 
-        protected void WriteToOutput(object dataValue)
+        protected void WriteToOutput(object dataValue, bool expandJson = false)
         {
             var dataOuptut = (dataValue is IEnumerable)
                 ? string.Join(", ", dataValue)
                 : dataValue.ToString();
+
+            if (expandJson)
+            {
+                dataOuptut = JsonConvert.SerializeObject(dataValue, Formatting.Indented);
+            }
 
             _output.WriteLine(dataOuptut);
         }
