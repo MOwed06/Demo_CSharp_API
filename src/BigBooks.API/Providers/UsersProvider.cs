@@ -30,11 +30,6 @@ namespace BigBooks.API.Providers
                 .Select(u => u.BookKey)
                 .ToHashSet();
 
-            var userBooks = ctx.Books
-                .Where(b => userBookKeys.Contains(b.Key))
-                .Select(b => b.Title)
-                .ToList();
-
             return new UserDetailsDto
             {
                 Key = key,
@@ -122,7 +117,7 @@ namespace BigBooks.API.Providers
 
         public ProviderKeyResponse AddUser(UserAddUpdateDto dto)
         {
-            logger.LogDebug($"AddUser {dto.UserEmail}");
+            logger.LogDebug("AddUser {0}", dto.UserEmail);
 
             if (IsDuplicateEmail(dto.UserEmail, null))
             {
@@ -149,7 +144,7 @@ namespace BigBooks.API.Providers
 
         public ProviderKeyResponse GetUserKeyFromToken(string currentUserValue)
         {
-            logger.LogDebug($"GetUserKeyFromToken, {currentUserValue}");
+            logger.LogDebug("GetUserKeyFromToken, {0}", currentUserValue);
 
             var appUser = ctx.AppUsers
                 .AsNoTracking()

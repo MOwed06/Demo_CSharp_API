@@ -4,7 +4,7 @@
 
 ## Purpose
 
-BigBookStore solution is a sandbox that I am leveraging to showcase my capabilities with C# and test automation.
+BigBookStore solution is a sandbox that I am leveraging to showcase my capabilities with C# and test automation (xUnit).
 
 The BigBooks.API project implements a simple API for a hypothetical on-line book store.
 
@@ -28,10 +28,10 @@ I will continue to evolve this project as my bandwidth allows. I will keep the m
 ### BigBooks.API
 
 - The project leverages a typical Web API pattern.
-    - Controller layer is intentionally light-weight.
-    - Provider layer resolves data transformation and db interactions.
+    - Controller layer is intentionally light-weight
+    - Provider layer resolves data transformation and db interactions
     - Dto objects exchanged with controllers
-    - Simmplified token authorization
+    - Simplified token authorization
 
 - AccountsController vs UsersController
     - Under-the-Hood, both the AccountsController and UsersController leverage the UsersProvider
@@ -59,12 +59,12 @@ I will continue to evolve this project as my bandwidth allows. I will keep the m
 
 ### BigBooks.UnitTest
 
-- xunit tests of project elements exercised in isolation.
+- xUnit tests of project elements exercised in isolation.
     - Authentication
     - Providers
     - Models
 - InMemory DbContext created for each test case.
-    - Refer to BigBookTest.cs constructor.
+    - Refer to BigBookTest.cs constructor
 
 <br>
 

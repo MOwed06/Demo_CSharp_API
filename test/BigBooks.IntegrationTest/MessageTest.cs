@@ -153,7 +153,9 @@ namespace BigBooks.IntegrationTest
         /// ways of leveraging the WebApplicationFactory.
         /// 
         /// Direct access to the dbContext may be atypical for a test of
-        /// this kind - but has been exercised in this way to show what is possible.
+        /// this kind. An additional API could have been made to inspect
+        /// the available stock for the purchased book. This scenario was constructed
+        /// to show that direct db query is possible in this test configuration.
         /// 
         /// The test makes an API call for a customer book purchase.
         /// The API return will be inspected to confirm the book is added to the customer.

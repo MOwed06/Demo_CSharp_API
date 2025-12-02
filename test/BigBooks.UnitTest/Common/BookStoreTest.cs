@@ -33,22 +33,22 @@ namespace BigBooks.UnitTest.Common
                 new Book
                 {
                     Key = 1,
-                    Title = "Where the Wild Things Are",
-                    Author = "Maurice Sendak",
+                    Title = "See You Later, Alligator",
+                    Author = "Sally Hopgood",
                     Isbn = Guid.Parse(BOOK1_GUID),
                     Genre = Genre.Childrens,
-                    Description = "Let the wild rumpus continue as this classic comes to life like never before with new reproductions of Maurice Sendak's artwork.",
+                    Description = "A departing tortoise has his bags packed and is almost ready to set out on an adventure, but he can’t leave until he says good-bye to each of his animal friends. The tortoise stops for every last timid mouse and bumblebee, shouting his rhyming good-byes, making you wonder if, perhaps, he’s stalling the start of his trip.",
                     Price = 11.42m,
                     StockQuantity = 17
                 },
                 new Book
                 {
                     Key = 2,
-                    Title = "Citizen Soldiers",
-                    Author = "Stephen Ambrose",
+                    Title = "Fierce Patriot: The Tangled Lives of William Tecumseh Sherman",
+                    Author = "Robert L. O'Connell",
                     Isbn = Guid.Parse(BOOK2_GUID),
                     Genre = Genre.History,
-                    Description = "Citizen Soldiers opens at 0001 hours, June 7, 1944, on the Normandy beaches, and ends at 0245 hours, May 7, 1945, with the allied victory.",
+                    Description = "America’s first “celebrity” general, William Tecumseh Sherman was a man of many faces. Some were exalted in the public eye, others known only to his intimates.",
                     Price = 17.11m,
                     StockQuantity = 6
                 }

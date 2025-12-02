@@ -210,5 +210,48 @@ namespace BigBooks.UnitTest.ProviderTests
             // assert
             Assert.Equal(expectedAmount, obsTransaction.TransactionAmount);
         }
+
+        [Theory]
+        [InlineData("Some.Random.Person@test.com", "Invalid user")]
+        [InlineData(INACTIVE_CUSTOMER_EMAIL, "User is deactivated")]
+        public void CheckDepositError(string currentUserValue, string expectedError)
+        {
+            // arrange
+            var dto = new AccountDepositDto
+            {
+                Amount = 75.0m,
+                Confirmation = Guid.Parse("7DEAF897-921D-461A-B1E1-E1CDC51E11CC")
+            };
+
+            // act
+            var obs = _transactionsPrv.Deposit(currentUserValue, dto);
+
+            // assert
+            Assert.Null(obs.Key);
+            Assert.Contains(expectedError, obs.Error);
+        }
+
+        [Fact]
+        public void CheckDepositValid()
+        {
+            // arrange
+            const decimal EXPECTED_WALLET = 115m; // $40 + $75 deposit
+
+            var dto = new AccountDepositDto
+            {
+                Amount = 75.0m,
+                Confirmation = Guid.Parse("7DEAF897-921D-461A-B1E1-E1CDC51E11CC")
+            };
+
+            // act
+            var obs = _transactionsPrv.Deposit(ACTIVE_CUSTOMER_EMAIL, dto);
+            var obsWallet = _ctx.AppUsers
+                .SingleOrDefault(u => u.Key == obs.Key)?.Wallet;
+
+            // assert
+            Assert.Equal(ACTIVE_CUSTOMER_KEY, obs.Key);
+            Assert.Empty(obs.Error);
+            Assert.Equal(EXPECTED_WALLET, obsWallet);
+        }
     }
 }
