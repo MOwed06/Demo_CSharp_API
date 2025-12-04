@@ -23,7 +23,7 @@ namespace BigBooks.IntegrationTest
             // arrange
             var authRequest = new AuthRequest
             {
-                UserId = CUSTOMER_USER_EMAIL,
+                UserId = CUSTOMER6_EMAIL,
                 Password = ApplicationConstant.USER_PASSWORD
             };
 
@@ -38,7 +38,7 @@ namespace BigBooks.IntegrationTest
             var obs = await ReadResponseContent<BookDetailsDto>(response);
 
             // asset
-            WriteToOutput(obs);
+            WriteToOutput(obs, true);
             Assert.NotNull(obs);
             Assert.Equal(BOOK_3_TITLE, obs.Title);
         }
@@ -86,7 +86,7 @@ namespace BigBooks.IntegrationTest
             // arrange
             var authRequest = new AuthRequest
             {
-                UserId = CUSTOMER_USER_EMAIL,
+                UserId = CUSTOMER6_EMAIL,
                 Password = ApplicationConstant.USER_PASSWORD
             };
 
@@ -173,7 +173,7 @@ namespace BigBooks.IntegrationTest
 
             var authRequest = new AuthRequest
             {
-                UserId = "Arthur.Anderson@demo.com",
+                UserId = CUSTOMER4_EMAIL,
                 Password = ApplicationConstant.USER_PASSWORD
             };
 
@@ -184,7 +184,6 @@ namespace BigBooks.IntegrationTest
                 TransactionConfirmation = Guid.NewGuid()
             };
 
-            // act
             string token = await GetAuthTokenAsync(authRequest);
 
             // act
@@ -208,6 +207,69 @@ namespace BigBooks.IntegrationTest
             {
                 var obsBook = ctx.Books.Single(b => b.Key == PURCHASE_BOOK_KEY);
                 Assert.Equal(EXPECTED_BOOK_STOCK, obsBook.StockQuantity);
+            }
+        }
+
+        /// <summary>
+        /// Similar to ConfirmBookPurchase, this test will make an API call and
+        /// then directly inspect the database content.
+        /// 
+        /// A purchase will be attempted and the rejection content will be confirmed.
+        /// The user wallet and stock quantity will be confirmed as unchanged
+        /// after the API call completes.
+        /// </summary>
+        /// <returns></returns>
+        [Fact]
+        public async Task ConfirmRejectedBookPurchase()
+        {
+            // arrange
+            const string EXPECTED_ERROR = "Insufficent funds in user wallet";
+            const int CUSTOMER4_USER_KEY = 4;
+
+            const int PURCHASE_BOOK_KEY = 6;
+            const int EXPECTED_BOOK_STOCK = 17;
+            const decimal EXPECTED_USER_WALLET = 100.0m;
+
+            var authRequest = new AuthRequest
+            {
+                UserId = CUSTOMER4_EMAIL,
+                Password = ApplicationConstant.USER_PASSWORD
+            };
+
+            var purchaseDto = new PurchaseRequestDto
+            {
+                BookKey = PURCHASE_BOOK_KEY,
+                RequestedQuantity = 11, // 11 books x $11.19 > customer wallet
+                TransactionConfirmation = Guid.NewGuid()
+            };
+
+            // act
+            string token = await GetAuthTokenAsync(authRequest);
+
+            // act
+            var response = await SendMessageAsync(uri: PURCHASE_URI,
+                method: HttpMethod.Post,
+                token: token,
+                body: purchaseDto);
+
+            var responseBody = response.Content.ReadAsStringAsync()?.Result;
+
+            // assert
+            WriteToOutput(response.StatusCode);
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+            WriteToOutput(responseBody);
+            Assert.Contains(EXPECTED_ERROR, responseBody);
+
+            using (var ctx = _appFactory.GenerateDbContext())
+            {
+                var obsBookQty = ctx.Books
+                    .SingleOrDefault(b => b.Key == PURCHASE_BOOK_KEY)
+                    ?.StockQuantity;
+                var obsUserWallet = ctx.AppUsers
+                    .SingleOrDefault(u => u.Key == CUSTOMER4_USER_KEY)?.Wallet;
+
+                Assert.Equal(EXPECTED_BOOK_STOCK, obsBookQty);
+                Assert.Equal(EXPECTED_USER_WALLET, obsUserWallet);
             }
         }
     }
