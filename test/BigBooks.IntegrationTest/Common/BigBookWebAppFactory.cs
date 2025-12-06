@@ -44,7 +44,7 @@ namespace BigBooks.IntegrationTest.Common
                 services.Remove(applicationDbContext);
 
                 // build in-memory db context
-                services.AddDbContext<BigBookDbContext>(options =>
+                services.AddDbContextFactory<BigBookDbContext>(options =>
                 {
                     options.UseInMemoryDatabase("InMemoryTestDb");
                 });
@@ -60,9 +60,6 @@ namespace BigBooks.IntegrationTest.Common
                     // Ensure the database is created (for in-memory, this initializes it)
                     dbContext.Database.EnsureCreated();
                     dbContext.SaveChanges();
-
-                    // if add data beyond values from context on-model creating, do it here
-                    //SeedData(dbContext);
                 }
             });
         }

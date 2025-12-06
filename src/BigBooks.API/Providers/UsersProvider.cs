@@ -14,35 +14,36 @@ namespace BigBooks.API.Providers
         {
             logger.LogDebug("GetUser, {0}", key);
 
+            AppUser matchedUser = null;
             using (var ctx = dbContextFactory.CreateDbContext())
             {
-                var appUser = ctx.AppUsers
+                matchedUser = ctx.AppUsers
                 .AsNoTracking()
                 .Include(u => u.Transactions)
                 .SingleOrDefault(u => u.Key == key);
-
-                if (appUser == null)
-                {
-                    return null;
-                }
-
-                // use hashset to prohibit duplicate entries
-                var userBookKeys = appUser.Transactions
-                    .Where(u => u.BookKey != null)
-                    .Select(u => u.BookKey)
-                    .ToHashSet();
-
-                return new UserDetailsDto
-                {
-                    Key = key,
-                    UserEmail = appUser.UserEmail,
-                    UserName = appUser.UserName,
-                    IsActive = appUser.IsActive,
-                    Role = appUser.Role.ToString(),
-                    Wallet = appUser.Wallet.ToString("C"),
-                    Transactions = GetUserTransactions(key)
-                };
             }
+
+            if (matchedUser == null)
+            {
+                return null;
+            }
+
+            // use hashset to prohibit duplicate entries
+            var userBookKeys = matchedUser.Transactions
+                .Where(u => u.BookKey != null)
+                .Select(u => u.BookKey)
+                .ToHashSet();
+
+            return new UserDetailsDto
+            {
+                Key = key,
+                UserEmail = matchedUser.UserEmail,
+                UserName = matchedUser.UserName,
+                IsActive = matchedUser.IsActive,
+                Role = matchedUser.Role.ToString(),
+                Wallet = matchedUser.Wallet.ToString("C"),
+                Transactions = GetUserTransactions(key)
+            };
         }
 
         internal List<TransactionOverviewDto> GetUserTransactions(int userKey)
