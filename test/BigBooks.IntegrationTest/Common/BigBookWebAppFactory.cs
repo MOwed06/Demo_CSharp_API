@@ -9,14 +9,11 @@ namespace BigBooks.IntegrationTest.Common
 {
     public class BigBookWebAppFactory : WebApplicationFactory<Program>
     {
-        /// <summary>
-        /// dispose after use
-        /// </summary>
-        /// <returns></returns>
-        public BigBookDbContext GenerateDbContext()
+        public BigBookDbContext CreateTestDbContext()
         {
             var scope = base.Services.CreateScope();
-            return scope.ServiceProvider.GetRequiredService<BigBookDbContext>();
+            var dbFactory = scope.ServiceProvider.GetRequiredService<IDbContextFactory<BigBookDbContext>>();
+            return dbFactory.CreateDbContext();
         }
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
@@ -38,6 +35,9 @@ namespace BigBooks.IntegrationTest.Common
 
             builder.ConfigureServices(services =>
             {
+                var bob = services.ToList();
+
+
                 // remove standard db context
                 var applicationDbContext = services
                     .SingleOrDefault(d => d.ServiceType == typeof(DbContextOptions<BigBookDbContext>));

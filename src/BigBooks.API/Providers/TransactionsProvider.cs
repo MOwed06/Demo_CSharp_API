@@ -5,10 +5,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BigBooks.API.Providers
 {
-    public class TransactionsProvider(BigBookDbContext ctx,
+    public class TransactionsProvider(IDbContextFactory<BigBookDbContext> dbContextFactory,
         IBooksProvider booksProvider,
         IUsersProvider usersProvider,
-        ILogger<TransactionsProvider> logger) : BaseProvider, ITransactionsProvider
+        ILogger<TransactionsProvider> logger) : BaseProvider(dbContextFactory), ITransactionsProvider
     {
         /// <summary>
         /// extract userKey from claim
@@ -38,46 +38,49 @@ namespace BigBooks.API.Providers
                 return new ProviderKeyResponse(null, "User is deactivated");
             }
 
-            var book = ctx.Books
+            using (var ctx = dbContextFactory.CreateDbContext())
+            {
+                var book = ctx.Books
                 .AsNoTracking()
                 .SingleOrDefault(b => b.Key == dto.BookKey);
 
-            if (book == null)
-            {
-                return new ProviderKeyResponse(null, $"Invalid book {dto.BookKey}");
+                if (book == null)
+                {
+                    return new ProviderKeyResponse(null, $"Invalid book {dto.BookKey}");
+                }
+
+                var purchaseAmount = book.Price * dto.RequestedQuantity;
+
+                var currentUser = ctx.AppUsers
+                    .Include(u => u.Transactions)
+                    .Single(u => u.Key == userMatch.Key);
+
+                if (currentUser.Wallet < purchaseAmount)
+                {
+                    return new ProviderKeyResponse(null, $"Insufficent funds in user wallet");
+                }
+
+                if (!booksProvider.RemoveFromStock(dto.BookKey, dto.RequestedQuantity))
+                {
+                    return new ProviderKeyResponse(null, $"Insufficient book stock");
+                }
+
+                // valid purchase, stock available
+                currentUser.Wallet -= purchaseAmount;
+
+                currentUser.Transactions.Add(new AccountTransaction
+                {
+                    TransactionAmount = -purchaseAmount,
+                    TransactionDate = DateTime.Now,
+                    TransactionConfirmation = dto.TransactionConfirmation,
+                    BookKey = dto.BookKey,
+                    PurchaseQuantity = dto.RequestedQuantity
+                });
+
+                ctx.SaveChanges();
+
+                return new ProviderKeyResponse(currentUser.Key, string.Empty);
             }
-
-            var purchaseAmount = book.Price * dto.RequestedQuantity;
-
-            var currentUser = ctx.AppUsers
-                .Include(u => u.Transactions)
-                .Single(u => u.Key == userMatch.Key);
-
-            if (currentUser.Wallet < purchaseAmount)
-            {
-                return new ProviderKeyResponse(null, $"Insufficent funds in user wallet");
-            }
-
-            if (!booksProvider.RemoveFromStock(dto.BookKey, dto.RequestedQuantity))
-            {
-                return new ProviderKeyResponse(null, $"Insufficient book stock");
-            }
-
-            // valid purchase, stock available
-            currentUser.Wallet -= purchaseAmount;
-
-            currentUser.Transactions.Add(new AccountTransaction
-            {
-                TransactionAmount = -purchaseAmount,
-                TransactionDate = DateTime.Now,
-                TransactionConfirmation = dto.TransactionConfirmation,
-                BookKey = dto.BookKey,
-                PurchaseQuantity = dto.RequestedQuantity
-            });
-
-            ctx.SaveChanges();
-
-            return new ProviderKeyResponse(currentUser.Key, string.Empty);
         }
 
         public ProviderKeyResponse Deposit(string currentUserValue, AccountDepositDto dto)
@@ -100,24 +103,27 @@ namespace BigBooks.API.Providers
                 return new ProviderKeyResponse(null, "User is deactivated");
             }
 
-            var currentUser = ctx.AppUsers
+            using (var ctx = dbContextFactory.CreateDbContext())
+            {
+                var currentUser = ctx.AppUsers
                 .Include(u => u.Transactions)
                 .Single(u => u.Key == userMatch.Key);
 
-            currentUser.Wallet += dto.Amount;
+                currentUser.Wallet += dto.Amount;
 
-            currentUser.Transactions.Add(new AccountTransaction
-            {
-                TransactionDate = DateTime.Now,
-                TransactionConfirmation = dto.Confirmation,
-                TransactionAmount = dto.Amount,
-                BookKey = null,
-                PurchaseQuantity = null
-            });
+                currentUser.Transactions.Add(new AccountTransaction
+                {
+                    TransactionDate = DateTime.Now,
+                    TransactionConfirmation = dto.Confirmation,
+                    TransactionAmount = dto.Amount,
+                    BookKey = null,
+                    PurchaseQuantity = null
+                });
 
-            ctx.SaveChanges();
+                ctx.SaveChanges();
 
-            return new ProviderKeyResponse(currentUser.Key, string.Empty);
+                return new ProviderKeyResponse(currentUser.Key, string.Empty);
+            }
         }
     }
 }

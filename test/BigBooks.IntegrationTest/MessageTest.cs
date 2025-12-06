@@ -203,7 +203,7 @@ namespace BigBooks.IntegrationTest
             Assert.Equal(EXPECTED_USER_WALLET, obs.Wallet); // confirm wallet adjusted
             Assert.NotNull(obsTransaction); // confirm book possessed by user
 
-            using (var ctx = _appFactory.GenerateDbContext())
+            using (var ctx = _appFactory.CreateTestDbContext())
             {
                 var obsBook = ctx.Books.Single(b => b.Key == PURCHASE_BOOK_KEY);
                 Assert.Equal(EXPECTED_BOOK_STOCK, obsBook.StockQuantity);
@@ -260,7 +260,7 @@ namespace BigBooks.IntegrationTest
             WriteToOutput(responseBody);
             Assert.Contains(EXPECTED_ERROR, responseBody);
 
-            using (var ctx = _appFactory.GenerateDbContext())
+            using (var ctx = _appFactory.CreateTestDbContext())
             {
                 var obsBookQty = ctx.Books
                     .SingleOrDefault(b => b.Key == PURCHASE_BOOK_KEY)

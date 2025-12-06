@@ -8,7 +8,9 @@ using System.Security.Claims;
 
 namespace BigBooks.API.Services
 {
-    public class AuthService(IConfiguration config, BigBookDbContext ctx, ILogger<AuthService> logger) : IAuthService
+    public class AuthService(IConfiguration config,
+        IDbContextFactory<BigBookDbContext> dbContextFactory,
+        ILogger<AuthService> logger) : IAuthService
     {
         /// <summary>
         /// return token for user
@@ -29,11 +31,15 @@ namespace BigBooks.API.Services
                 var issuer = cfgRoot.GetValue<string>("Authentication:Issuer");
                 var audience = cfgRoot.GetValue<string>("Authentication:Audience");
 
-                var user = ctx.AppUsers
-                    .AsNoTracking()
-                    .SingleOrDefault(u => (u.UserEmail == request.UserId));
+                AppUser matchedUser = null;
+                using (var ctx = dbContextFactory.CreateDbContext())
+                {
+                    matchedUser = ctx.AppUsers
+                        .AsNoTracking()
+                        .SingleOrDefault(u => (u.UserEmail == request.UserId));
+                }
 
-                if (user == null)
+                if (matchedUser == null)
                 {
                     return new AuthResponse
                     {
@@ -43,7 +49,7 @@ namespace BigBooks.API.Services
                     };
                 }
 
-                if (!user.Password.Equals(request.Password))
+                if (!matchedUser.Password.Equals(request.Password))
                 {
                     return new AuthResponse
                     {
@@ -59,10 +65,10 @@ namespace BigBooks.API.Services
                     securityKey, SecurityAlgorithms.HmacSha256);
 
                 var claimsForToken = new List<Claim>();
-                claimsForToken.Add(new Claim(JwtRegisteredClaimNames.Sub, user.UserEmail));
+                claimsForToken.Add(new Claim(JwtRegisteredClaimNames.Sub, matchedUser.UserEmail));
                 claimsForToken.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
-                claimsForToken.Add(new Claim(ClaimTypes.Name, user.UserName));
-                claimsForToken.Add(new Claim(ClaimTypes.Role, user.Role.ToString()));
+                claimsForToken.Add(new Claim(ClaimTypes.Name, matchedUser.UserName));
+                claimsForToken.Add(new Claim(ClaimTypes.Role, matchedUser.Role.ToString()));
 
                 var tokenExpiration = DateTime.Now.AddHours(0.5);
 

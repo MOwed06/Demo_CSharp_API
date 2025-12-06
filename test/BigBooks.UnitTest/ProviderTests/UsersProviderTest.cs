@@ -16,7 +16,7 @@ namespace BigBooks.UnitTest.ProviderTests
         public UsersProviderTest()
         {
             var mockLogger = new Mock<ILogger<UsersProvider>>();
-            _usersProvider = new UsersProvider(_ctx, mockLogger.Object);
+            _usersProvider = new UsersProvider(TestContextFactory, mockLogger.Object);
         }
 
         [Theory]
