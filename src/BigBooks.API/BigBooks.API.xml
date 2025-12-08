@@ -244,6 +244,7 @@
             <summary>
             Remove designated quantity of books from available stock
             </summary>
+            <param name="ctx"></param>
             <param name="bookKey"></param>
             <param name="requestedQuantity"></param>
             <returns>

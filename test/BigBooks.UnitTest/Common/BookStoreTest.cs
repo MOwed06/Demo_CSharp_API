@@ -19,6 +19,7 @@ namespace BigBooks.UnitTest.Common
         protected const string STRING_150_CHARS = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, q";
         protected const string STRING_151_CHARS = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, qu";
 
+        protected const string CUSTOMER_1_EMAIL = "Bruce.Banner@test.com";
         protected const string CUSTOMER_2_EMAIL = "Jessica.Jones@test.com";
 
         protected readonly IDbContextFactory<BigBookDbContext> TestContextFactory;
@@ -92,7 +93,7 @@ namespace BigBooks.UnitTest.Common
                 {
                     Key = 1,
                     UserName = "Bruce Banner",
-                    UserEmail = "Bruce.Banner@test.com",
+                    UserEmail = CUSTOMER_1_EMAIL,
                     Password = ApplicationConstant.USER_PASSWORD,
                     IsActive = true,
                     Role = Role.Admin,

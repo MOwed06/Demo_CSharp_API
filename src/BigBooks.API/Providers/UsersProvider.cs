@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 namespace BigBooks.API.Providers
 {
     public class UsersProvider(IDbContextFactory<BigBookDbContext> dbContextFactory,
-        ILogger<UsersProvider> logger) : BaseProvider(dbContextFactory), IUsersProvider
+        ILogger<UsersProvider> logger) : BaseProvider, IUsersProvider
     {
         public UserDetailsDto GetUser(int key)
         {

@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 namespace BigBooks.API.Providers
 {
     public class BooksProvider(IDbContextFactory<BigBookDbContext> dbContextFactory,
-        ILogger<BooksProvider> logger) : BaseProvider(dbContextFactory), IBooksProvider
+        ILogger<BooksProvider> logger) : BaseProvider, IBooksProvider
     {
         public bool BookExists(int key)
         {
@@ -207,6 +207,7 @@ namespace BigBooks.API.Providers
         /// <summary>
         /// Remove designated quantity of books from available stock
         /// </summary>
+        /// <param name="ctx"></param>
         /// <param name="bookKey"></param>
         /// <param name="requestedQuantity"></param>
         /// <returns>

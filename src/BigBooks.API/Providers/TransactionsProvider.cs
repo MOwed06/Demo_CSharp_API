@@ -8,7 +8,7 @@ namespace BigBooks.API.Providers
     public class TransactionsProvider(IDbContextFactory<BigBookDbContext> dbContextFactory,
         IBooksProvider booksProvider,
         IUsersProvider usersProvider,
-        ILogger<TransactionsProvider> logger) : BaseProvider(dbContextFactory), ITransactionsProvider
+        ILogger<TransactionsProvider> logger) : BaseProvider, ITransactionsProvider
     {
         /// <summary>
         /// extract userKey from claim

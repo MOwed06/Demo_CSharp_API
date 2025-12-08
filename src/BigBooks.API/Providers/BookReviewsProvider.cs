@@ -7,7 +7,7 @@ namespace BigBooks.API.Providers
 {
     public class BookReviewsProvider(IDbContextFactory<BigBookDbContext> dbContextFactory,
         IUsersProvider usersProvider,
-        ILogger<BookReviewsProvider> logger) : BaseProvider(dbContextFactory), IBookReviewsProvider
+        ILogger<BookReviewsProvider> logger) : BaseProvider, IBookReviewsProvider
     {
         private const string ANONYMOUS_USER = @"Anonymous";
 
