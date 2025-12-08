@@ -60,7 +60,7 @@ namespace BigBooks.API.Providers
                     return new ProviderKeyResponse(null, $"Insufficent funds in user wallet");
                 }
 
-                if (!booksProvider.RemoveFromStock(dto.BookKey, dto.RequestedQuantity))
+                if (!booksProvider.RemoveFromStock(ctx, dto.BookKey, dto.RequestedQuantity))
                 {
                     return new ProviderKeyResponse(null, $"Insufficient book stock");
                 }

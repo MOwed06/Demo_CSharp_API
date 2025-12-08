@@ -28,12 +28,6 @@ namespace BigBooks.API.Providers
                 return null;
             }
 
-            // use hashset to prohibit duplicate entries
-            var userBookKeys = matchedUser.Transactions
-                .Where(u => u.BookKey != null)
-                .Select(u => u.BookKey)
-                .ToHashSet();
-
             return new UserDetailsDto
             {
                 Key = key,

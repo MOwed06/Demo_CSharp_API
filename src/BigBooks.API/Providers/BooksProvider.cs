@@ -17,7 +17,7 @@ namespace BigBooks.API.Providers
             using (var ctx = dbContextFactory.CreateDbContext())
             {
                 return ctx.Books.Any(b => b.Key == key);
-            }            
+            }    
         }
 
         public BookDetailsDto GetBook(int key)
@@ -143,7 +143,6 @@ namespace BigBooks.API.Providers
                     StockQuantity = dto.StockQuantity
                 };
 
-
                 ctx.Books.Add(addedBook);
                 ctx.SaveChanges();
 
@@ -214,27 +213,26 @@ namespace BigBooks.API.Providers
         /// True if operation successful, stock available
         /// False if operation fail, stock unavailable
         /// </returns>
-        public bool RemoveFromStock(int bookKey, int requestedQuantity)
+        public bool RemoveFromStock(BigBookDbContext ctx,
+            int bookKey,
+            int requestedQuantity)
         {
             logger.LogDebug("RemoveFromStock, {0}, {1}",
                 bookKey,
                 requestedQuantity);
 
-            using (var ctx = dbContextFactory.CreateDbContext())
+            var selectedBook = ctx.Books
+            .Single(b => b.Key == bookKey);
+
+            if (selectedBook.StockQuantity >= requestedQuantity)
             {
-                var selectedBook = ctx.Books
-                .Single(b => b.Key == bookKey);
-
-                if (selectedBook.StockQuantity >= requestedQuantity)
-                {
-                    selectedBook.StockQuantity -= requestedQuantity;
-                    ctx.SaveChanges();
-                    return true;
-                }
-
-                // insufficient quantity
-                return false;
+                selectedBook.StockQuantity -= requestedQuantity;
+                ctx.SaveChanges();
+                return true;
             }
+
+            // insufficient quantity
+            return false;
         }
 
         public List<AuthorInfoDto> GetBookAuthors()

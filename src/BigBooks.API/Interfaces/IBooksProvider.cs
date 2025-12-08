@@ -1,4 +1,5 @@
 using BigBooks.API.Core;
+using BigBooks.API.Entities;
 using BigBooks.API.Models;
 using BigBooks.API.Providers;
 using Microsoft.AspNetCore.JsonPatch;
@@ -13,7 +14,7 @@ namespace BigBooks.API.Interfaces
         List<BookOverviewDto> GetBooks(string author);
         List<BookOverviewDto> GetBooksByGenre(Genre genre);
         ProviderKeyResponse UpdateBook(int key, JsonPatchDocument<BookAddUpdateDto> patchDoc);
-        bool RemoveFromStock(int bookKey, int requestedQuantity);
+        bool RemoveFromStock(BigBookDbContext ctx, int bookKey, int requestedQuantity);
         List<AuthorInfoDto> GetBookAuthors();
     }
 }

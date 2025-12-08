@@ -9,6 +9,10 @@ namespace BigBooks.IntegrationTest.Common
 {
     public class BigBookWebAppFactory : WebApplicationFactory<Program>
     {
+        /// <summary>
+        /// Caller methods are responsible for disposing the returned DbContext
+        /// </summary>
+        /// <returns></returns>
         public BigBookDbContext CreateTestDbContext()
         {
             var scope = base.Services.CreateScope();
@@ -35,9 +39,6 @@ namespace BigBooks.IntegrationTest.Common
 
             builder.ConfigureServices(services =>
             {
-                var bob = services.ToList();
-
-
                 // remove standard db context
                 var applicationDbContext = services
                     .SingleOrDefault(d => d.ServiceType == typeof(DbContextOptions<BigBookDbContext>));

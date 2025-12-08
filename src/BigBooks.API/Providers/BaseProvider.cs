@@ -6,11 +6,6 @@ namespace BigBooks.API.Providers
 {
     public abstract class BaseProvider(IDbContextFactory<BigBookDbContext> dbContextFactory)
     {
-        protected BigBookDbContext CreateDbContext()
-        {
-            return dbContextFactory.CreateDbContext();
-        }
-
         protected (bool Valid, string Error) ValidateDto(object dto)
         {
             var validationContext = new ValidationContext(dto);
