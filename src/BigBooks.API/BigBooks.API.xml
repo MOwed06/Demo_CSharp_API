@@ -240,7 +240,7 @@
             <param name="author"></param>
             <returns></returns>
         </member>
-        <member name="M:BigBooks.API.Providers.BooksProvider.RemoveFromStock(System.Int32,System.Int32)">
+        <member name="M:BigBooks.API.Providers.BooksProvider.RemoveFromStock(BigBooks.API.Entities.BigBookDbContext,System.Int32,System.Int32)">
             <summary>
             Remove designated quantity of books from available stock
             </summary>

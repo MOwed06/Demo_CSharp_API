@@ -29,11 +29,11 @@ namespace BigBooks.UnitTest.ProviderTests
             var mockBookPrvLogger = new Mock<ILogger<BooksProvider>>();
             var mockUsersPrvLogger = new Mock<ILogger<UsersProvider>>();
 
-            var booksPrv = new BooksProvider(_ctx, mockBookPrvLogger.Object);
-            _usersPrv = new UsersProvider(_ctx, mockUsersPrvLogger.Object);
+            var booksPrv = new BooksProvider(TestContextFactory, mockBookPrvLogger.Object);
+            _usersPrv = new UsersProvider(TestContextFactory, mockUsersPrvLogger.Object);
 
             _transactionsPrv = new TransactionsProvider(
-                ctx: _ctx,
+                dbContextFactory: TestContextFactory,
                 booksProvider: booksPrv,
                 usersProvider: _usersPrv,
                 logger: mockPurchasePrvLogger.Object);
@@ -170,24 +170,27 @@ namespace BigBooks.UnitTest.ProviderTests
             // act
             var response = _transactionsPrv.PurchaseBooks(ACTIVE_CUSTOMER_EMAIL, purchaseDto);
 
-            var observedUser = _ctx.AppUsers
+            using (var ctx = TestContextFactory.CreateDbContext())
+            {
+                var observedUser = ctx.AppUsers
                 .AsNoTracking()
                 .Include(u => u.Transactions)
                 .Single(u => u.Key == response.Key.Value);
 
-            var observedBook = _ctx.Books
-                .AsNoTracking()
-                .Single(b => b.Key == bookKey);
+                var observedBook = ctx.Books
+                    .AsNoTracking()
+                    .Single(b => b.Key == bookKey);
 
-            // assert
-            var obsUserBookKeys = observedUser.Transactions
-                .Where(u => u.BookKey != null)
-                .Select(u => u.BookKey)
-                .ToHashSet();
+                // assert
+                var obsUserBookKeys = observedUser.Transactions
+                    .Where(u => u.BookKey != null)
+                    .Select(u => u.BookKey)
+                    .ToHashSet();
 
-            Assert.Contains(bookKey, obsUserBookKeys); // book now associated with user
-            Assert.Equal(expectedStock, observedBook.StockQuantity);
-            Assert.Equal(expectedWallet, observedUser.Wallet);
+                Assert.Contains(bookKey, obsUserBookKeys); // book now associated with user
+                Assert.Equal(expectedStock, observedBook.StockQuantity);
+                Assert.Equal(expectedWallet, observedUser.Wallet);
+            }
         }
 
         [Fact]
@@ -244,14 +247,18 @@ namespace BigBooks.UnitTest.ProviderTests
             };
 
             // act
-            var obs = _transactionsPrv.Deposit(ACTIVE_CUSTOMER_EMAIL, dto);
-            var obsWallet = _ctx.AppUsers
-                .SingleOrDefault(u => u.Key == obs.Key)?.Wallet;
 
-            // assert
-            Assert.Equal(ACTIVE_CUSTOMER_KEY, obs.Key);
-            Assert.Empty(obs.Error);
-            Assert.Equal(EXPECTED_WALLET, obsWallet);
+            using (var ctx = TestContextFactory.CreateDbContext())
+            {
+                var obs = _transactionsPrv.Deposit(ACTIVE_CUSTOMER_EMAIL, dto);
+                var obsWallet = ctx.AppUsers
+                    .SingleOrDefault(u => u.Key == obs.Key)?.Wallet;
+
+                // assert
+                Assert.Equal(ACTIVE_CUSTOMER_KEY, obs.Key);
+                Assert.Empty(obs.Error);
+                Assert.Equal(EXPECTED_WALLET, obsWallet);
+            }
         }
     }
 }

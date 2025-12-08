@@ -7,69 +7,79 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BigBooks.API.Providers
 {
-    public class BooksProvider(BigBookDbContext ctx, ILogger<BooksProvider> logger) : BaseProvider, IBooksProvider
+    public class BooksProvider(IDbContextFactory<BigBookDbContext> dbContextFactory,
+        ILogger<BooksProvider> logger) : BaseProvider(dbContextFactory), IBooksProvider
     {
         public bool BookExists(int key)
         {
             logger.LogDebug("BookExists, {0}", key);
 
-            return ctx.Books.Any(b => b.Key == key);
+            using (var ctx = dbContextFactory.CreateDbContext())
+            {
+                return ctx.Books.Any(b => b.Key == key);
+            }    
         }
 
         public BookDetailsDto GetBook(int key)
         {
             logger.LogDebug("GetBook, {0}", key);
 
-            var book = ctx.Books
+            using (var ctx = dbContextFactory.CreateDbContext())
+            {
+                var book = ctx.Books
                 .Include(b => b.Reviews)
                 .AsNoTracking()
                 .FirstOrDefault(b => b.Key == key);
 
-            if (book == null)
-            {
-                return null;
+                if (book == null)
+                {
+                    return null;
+                }
+
+                double? bookRating = CalculateBookRating(book.Reviews);
+
+                return new BookDetailsDto
+                {
+                    Key = key,
+                    Title = book.Title,
+                    Author = book.Author,
+                    Isbn = book.Isbn.ToString("D").ToUpper(),
+                    Description = book.Description,
+                    Genre = book.Genre.ToString(),
+                    Price = book.Price.ToString("C"),
+                    InStock = book.StockQuantity > 0,
+                    Rating = bookRating.HasValue
+                        ? (double?)Math.Round(bookRating.Value, 2)
+                        : null,
+                    Reviews = book.Reviews.Count()
+                };
             }
-
-            double? bookRating = CalculateBookRating(book.Reviews);
-
-            return new BookDetailsDto
-            {
-                Key = key,
-                Title = book.Title,
-                Author = book.Author,
-                Isbn = book.Isbn.ToString("D").ToUpper(),
-                Description = book.Description,
-                Genre = book.Genre.ToString(),
-                Price = book.Price.ToString("C"),
-                InStock = book.StockQuantity > 0,
-                Rating = bookRating.HasValue
-                    ? (double?)Math.Round(bookRating.Value, 2)
-                    : null,
-                Reviews = book.Reviews.Count()
-            };
         }
 
         public List<BookOverviewDto> GetBooksByGenre(Genre genre)
         {
             logger.LogDebug("GetBooksByGenre, {0}", genre);
 
-            var books = ctx.Books
+            using (var ctx = dbContextFactory.CreateDbContext())
+            {
+                var books = ctx.Books
                 .Where(b => b.Genre == genre)
                 .Include(b => b.Reviews)
                 .AsNoTracking()
                 .ToList();
 
-            return books.Select(b => new BookOverviewDto
-            {
-                Key = b.Key,
-                Title = b.Title,
-                Author = b.Author,
-                Genre = b.Genre.ToString(),
-                Rating = CalculateBookRating(b.Reviews),
-                Reviews = b.Reviews.Count()
-            })
-            .OrderByDescending(b => b.Rating)
-            .ToList();
+                return books.Select(b => new BookOverviewDto
+                {
+                    Key = b.Key,
+                    Title = b.Title,
+                    Author = b.Author,
+                    Genre = b.Genre.ToString(),
+                    Rating = CalculateBookRating(b.Reviews),
+                    Reviews = b.Reviews.Count()
+                })
+                .OrderByDescending(b => b.Rating)
+                .ToList();
+            }
         }
 
         /// <summary>
@@ -83,8 +93,10 @@ namespace BigBooks.API.Providers
         {
             logger.LogDebug("GetBooks, {0}", author);
 
-            // if author empty, then return all books
-            var books = string.IsNullOrEmpty(author)
+            using (var ctx = dbContextFactory.CreateDbContext())
+            {
+                // if author empty, then return all books
+                var books = string.IsNullOrEmpty(author)
                 ? ctx.Books
                     .AsNoTracking()
                     .Include(b => b.Reviews)
@@ -95,94 +107,101 @@ namespace BigBooks.API.Providers
                     .AsNoTracking()
                     .ToList();
 
-            return books.Select(b => new BookOverviewDto
-            {
-                Key = b.Key,
-                Title = b.Title,
-                Author = b.Author,
-                Genre = b.Genre.ToString(),
-                Rating = CalculateBookRating(b.Reviews),
-                Reviews = b.Reviews.Count()
-            })
-            .OrderByDescending(b => b.Rating)
-            .ToList();
+                return books.Select(b => new BookOverviewDto
+                {
+                    Key = b.Key,
+                    Title = b.Title,
+                    Author = b.Author,
+                    Genre = b.Genre.ToString(),
+                    Rating = CalculateBookRating(b.Reviews),
+                    Reviews = b.Reviews.Count()
+                })
+                .OrderByDescending(b => b.Rating)
+                .ToList();
+            }
         }
 
         public ProviderKeyResponse AddBook(BookAddUpdateDto dto)
         {
             logger.LogDebug("AddBook, {0}", dto.Title);
 
-            if (IsDuplicateIsbn(dto.Isbn, null))
+            using (var ctx = dbContextFactory.CreateDbContext())
             {
-                return new ProviderKeyResponse(null, $"Duplicate ISBN {dto.Isbn}");
+                if (IsDuplicateIsbn(ctx, dto.Isbn, null))
+                {
+                    return new ProviderKeyResponse(null, $"Duplicate ISBN {dto.Isbn}");
+                }
+
+                var addedBook = new Book
+                {
+                    Title = dto.Title,
+                    Author = dto.Author,
+                    Isbn = dto.Isbn,
+                    Description = dto.Description,
+                    Genre = dto.Genre,
+                    Price = dto.Price,
+                    StockQuantity = dto.StockQuantity
+                };
+
+                ctx.Books.Add(addedBook);
+                ctx.SaveChanges();
+
+                return new ProviderKeyResponse(addedBook.Key, string.Empty);
             }
-
-            var addedBook = new Book
-            {
-                Title = dto.Title,
-                Author = dto.Author,
-                Isbn = dto.Isbn,
-                Description = dto.Description,
-                Genre = dto.Genre,
-                Price = dto.Price,
-                StockQuantity = dto.StockQuantity
-            };
-
-            ctx.Books.Add(addedBook);
-            ctx.SaveChanges();
-
-            return new ProviderKeyResponse(addedBook.Key, string.Empty);
         }
 
         public ProviderKeyResponse UpdateBook(int key, JsonPatchDocument<BookAddUpdateDto> patchDoc)
         {
             logger.LogDebug("UpdateBook, {0}", key);
 
-            var existingBook = ctx.Books
+            using (var ctx = dbContextFactory.CreateDbContext())
+            {
+                var existingBook = ctx.Books
                 .AsNoTracking()
                 .FirstOrDefault(b => b.Key == key);
 
-            if (existingBook == null)
-            {
-                return new ProviderKeyResponse(null, $"Book key {key} not found");
+                if (existingBook == null)
+                {
+                    return new ProviderKeyResponse(null, $"Book key {key} not found");
+                }
+
+                // transform from entity to dto
+                var updateDto = new BookAddUpdateDto
+                {
+                    Title = existingBook.Title,
+                    Author = existingBook.Author,
+                    Isbn = existingBook.Isbn,
+                    Description = existingBook.Description,
+                    Genre = existingBook.Genre,
+                    Price = existingBook.Price,
+                    StockQuantity = existingBook.StockQuantity
+                };
+
+                // transform existing object according to json patch
+                patchDoc.ApplyTo(updateDto);
+                // confirm transformed object obeys dto rules
+                var validationCheck = ValidateDto(updateDto);
+                if (!validationCheck.Valid)
+                {
+                    return new ProviderKeyResponse(null, validationCheck.Error);
+                }
+
+                if (IsDuplicateIsbn(ctx, updateDto.Isbn, key))
+                {
+                    return new ProviderKeyResponse(null, $"Duplicate ISBN {updateDto.Isbn}");
+                }
+
+                var modifiedBook = ctx.Books.Single(b => b.Key == key);
+                modifiedBook.Title = updateDto.Title;
+                modifiedBook.Author = updateDto.Author;
+                modifiedBook.Isbn = updateDto.Isbn;
+                modifiedBook.Genre = updateDto.Genre;
+                modifiedBook.Price = updateDto.Price;
+                modifiedBook.StockQuantity = updateDto.StockQuantity;
+
+                ctx.SaveChanges();
+                return new ProviderKeyResponse(key, string.Empty);
             }
-
-            // transform from entity to dto
-            var updateDto = new BookAddUpdateDto
-            {
-                Title = existingBook.Title,
-                Author = existingBook.Author,
-                Isbn = existingBook.Isbn,
-                Description = existingBook.Description,
-                Genre = existingBook.Genre,
-                Price = existingBook.Price,
-                StockQuantity = existingBook.StockQuantity
-            };
-
-            // transform existing object according to json patch
-            patchDoc.ApplyTo(updateDto);
-            // confirm transformed object obeys dto rules
-            var validationCheck = ValidateDto(updateDto);
-            if (!validationCheck.Valid)
-            {
-                return new ProviderKeyResponse(null, validationCheck.Error);
-            }
-
-            if (IsDuplicateIsbn(updateDto.Isbn, key))
-            {
-                return new ProviderKeyResponse(null, $"Duplicate ISBN {updateDto.Isbn}");
-            }
-
-            var modifiedBook = ctx.Books.Single(b => b.Key == key);
-            modifiedBook.Title = updateDto.Title;
-            modifiedBook.Author = updateDto.Author;
-            modifiedBook.Isbn = updateDto.Isbn;
-            modifiedBook.Genre = updateDto.Genre;
-            modifiedBook.Price = updateDto.Price;
-            modifiedBook.StockQuantity = updateDto.StockQuantity;
-
-            ctx.SaveChanges();
-            return new ProviderKeyResponse(key, string.Empty);
         }
 
         /// <summary>
@@ -194,14 +213,16 @@ namespace BigBooks.API.Providers
         /// True if operation successful, stock available
         /// False if operation fail, stock unavailable
         /// </returns>
-        public bool RemoveFromStock(int bookKey, int requestedQuantity)
+        public bool RemoveFromStock(BigBookDbContext ctx,
+            int bookKey,
+            int requestedQuantity)
         {
             logger.LogDebug("RemoveFromStock, {0}, {1}",
                 bookKey,
                 requestedQuantity);
 
             var selectedBook = ctx.Books
-                .Single(b => b.Key == bookKey);
+            .Single(b => b.Key == bookKey);
 
             if (selectedBook.StockQuantity >= requestedQuantity)
             {
@@ -216,7 +237,9 @@ namespace BigBooks.API.Providers
 
         public List<AuthorInfoDto> GetBookAuthors()
         {
-            return ctx.Books
+            using (var ctx = dbContextFactory.CreateDbContext())
+            {
+                return ctx.Books
                 .GroupBy(b => b.Author)
                 .Select(g => new AuthorInfoDto
                 {
@@ -225,6 +248,7 @@ namespace BigBooks.API.Providers
                 })
                 .OrderByDescending(b => b.BookCount)
                 .ToList();
+            }
         }
 
         private double? CalculateBookRating(ICollection<BookReview> reviews)
@@ -239,7 +263,9 @@ namespace BigBooks.API.Providers
                 : null;
         }
 
-        private bool IsDuplicateIsbn(Guid isbnValue, int? existingBookKey)
+        private bool IsDuplicateIsbn(BigBookDbContext ctx,
+            Guid isbnValue,
+            int? existingBookKey)
         {
             // for update request, exclude existing isbn in duplicate check
             return ctx.Books.Where(b => b.Key != existingBookKey).Any(b => b.Isbn == isbnValue);

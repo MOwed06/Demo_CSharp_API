@@ -5,9 +5,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BigBooks.API.Providers
 {
-    public class BookReviewsProvider(BigBookDbContext ctx,
+    public class BookReviewsProvider(IDbContextFactory<BigBookDbContext> dbContextFactory,
         IUsersProvider usersProvider,
-        ILogger<BookReviewsProvider> logger) : BaseProvider, IBookReviewsProvider
+        ILogger<BookReviewsProvider> logger) : BaseProvider(dbContextFactory), IBookReviewsProvider
     {
         private const string ANONYMOUS_USER = @"Anonymous";
 
@@ -15,7 +15,9 @@ namespace BigBooks.API.Providers
         {
             logger.LogDebug("GetBookReviews {0}", bookKey);
 
-            var reviews = ctx.BookReviews
+            using (var ctx = dbContextFactory.CreateDbContext())
+            {
+                var reviews = ctx.BookReviews
                 .AsNoTracking()
                 .Where(r => r.BookKey == bookKey)
                 .Include(r => r.Book)
@@ -23,56 +25,55 @@ namespace BigBooks.API.Providers
                 .OrderBy(r => r.ReviewDate)
                 .ToList();
 
-            return reviews.Select(r => new BookReviewDto
-            {
-                ReviewKey = r.Key,
-                BookTitle = r.Book.Title,
-                Score = r.Score,
-                ReviewDate = r.ReviewDate,
-                User = (r.User == null)
-                    ? ANONYMOUS_USER
-                    : r.User.UserEmail,
-                Description = r.Description,
-            })
-            .ToList();
+                return reviews.Select(r => new BookReviewDto
+                {
+                    ReviewKey = r.Key,
+                    BookTitle = r.Book.Title,
+                    Score = r.Score,
+                    ReviewDate = r.ReviewDate,
+                    User = (r.User == null)
+                        ? ANONYMOUS_USER
+                        : r.User.UserEmail,
+                    Description = r.Description,
+                })
+                .ToList();
+            }
         }
 
         public BookReviewDto GetBookReview(int reviewKey)
         {
             logger.LogDebug("GetBookReview {0}", reviewKey);
 
-            var review = ctx.BookReviews
+            using (var ctx = dbContextFactory.CreateDbContext())
+            {
+                var review = ctx.BookReviews
                 .AsNoTracking()
                 .Include(r => r.Book)
                 .Include(r => r.User)
                 .SingleOrDefault(r => r.Key == reviewKey);
 
-            if (review == null)
-            {
-                return null;
-            }
+                if (review == null)
+                {
+                    return null;
+                }
 
-            return new BookReviewDto
-            {
-                ReviewKey = reviewKey,
-                BookTitle = review.Book.Title,
-                Score = review.Score,
-                ReviewDate = review.ReviewDate,
-                User = (review.User == null)
-                    ? ANONYMOUS_USER
-                    : review.User.UserEmail,
-                Description = review.Description,
-            };
+                return new BookReviewDto
+                {
+                    ReviewKey = reviewKey,
+                    BookTitle = review.Book.Title,
+                    Score = review.Score,
+                    ReviewDate = review.ReviewDate,
+                    User = (review.User == null)
+                        ? ANONYMOUS_USER
+                        : review.User.UserEmail,
+                    Description = review.Description,
+                };
+            }
         }
 
         public ProviderKeyResponse AddBookReview(string currentUserValue, int bookKey, BookReviewAddDto dto)
         {
             logger.LogDebug("AddBookReview {0}, {1}", currentUserValue, bookKey);
-
-            if (!ctx.Books.Any(b => b.Key == bookKey))
-            {
-                return new ProviderKeyResponse(null, $"Invalid Book Key {bookKey}");
-            }
 
             var userMatch = usersProvider.GetUserKeyFromToken(currentUserValue);
 
@@ -88,30 +89,38 @@ namespace BigBooks.API.Providers
                 return new ProviderKeyResponse(null, "User is deactivated");
             }
 
-            if (ctx.BookReviews.Any(r => (r.UserKey == userMatch.Key.Value)
-                    && (r.BookKey == bookKey)))
+            using (var ctx = dbContextFactory.CreateDbContext())
             {
-                // user has previously reviewed book
-                return new ProviderKeyResponse(null, "Existing BookReview by user");
+                if (!ctx.Books.Any(b => b.Key == bookKey))
+                {
+                    return new ProviderKeyResponse(null, $"Invalid Book Key {bookKey}");
+                }
+
+                if (ctx.BookReviews.Any(r => (r.UserKey == userMatch.Key.Value)
+                        && (r.BookKey == bookKey)))
+                {
+                    // user has previously reviewed book
+                    return new ProviderKeyResponse(null, "Existing BookReview by user");
+                }
+
+                int? userLink = dto.IsAnonymous
+                    ? null
+                    : userMatch.Key.Value;
+
+                var addedReview = new BookReview
+                {
+                    Score = dto.Score,
+                    ReviewDate = DateTime.Now,
+                    Description = dto.Description,
+                    UserKey = userLink,
+                    BookKey = bookKey
+                };
+
+                ctx.BookReviews.Add(addedReview);
+                ctx.SaveChanges();
+
+                return new ProviderKeyResponse(addedReview.Key, string.Empty);
             }
-
-            int? userLink = dto.IsAnonymous
-                ? null
-                : userMatch.Key.Value;
-
-            var addedReview = new BookReview
-            {
-                Score = dto.Score,
-                ReviewDate = DateTime.Now,
-                Description = dto.Description,
-                UserKey = userLink,
-                BookKey = bookKey
-            };
-
-            ctx.BookReviews.Add(addedReview);
-            ctx.SaveChanges();
-
-            return new ProviderKeyResponse(addedReview.Key, string.Empty);
         }
     }
 }

@@ -1,12 +1,13 @@
 using BigBooks.API.Core;
 using BigBooks.API.Entities;
 using Microsoft.EntityFrameworkCore;
+using Moq;
 using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
 
 namespace BigBooks.UnitTest.Common
 {
-    public abstract class BookStoreTest : IDisposable
+    public abstract class BookStoreTest
     {
         protected const string BOOK1_GUID = "AAFB14A1-676B-46D9-8485-394A189F6AE5";
         protected const string BOOK2_GUID = "D77D41ED-1A0D-4BB8-8486-07AE475D80B5";
@@ -20,7 +21,7 @@ namespace BigBooks.UnitTest.Common
 
         protected const string CUSTOMER_2_EMAIL = "Jessica.Jones@test.com";
 
-        protected readonly BigBookDbContext _ctx;
+        protected readonly IDbContextFactory<BigBookDbContext> TestContextFactory;
 
         protected void InitializeDatabase(List<Book> extraBooks = null,
             List<BookReview> extraBookReviews = null,
@@ -144,11 +145,14 @@ namespace BigBooks.UnitTest.Common
                 accountTransactions.AddRange(extraTransactions);
             }
 
-            _ctx.Books.AddRange(books);
-            _ctx.BookReviews.AddRange(bookReviews);
-            _ctx.AppUsers.AddRange(users);
-            _ctx.Transactions.AddRange(accountTransactions);
-            _ctx.SaveChanges();
+            using (var ctx = TestContextFactory.CreateDbContext())
+            {
+                ctx.Books.AddRange(books);
+                ctx.BookReviews.AddRange(bookReviews);
+                ctx.AppUsers.AddRange(users);
+                ctx.Transactions.AddRange(accountTransactions);
+                ctx.SaveChanges();
+            }
         }
 
         protected BookStoreTest()
@@ -156,7 +160,12 @@ namespace BigBooks.UnitTest.Common
             var options = new DbContextOptionsBuilder<BigBookDbContext>()
                 .UseInMemoryDatabase(Guid.NewGuid().ToString())
                 .Options;
-            _ctx = new BigBookDbContext(options);
+
+            var mockDbContextFactory = new Mock<IDbContextFactory<BigBookDbContext>>();
+            mockDbContextFactory.Setup(m => m.CreateDbContext())
+                .Returns(() => new BigBookDbContext(options));
+
+            TestContextFactory = mockDbContextFactory.Object;
         }
 
         protected (bool Valid, string Error) ValidateDto(object dto)
@@ -200,11 +209,6 @@ namespace BigBooks.UnitTest.Common
         {
             var fileData = ReadSupportFile(fileName);
             return JsonConvert.DeserializeObject<T>(fileData);
-        }
-
-        public void Dispose()
-        {
-            _ctx.Dispose();
         }
     }
 }

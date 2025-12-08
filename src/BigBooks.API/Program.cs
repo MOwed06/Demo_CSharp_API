@@ -18,10 +18,9 @@ builder.Services.AddControllers(options =>
 })
 .AddNewtonsoftJson();
 
-builder.Services.AddDbContext<BigBookDbContext>(
+builder.Services.AddDbContextFactory<BigBookDbContext>(
     dbContextOptions => dbContextOptions.UseSqlite(
         builder.Configuration["ConnectionStrings:BigBooksDBConnectionString"]));
-
 builder.Services.AddScoped<IUsersProvider, UsersProvider>();
 builder.Services.AddScoped<IBooksProvider, BooksProvider>();
 builder.Services.AddScoped<ITransactionsProvider, TransactionsProvider>();

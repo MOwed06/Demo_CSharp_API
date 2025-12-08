@@ -21,7 +21,7 @@ namespace BigBooks.UnitTest.AuthenticationTests
 
             _authService = new AuthService(
                 config: mockCfg.Config,
-                ctx: _ctx,
+                dbContextFactory: TestContextFactory,
                 logger: mockLogger.Object);
         }
 

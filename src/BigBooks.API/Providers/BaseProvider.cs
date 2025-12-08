@@ -1,8 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using BigBooks.API.Entities;
+using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 
 namespace BigBooks.API.Providers
 {
-    public abstract class BaseProvider
+    public abstract class BaseProvider(IDbContextFactory<BigBookDbContext> dbContextFactory)
     {
         protected (bool Valid, string Error) ValidateDto(object dto)
         {

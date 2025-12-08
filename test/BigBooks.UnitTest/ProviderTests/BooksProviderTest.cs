@@ -18,7 +18,7 @@ namespace BigBooks.UnitTest.ProviderTests
         public BooksProviderTest() : base()
         {
             var mockLogger = new Mock<ILogger<BooksProvider>>();
-            _bookPrv = new BooksProvider(_ctx, mockLogger.Object);
+            _bookPrv = new BooksProvider(TestContextFactory, mockLogger.Object);
 
             _extraBooks = new List<Book>()
             {
