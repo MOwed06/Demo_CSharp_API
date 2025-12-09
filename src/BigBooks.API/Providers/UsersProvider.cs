@@ -10,17 +10,17 @@ namespace BigBooks.API.Providers
     public class UsersProvider(IDbContextFactory<BigBookDbContext> dbContextFactory,
         ILogger<UsersProvider> logger) : BaseProvider, IUsersProvider
     {
-        public UserDetailsDto GetUser(int key)
+        public async Task<UserDetailsDto> GetUser(int key)
         {
             logger.LogDebug("GetUser, {0}", key);
 
             AppUser matchedUser = null;
             using (var ctx = dbContextFactory.CreateDbContext())
             {
-                matchedUser = ctx.AppUsers
-                .AsNoTracking()
-                .Include(u => u.Transactions)
-                .SingleOrDefault(u => u.Key == key);
+                matchedUser = await ctx.AppUsers
+                    .AsNoTracking()
+                    .Include(u => u.Transactions)
+                    .SingleOrDefaultAsync(u => u.Key == key);
             }
 
             if (matchedUser == null)
@@ -36,18 +36,18 @@ namespace BigBooks.API.Providers
                 IsActive = matchedUser.IsActive,
                 Role = matchedUser.Role.ToString(),
                 Wallet = matchedUser.Wallet.ToString("C"),
-                Transactions = GetUserTransactions(key)
+                Transactions = await GetUserTransactions(key)
             };
         }
 
-        internal List<TransactionOverviewDto> GetUserTransactions(int userKey)
+        internal async Task<List<TransactionOverviewDto>> GetUserTransactions(int userKey)
         {
             using (var ctx = dbContextFactory.CreateDbContext())
             {
-                var userTransactions = ctx.Transactions.Where(t => t.UserKey == userKey)
-                .AsNoTracking()
-                .Include(t => t.Book)
-                .ToList();
+                var userTransactions = await ctx.Transactions.Where(t => t.UserKey == userKey)
+                    .AsNoTracking()
+                    .Include(t => t.Book)
+                    .ToListAsync();
 
                 return userTransactions.Select(t => new TransactionOverviewDto
                 {
@@ -65,22 +65,22 @@ namespace BigBooks.API.Providers
             }
         }
 
-        public List<UserOverviewDto> GetUsers(bool? activeStatus)
+        public async System.Threading.Tasks.Task<List<UserOverviewDto>> GetUsers(bool? activeStatus)
         {
             logger.LogDebug("GetUsers");
 
             using (var ctx = dbContextFactory.CreateDbContext())
             {
                 var appUsers = activeStatus.HasValue
-                ? ctx.AppUsers // sort by active status
-                    .AsNoTracking()
-                    .Where(u => u.IsActive == activeStatus.Value)
-                    .Include(u => u.Transactions)
-                    .ToList()
-                : ctx.AppUsers // retrieve all
-                    .AsNoTracking()
-                    .Include(u => u.Transactions)
-                    .ToList();
+                    ? await ctx.AppUsers // sort by active status
+                        .AsNoTracking()
+                        .Where(u => u.IsActive == activeStatus.Value)
+                        .Include(u => u.Transactions)
+                        .ToListAsync()
+                    : await ctx.AppUsers // retrieve all
+                        .AsNoTracking()
+                        .Include(u => u.Transactions)
+                        .ToListAsync();
 
                 return appUsers
                     .Select(u => new UserOverviewDto
@@ -105,21 +105,21 @@ namespace BigBooks.API.Providers
         /// <param name="currentUserValue"></param>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
-        public UserDetailsDto GetCurrentUserDetails(string currentUserValue)
+        public async Task<UserDetailsDto> GetCurrentUserDetails(string currentUserValue)
         {
             logger.LogDebug("GetCurrentUser");
 
-            var currentUser = GetUserKeyFromToken(currentUserValue);
+            var currentUser = await GetUserKeyFromToken(currentUserValue);
 
             if (!currentUser.Key.HasValue)
             {
                 throw new Exception(currentUser.Error);
             }
 
-            return GetUser(currentUser.Key.Value);
+            return await GetUser(currentUser.Key.Value);
         }
 
-        public ProviderKeyResponse AddUser(UserAddUpdateDto dto)
+        public async Task<ProviderKeyResponse> AddUser(UserAddUpdateDto dto)
         {
             logger.LogDebug("AddUser {0}", dto.UserEmail);
 
@@ -142,22 +142,22 @@ namespace BigBooks.API.Providers
                     Transactions = new List<AccountTransaction>()
                 };
 
-                ctx.AppUsers.Add(nextUser);
-                ctx.SaveChanges();
+                await ctx.AppUsers.AddAsync(nextUser);
+                await ctx.SaveChangesAsync();
 
                 return new ProviderKeyResponse(nextUser.Key, string.Empty);
             }
         }
 
-        public ProviderKeyResponse GetUserKeyFromToken(string currentUserValue)
+        public async Task<ProviderKeyResponse> GetUserKeyFromToken(string currentUserValue)
         {
             logger.LogDebug("GetUserKeyFromToken, {0}", currentUserValue);
 
             using (var ctx = dbContextFactory.CreateDbContext())
             {
-                var appUser = ctx.AppUsers
-                .AsNoTracking()
-                .SingleOrDefault(u => u.UserEmail == currentUserValue);
+                var appUser = await ctx.AppUsers
+                    .AsNoTracking()
+                    .SingleOrDefaultAsync(u => u.UserEmail == currentUserValue);
 
                 if (appUser == null)
                 {
@@ -168,15 +168,15 @@ namespace BigBooks.API.Providers
             }
         }
 
-        public ProviderKeyResponse UpdateAccount(int key, JsonPatchDocument<UserAddUpdateDto> patchDoc)
+        public async Task<ProviderKeyResponse> UpdateAccount(int key, JsonPatchDocument<UserAddUpdateDto> patchDoc)
         {
             logger.LogDebug("UpdateUser, {0}", key);
 
             using (var ctx = dbContextFactory.CreateDbContext())
             {
-                var existingAccount = ctx.AppUsers
-                .AsNoTracking()
-                .FirstOrDefault(b => b.Key == key);
+                var existingAccount = await ctx.AppUsers
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(b => b.Key == key);
 
                 if (existingAccount == null)
                 {
@@ -209,7 +209,7 @@ namespace BigBooks.API.Providers
                 }
 
                 // apply updates
-                var modifiedAccount = ctx.AppUsers.Single(u => u.Key == key);
+                var modifiedAccount = await ctx.AppUsers.SingleAsync(u => u.Key == key);
                 modifiedAccount.UserEmail = updateDto.UserEmail;
                 modifiedAccount.UserName = updateDto.UserName;
                 modifiedAccount.IsActive = updateDto.IsActive;
@@ -217,7 +217,7 @@ namespace BigBooks.API.Providers
                 modifiedAccount.Wallet = updateDto.Wallet;
                 modifiedAccount.Role = updateDto.Role;
 
-                ctx.SaveChanges();
+                await ctx.SaveChangesAsync();
                 return new ProviderKeyResponse(key, string.Empty);
             }
         }
@@ -232,11 +232,11 @@ namespace BigBooks.API.Providers
                 .Any(u => u.UserEmail.ToLower() == emailValue.ToLower());
         }
 
-        public bool IsUserActive(int key)
+        public async Task<bool> IsUserActive(int key)
         {
             using (var ctx = dbContextFactory.CreateDbContext())
             {
-                return ctx.AppUsers.Single(u => u.Key == key).IsActive;
+                return (await ctx.AppUsers.SingleAsync(u => u.Key == key)).IsActive;
             }
         }
     }

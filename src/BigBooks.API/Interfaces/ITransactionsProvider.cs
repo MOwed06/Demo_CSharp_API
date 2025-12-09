@@ -5,7 +5,7 @@ namespace BigBooks.API.Interfaces
 {
     public interface ITransactionsProvider
     {
-        ProviderKeyResponse PurchaseBooks(string currentUserValue, PurchaseRequestDto dto);
-        ProviderKeyResponse Deposit(string currentUserValue, AccountDepositDto dto);
+        System.Threading.Tasks.Task<ProviderKeyResponse> PurchaseBooks(string currentUserValue, PurchaseRequestDto dto);
+        System.Threading.Tasks.Task<ProviderKeyResponse> Deposit(string currentUserValue, AccountDepositDto dto);
     }
 }

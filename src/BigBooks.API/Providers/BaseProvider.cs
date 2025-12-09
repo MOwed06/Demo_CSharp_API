@@ -1,6 +1,4 @@
-﻿using BigBooks.API.Entities;
-using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace BigBooks.API.Providers
 {

@@ -2,7 +2,6 @@
 using BigBooks.API.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Net;
 using System.Security.Claims;
 
@@ -28,7 +27,7 @@ namespace BigBooks.API.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult<UserDetailsDto> PurchaseBooks(PurchaseRequestDto dto)
+        public async Task<ActionResult<UserDetailsDto>> PurchaseBooks(PurchaseRequestDto dto)
         {
             var statusMsg = $"PurchaseBooks, book: {dto.BookKey}, qty: {dto.RequestedQuantity}";
             logger.LogTrace(statusMsg);
@@ -38,7 +37,7 @@ namespace BigBooks.API.Controllers
                 // extract appUser key from active user claims
                 var currentUserValue = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-                var response = transactionsProvider.PurchaseBooks(currentUserValue, dto);
+                var response = await transactionsProvider.PurchaseBooks(currentUserValue, dto);
 
                 if (response.Key == null)
                 {
@@ -67,7 +66,7 @@ namespace BigBooks.API.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult<UserDetailsDto> Deposit(AccountDepositDto dto)
+        public async Task<ActionResult<UserDetailsDto>> Deposit(AccountDepositDto dto)
         {
             var statusMsg = $"Deposit, {dto.Amount}";
             logger.LogTrace(statusMsg);
@@ -77,7 +76,7 @@ namespace BigBooks.API.Controllers
                 // extract appUser key from active user claims
                 var currentUserValue = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-                var response = transactionsProvider.Deposit(currentUserValue, dto);
+                var response = await transactionsProvider.Deposit(currentUserValue, dto);
 
                 if (response.Key == null)
                 {
