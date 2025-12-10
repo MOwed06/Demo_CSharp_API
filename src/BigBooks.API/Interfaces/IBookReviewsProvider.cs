@@ -5,9 +5,9 @@ namespace BigBooks.API.Interfaces
 {
     public interface IBookReviewsProvider
     {
-        System.Threading.Tasks.Task<List<BookReviewDto>> GetBookReviews(int bookKey);
+        List<BookReviewDto> GetBookReviews(int bookKey);
 
-        System.Threading.Tasks.Task<BookReviewDto> GetBookReview(int reviewKey);
-        System.Threading.Tasks.Task<ProviderKeyResponse> AddBookReview(string currentUserValue, int bookKey, BookReviewAddDto dto);
+        BookReviewDto GetBookReview(int reviewKey);
+        ProviderKeyResponse AddBookReview(string currentUserValue, int bookKey, BookReviewAddDto dto);
     }
 }

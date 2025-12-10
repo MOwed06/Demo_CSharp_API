@@ -2,6 +2,7 @@
 using BigBooks.API.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Net;
 using System.Security.Claims;
 
@@ -23,20 +24,20 @@ namespace BigBooks.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<IEnumerable<BookReviewDto>>> GetBookReviews(int book)
+        public ActionResult<IEnumerable<BookReviewDto>> GetBookReviews(int book)
         {
             var statusMsg = $"GetBookReviews {book}";
             logger.LogTrace(statusMsg);
 
             try
             {
-                if (!await bookPrv.BookExists(book))
+                if (!bookPrv.BookExists(book))
                 {
                     return InvalidRequest(statusCode: HttpStatusCode.NotFound,
                         errorMessage: $"No book key {book}");
                 }
 
-                var reviewDtos = await bookReviewPrv.GetBookReviews(book);
+                var reviewDtos = bookReviewPrv.GetBookReviews(book);
 
                 return Ok(reviewDtos);
             }
@@ -55,14 +56,14 @@ namespace BigBooks.API.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<BookReviewDto>> AddBookReview(int book, BookReviewAddDto dto)
+        public ActionResult<BookReviewDto> AddBookReview(int book, BookReviewAddDto dto)
         {
             var statusMsg = $"AddBookReview {book}";
             logger.LogTrace(statusMsg);
 
             try
             {
-                if (!await bookPrv.BookExists(book))
+                if (!bookPrv.BookExists(book))
                 {
                     return InvalidRequest(statusCode: HttpStatusCode.NotFound,
                         errorMessage: $"No book key {book}");
@@ -71,7 +72,7 @@ namespace BigBooks.API.Controllers
                 // extract appUser key from active user claims
                 var currentUserValue = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-                var response = await bookReviewPrv.AddBookReview(currentUserValue, book, dto);
+                var response = bookReviewPrv.AddBookReview(currentUserValue, book, dto);
 
                 if (response.Key == null)
                 {
@@ -79,7 +80,7 @@ namespace BigBooks.API.Controllers
                         errorMessage: response.Error);
                 }
 
-                var reviewDto = await bookReviewPrv.GetBookReview(response.Key.Value);
+                var reviewDto = bookReviewPrv.GetBookReview(response.Key.Value);
                 return Ok(reviewDto);
             }
             catch (Exception ex)

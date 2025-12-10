@@ -31,14 +31,14 @@ namespace BigBooks.API.Controllers
         [HttpGet("{key}", Name = "GetAccountDetails")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<UserDetailsDto>> GetAccountInfo(int key)
+        public ActionResult<UserDetailsDto> GetAccountInfo(int key)
         {
             var statusMsg = $"GetUserInfo, {key}";
             logger.LogTrace(statusMsg);
 
             try
             {
-                var userDto = await usersProvider.GetUser(key);
+                var userDto = usersProvider.GetUser(key);
 
                 if (userDto == null)
                 {
@@ -65,7 +65,7 @@ namespace BigBooks.API.Controllers
         [HttpGet("list/{active?}", Name = "GetAccountList")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<IEnumerable<UserOverviewDto>>> GetAccounts(int? active)
+        public ActionResult<IEnumerable<UserOverviewDto>> GetAccounts(int? active)
         {
             logger.LogTrace("GetUsers");
 
@@ -75,7 +75,7 @@ namespace BigBooks.API.Controllers
                     ? active.Value == 1
                     : null;
 
-                var userDtos = await usersProvider.GetUsers(activeFilter);
+                var userDtos = usersProvider.GetUsers(activeFilter);
                 return Ok(userDtos);
             }
             catch (Exception ex)
@@ -95,14 +95,14 @@ namespace BigBooks.API.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<UserDetailsDto>> AddAccount(UserAddUpdateDto dto)
+        public ActionResult<UserDetailsDto> AddAccount(UserAddUpdateDto dto)
         {
             var statusMsg = $"AddUser, {dto.UserEmail}";
             logger.LogTrace(statusMsg);
 
             try
             {
-                var response = await usersProvider.AddUser(dto);
+                var response = usersProvider.AddUser(dto);
 
                 if (response.Key == null)
                 {
@@ -110,7 +110,7 @@ namespace BigBooks.API.Controllers
                         errorMessage: response.Error);
                 }
 
-                return await GetAccountInfo(response.Key.Value);
+                return GetAccountInfo(response.Key.Value);
             }
             catch (Exception ex)
             {
@@ -131,23 +131,24 @@ namespace BigBooks.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<UserDetailsDto>> UpdateAccount(int key, JsonPatchDocument<UserAddUpdateDto> patchDoc)
+        public ActionResult<UserDetailsDto> UpdateAccount(int key, JsonPatchDocument<UserAddUpdateDto> patchDoc)
         {
             var statusMsg = $"UpdateAccount, {key}";
             logger.LogTrace(statusMsg);
 
             try
             {
-                if (await usersProvider.GetUser(key) == null)
+                if (usersProvider.GetUser(key) == null)
                 {
                     return InvalidRequest(statusCode: HttpStatusCode.NotFound,
                         errorMessage: $"Invalid user key {key}");
                 }
-                var response = await usersProvider.UpdateAccount(key, patchDoc);
+
+                var response = usersProvider.UpdateAccount(key, patchDoc);
 
                 if (response.Key.HasValue)
                 {
-                    var userInfo = await usersProvider.GetUser(response.Key.Value);
+                    var userInfo = usersProvider.GetUser(response.Key.Value);
                     return Ok(userInfo);
                 }
 

@@ -1,7 +1,6 @@
 ﻿using BigBooks.API.Entities;
 using BigBooks.API.Interfaces;
 using BigBooks.API.Models;
-using BigBooks.API.Core;
 using Microsoft.EntityFrameworkCore;
 
 namespace BigBooks.API.Providers
@@ -10,19 +9,21 @@ namespace BigBooks.API.Providers
         IUsersProvider usersProvider,
         ILogger<BookReviewsProvider> logger) : BaseProvider, IBookReviewsProvider
     {
-        public async Task<List<BookReviewDto>> GetBookReviews(int bookKey)
+        private const string ANONYMOUS_USER = @"Anonymous";
+
+        public List<BookReviewDto> GetBookReviews(int bookKey)
         {
             logger.LogDebug("GetBookReviews {0}", bookKey);
 
             using (var ctx = dbContextFactory.CreateDbContext())
             {
-                var reviews = await ctx.BookReviews
-                    .AsNoTracking()
-                    .Where(r => r.BookKey == bookKey)
-                    .Include(r => r.Book)
-                    .Include(r => r.User)
-                    .OrderBy(r => r.ReviewDate)
-                    .ToListAsync();
+                var reviews = ctx.BookReviews
+                .AsNoTracking()
+                .Where(r => r.BookKey == bookKey)
+                .Include(r => r.Book)
+                .Include(r => r.User)
+                .OrderBy(r => r.ReviewDate)
+                .ToList();
 
                 return reviews.Select(r => new BookReviewDto
                 {
@@ -31,7 +32,7 @@ namespace BigBooks.API.Providers
                     Score = r.Score,
                     ReviewDate = r.ReviewDate,
                     User = (r.User == null)
-                        ? ApplicationConstant.ANONYMOUS_USER
+                        ? ANONYMOUS_USER
                         : r.User.UserEmail,
                     Description = r.Description,
                 })
@@ -39,17 +40,17 @@ namespace BigBooks.API.Providers
             }
         }
 
-        public async System.Threading.Tasks.Task<BookReviewDto> GetBookReview(int reviewKey)
+        public BookReviewDto GetBookReview(int reviewKey)
         {
             logger.LogDebug("GetBookReview {0}", reviewKey);
 
             using (var ctx = dbContextFactory.CreateDbContext())
             {
-                var review = await ctx.BookReviews
-                    .AsNoTracking()
-                    .Include(r => r.Book)
-                    .Include(r => r.User)
-                    .SingleOrDefaultAsync(r => r.Key == reviewKey);
+                var review = ctx.BookReviews
+                .AsNoTracking()
+                .Include(r => r.Book)
+                .Include(r => r.User)
+                .SingleOrDefault(r => r.Key == reviewKey);
 
                 if (review == null)
                 {
@@ -63,18 +64,18 @@ namespace BigBooks.API.Providers
                     Score = review.Score,
                     ReviewDate = review.ReviewDate,
                     User = (review.User == null)
-                        ? ApplicationConstant.ANONYMOUS_USER
+                        ? ANONYMOUS_USER
                         : review.User.UserEmail,
                     Description = review.Description,
                 };
             }
         }
 
-        public async Task<ProviderKeyResponse> AddBookReview(string currentUserValue, int bookKey, BookReviewAddDto dto)
+        public ProviderKeyResponse AddBookReview(string currentUserValue, int bookKey, BookReviewAddDto dto)
         {
             logger.LogDebug("AddBookReview {0}, {1}", currentUserValue, bookKey);
 
-            var userMatch = await usersProvider.GetUserKeyFromToken(currentUserValue);
+            var userMatch = usersProvider.GetUserKeyFromToken(currentUserValue);
 
             if (!userMatch.Key.HasValue)
             {
@@ -82,7 +83,7 @@ namespace BigBooks.API.Providers
                 return new ProviderKeyResponse(null, userMatch.Error);
             }
 
-            if (!await usersProvider.IsUserActive(userMatch.Key.Value))
+            if (!usersProvider.IsUserActive(userMatch.Key.Value))
             {
                 // inactive user, review denied
                 return new ProviderKeyResponse(null, "User is deactivated");
@@ -90,12 +91,12 @@ namespace BigBooks.API.Providers
 
             using (var ctx = dbContextFactory.CreateDbContext())
             {
-                if (!await ctx.Books.AnyAsync(b => b.Key == bookKey))
+                if (!ctx.Books.Any(b => b.Key == bookKey))
                 {
                     return new ProviderKeyResponse(null, $"Invalid Book Key {bookKey}");
                 }
 
-                if (await ctx.BookReviews.AnyAsync(r => (r.UserKey == userMatch.Key.Value)
+                if (ctx.BookReviews.Any(r => (r.UserKey == userMatch.Key.Value)
                         && (r.BookKey == bookKey)))
                 {
                     // user has previously reviewed book
@@ -115,8 +116,8 @@ namespace BigBooks.API.Providers
                     BookKey = bookKey
                 };
 
-                await ctx.BookReviews.AddAsync(addedReview);
-                await ctx.SaveChangesAsync();
+                ctx.BookReviews.Add(addedReview);
+                ctx.SaveChanges();
 
                 return new ProviderKeyResponse(addedReview.Key, string.Empty);
             }

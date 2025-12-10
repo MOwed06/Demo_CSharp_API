@@ -10,26 +10,26 @@ namespace BigBooks.API.Providers
     public class BooksProvider(IDbContextFactory<BigBookDbContext> dbContextFactory,
         ILogger<BooksProvider> logger) : BaseProvider, IBooksProvider
     {
-        public async Task<bool> BookExists(int key)
+        public bool BookExists(int key)
         {
             logger.LogDebug("BookExists, {0}", key);
 
             using (var ctx = dbContextFactory.CreateDbContext())
             {
-                return await ctx.Books.AnyAsync(b => b.Key == key);
+                return ctx.Books.Any(b => b.Key == key);
             }    
         }
 
-        public async Task<BookDetailsDto> GetBook(int key)
+        public BookDetailsDto GetBook(int key)
         {
             logger.LogDebug("GetBook, {0}", key);
 
             using (var ctx = dbContextFactory.CreateDbContext())
             {
-                var book = await ctx.Books
-                    .Include(b => b.Reviews)
-                    .AsNoTracking()
-                    .FirstOrDefaultAsync(b => b.Key == key);
+                var book = ctx.Books
+                .Include(b => b.Reviews)
+                .AsNoTracking()
+                .FirstOrDefault(b => b.Key == key);
 
                 if (book == null)
                 {
@@ -56,7 +56,7 @@ namespace BigBooks.API.Providers
             }
         }
 
-        public async Task<List<BookOverviewDto>> GetBooksByGenre(Genre genre)
+        public List<BookOverviewDto> GetBooksByGenre(Genre genre)
         {
             logger.LogDebug("GetBooksByGenre, {0}", genre);
 
@@ -66,11 +66,9 @@ namespace BigBooks.API.Providers
                 .Where(b => b.Genre == genre)
                 .Include(b => b.Reviews)
                 .AsNoTracking()
-                .ToListAsync();
+                .ToList();
 
-                var bookList = await books;
-
-                return bookList.Select(b => new BookOverviewDto
+                return books.Select(b => new BookOverviewDto
                 {
                     Key = b.Key,
                     Title = b.Title,
@@ -91,7 +89,7 @@ namespace BigBooks.API.Providers
         /// </summary>
         /// <param name="author"></param>
         /// <returns></returns>
-        public async Task<List<BookOverviewDto>> GetBooks(string author)
+        public List<BookOverviewDto> GetBooks(string author)
         {
             logger.LogDebug("GetBooks, {0}", author);
 
@@ -102,16 +100,14 @@ namespace BigBooks.API.Providers
                 ? ctx.Books
                     .AsNoTracking()
                     .Include(b => b.Reviews)
-                    .ToListAsync()
+                    .ToList()
                 : ctx.Books
                     .Where(b => b.Author.ToLower().Contains(author.ToLower()))
                     .Include(b => b.Reviews)
                     .AsNoTracking()
-                    .ToListAsync();
+                    .ToList();
 
-                var bookList = await books;
-
-                return bookList.Select(b => new BookOverviewDto
+                return books.Select(b => new BookOverviewDto
                 {
                     Key = b.Key,
                     Title = b.Title,
@@ -125,7 +121,7 @@ namespace BigBooks.API.Providers
             }
         }
 
-        public async Task<ProviderKeyResponse> AddBook(BookAddUpdateDto dto)
+        public ProviderKeyResponse AddBook(BookAddUpdateDto dto)
         {
             logger.LogDebug("AddBook, {0}", dto.Title);
 
@@ -147,22 +143,22 @@ namespace BigBooks.API.Providers
                     StockQuantity = dto.StockQuantity
                 };
 
-                await ctx.Books.AddAsync(addedBook);
-                await ctx.SaveChangesAsync();
+                ctx.Books.Add(addedBook);
+                ctx.SaveChanges();
 
                 return new ProviderKeyResponse(addedBook.Key, string.Empty);
             }
         }
 
-        public async Task<ProviderKeyResponse> UpdateBook(int key, JsonPatchDocument<BookAddUpdateDto> patchDoc)
+        public ProviderKeyResponse UpdateBook(int key, JsonPatchDocument<BookAddUpdateDto> patchDoc)
         {
             logger.LogDebug("UpdateBook, {0}", key);
 
             using (var ctx = dbContextFactory.CreateDbContext())
             {
-                var existingBook = await ctx.Books
-                    .AsNoTracking()
-                    .FirstOrDefaultAsync(b => b.Key == key);
+                var existingBook = ctx.Books
+                .AsNoTracking()
+                .FirstOrDefault(b => b.Key == key);
 
                 if (existingBook == null)
                 {
@@ -195,7 +191,7 @@ namespace BigBooks.API.Providers
                     return new ProviderKeyResponse(null, $"Duplicate ISBN {updateDto.Isbn}");
                 }
 
-                var modifiedBook = await ctx.Books.SingleAsync(b => b.Key == key);
+                var modifiedBook = ctx.Books.Single(b => b.Key == key);
                 modifiedBook.Title = updateDto.Title;
                 modifiedBook.Author = updateDto.Author;
                 modifiedBook.Isbn = updateDto.Isbn;
@@ -203,7 +199,7 @@ namespace BigBooks.API.Providers
                 modifiedBook.Price = updateDto.Price;
                 modifiedBook.StockQuantity = updateDto.StockQuantity;
 
-                await ctx.SaveChangesAsync();
+                ctx.SaveChanges();
                 return new ProviderKeyResponse(key, string.Empty);
             }
         }
@@ -218,7 +214,7 @@ namespace BigBooks.API.Providers
         /// True if operation successful, stock available
         /// False if operation fail, stock unavailable
         /// </returns>
-        public async Task<bool> RemoveFromStock(BigBookDbContext ctx,
+        public bool RemoveFromStock(BigBookDbContext ctx,
             int bookKey,
             int requestedQuantity)
         {
@@ -226,13 +222,13 @@ namespace BigBooks.API.Providers
                 bookKey,
                 requestedQuantity);
 
-            var selectedBook = await ctx.Books
-                .SingleAsync(b => b.Key == bookKey);
+            var selectedBook = ctx.Books
+            .Single(b => b.Key == bookKey);
 
             if (selectedBook.StockQuantity >= requestedQuantity)
             {
                 selectedBook.StockQuantity -= requestedQuantity;
-                await ctx.SaveChangesAsync();
+                ctx.SaveChanges();
                 return true;
             }
 
@@ -240,21 +236,19 @@ namespace BigBooks.API.Providers
             return false;
         }
 
-        public async Task<List<AuthorInfoDto>> GetBookAuthors()
+        public List<AuthorInfoDto> GetBookAuthors()
         {
             using (var ctx = dbContextFactory.CreateDbContext())
             {
-                var authors = await ctx.Books
-                    .GroupBy(b => b.Author)
-                    .Select(g => new AuthorInfoDto
-                    {
-                        Author = g.Key,
-                        BookCount = g.Count()
-                    })
-                    .OrderByDescending(b => b.BookCount)
-                    .ToListAsync();
-
-                return authors;
+                return ctx.Books
+                .GroupBy(b => b.Author)
+                .Select(g => new AuthorInfoDto
+                {
+                    Author = g.Key,
+                    BookCount = g.Count()
+                })
+                .OrderByDescending(b => b.BookCount)
+                .ToList();
             }
         }
 

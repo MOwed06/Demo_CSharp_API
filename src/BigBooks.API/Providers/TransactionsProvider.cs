@@ -17,14 +17,14 @@ namespace BigBooks.API.Providers
         /// <param name="currentUserValue">user email from token</param>
         /// <param name="dto">purchase params</param>
         /// <returns>user key associated with purchase</returns>
-        public async Task<ProviderKeyResponse> PurchaseBooks(string currentUserValue, PurchaseRequestDto dto)
+        public ProviderKeyResponse PurchaseBooks(string currentUserValue, PurchaseRequestDto dto)
         {
             logger.LogDebug("PurchaseBooks, user: {0}, book: {1}, qty: {2}",
                 currentUserValue,
                 dto.BookKey,
                 dto.RequestedQuantity);
 
-            var userMatch = await usersProvider.GetUserKeyFromToken(currentUserValue);
+            var userMatch = usersProvider.GetUserKeyFromToken(currentUserValue);
 
             if (!userMatch.Key.HasValue)
             {
@@ -32,7 +32,7 @@ namespace BigBooks.API.Providers
                 return new ProviderKeyResponse(null, userMatch.Error);
             }
 
-            if (!await usersProvider.IsUserActive(userMatch.Key.Value))
+            if (!usersProvider.IsUserActive(userMatch.Key.Value))
             {
                 // inactive user, purchase denied
                 return new ProviderKeyResponse(null, "User is deactivated");
@@ -40,9 +40,9 @@ namespace BigBooks.API.Providers
 
             using (var ctx = dbContextFactory.CreateDbContext())
             {
-                var book = await ctx.Books
-                    .AsNoTracking()
-                    .SingleOrDefaultAsync(b => b.Key == dto.BookKey);
+                var book = ctx.Books
+                .AsNoTracking()
+                .SingleOrDefault(b => b.Key == dto.BookKey);
 
                 if (book == null)
                 {
@@ -51,16 +51,16 @@ namespace BigBooks.API.Providers
 
                 var purchaseAmount = book.Price * dto.RequestedQuantity;
 
-                var currentUser = await ctx.AppUsers
+                var currentUser = ctx.AppUsers
                     .Include(u => u.Transactions)
-                    .SingleAsync(u => u.Key == userMatch.Key);
+                    .Single(u => u.Key == userMatch.Key);
 
                 if (currentUser.Wallet < purchaseAmount)
                 {
                     return new ProviderKeyResponse(null, $"Insufficent funds in user wallet");
                 }
 
-                if (!await booksProvider.RemoveFromStock(ctx, dto.BookKey, dto.RequestedQuantity))
+                if (!booksProvider.RemoveFromStock(ctx, dto.BookKey, dto.RequestedQuantity))
                 {
                     return new ProviderKeyResponse(null, $"Insufficient book stock");
                 }
@@ -77,19 +77,19 @@ namespace BigBooks.API.Providers
                     PurchaseQuantity = dto.RequestedQuantity
                 });
 
-                await ctx.SaveChangesAsync();
+                ctx.SaveChanges();
 
                 return new ProviderKeyResponse(currentUser.Key, string.Empty);
             }
         }
 
-        public async Task<ProviderKeyResponse> Deposit(string currentUserValue, AccountDepositDto dto)
+        public ProviderKeyResponse Deposit(string currentUserValue, AccountDepositDto dto)
         {
             logger.LogDebug("Deposit, user: {0}, Amount: {2}",
                 currentUserValue,
                 dto.Amount);
 
-            var userMatch = await usersProvider.GetUserKeyFromToken(currentUserValue);
+            var userMatch = usersProvider.GetUserKeyFromToken(currentUserValue);
 
             if (!userMatch.Key.HasValue)
             {
@@ -97,7 +97,7 @@ namespace BigBooks.API.Providers
                 return new ProviderKeyResponse(null, userMatch.Error);
             }
 
-            if (!await usersProvider.IsUserActive(userMatch.Key.Value))
+            if (!usersProvider.IsUserActive(userMatch.Key.Value))
             {
                 // inactive user, action rejected
                 return new ProviderKeyResponse(null, "User is deactivated");
@@ -105,9 +105,9 @@ namespace BigBooks.API.Providers
 
             using (var ctx = dbContextFactory.CreateDbContext())
             {
-                var currentUser = await ctx.AppUsers
-                    .Include(u => u.Transactions)
-                    .SingleAsync(u => u.Key == userMatch.Key);
+                var currentUser = ctx.AppUsers
+                .Include(u => u.Transactions)
+                .Single(u => u.Key == userMatch.Key);
 
                 currentUser.Wallet += dto.Amount;
 
@@ -120,7 +120,7 @@ namespace BigBooks.API.Providers
                     PurchaseQuantity = null
                 });
 
-                await ctx.SaveChangesAsync();
+                ctx.SaveChanges();
 
                 return new ProviderKeyResponse(currentUser.Key, string.Empty);
             }

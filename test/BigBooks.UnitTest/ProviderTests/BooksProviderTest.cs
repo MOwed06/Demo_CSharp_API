@@ -11,7 +11,7 @@ namespace BigBooks.UnitTest.ProviderTests
 {
     public class BooksProviderTest : BookStoreTest
     {
-        private readonly BooksProvider _bookPrv;
+        private BooksProvider _bookPrv;
 
         private readonly List<Book> _extraBooks;
 
@@ -85,13 +85,13 @@ namespace BigBooks.UnitTest.ProviderTests
         [InlineData(0, false)]
         [InlineData(1, true)]
         [InlineData(11, false)]
-        public async Task CheckBookExists(int bookKey, bool expected)
+        public void CheckBookExists(int bookKey, bool expected)
         {
             // arrange
             InitializeDatabase();
 
             // act
-            var obs = await _bookPrv.BookExists(bookKey);
+            var obs = _bookPrv.BookExists(bookKey);
 
             // assert
             Assert.Equal(expected, obs);
@@ -102,7 +102,7 @@ namespace BigBooks.UnitTest.ProviderTests
         [InlineData(new int[] { 3 }, 3.0)]
         [InlineData(new int[] { 3, 4 }, 3.5)]
         [InlineData(new int[] { 3, 4, 5, 6, 7, 8, 9, 10 }, 6.5)]
-        public async Task BookRatingCalculation(int[] ratings, double? expectedRating)
+        public void BookRatingCalculation(int[] ratings, double? expectedRating)
         {
             const int BOOK_KEY = 3;
 
@@ -138,7 +138,7 @@ namespace BigBooks.UnitTest.ProviderTests
                 extraBookReviews: extraReviews);
 
             // act
-            var obs = await _bookPrv.GetBook(BOOK_KEY);
+            var obs = _bookPrv.GetBook(BOOK_KEY);
 
             // assert
             Assert.Equal(expectedRating, obs?.Rating);
@@ -147,13 +147,13 @@ namespace BigBooks.UnitTest.ProviderTests
         [Theory]
         [InlineData(1, 4.5)]
         [InlineData(2, null)]
-        public async Task GetBookCheckRating(int key, double? expectedRating)
+        public void GetBookCheckRating(int key, double? expectedRating)
         {
             // arrange
             InitializeDatabase();
 
             // act
-            var obs = await _bookPrv.GetBook(key);
+            var obs = _bookPrv.GetBook(key);
 
             // assert
             Assert.Equal(expectedRating, obs?.Rating);
@@ -162,7 +162,7 @@ namespace BigBooks.UnitTest.ProviderTests
         [Theory]
         [InlineData(BOOK2_GUID, "Duplicate ISBN")]
         [InlineData(NEW_BOOK_GUID, null)]
-        public async Task BookAddDtoGuidCheck(string isbnValue, string expectedError)
+        public void BookAddDtoGuidCheck(string isbnValue, string expectedError)
         {
             // arrange
             InitializeDatabase();
@@ -179,7 +179,7 @@ namespace BigBooks.UnitTest.ProviderTests
             };
 
             // act
-            var obs = await _bookPrv.AddBook(addDto);
+            var obs = _bookPrv.AddBook(addDto);
 
             // assert
             if (string.IsNullOrEmpty(expectedError))
@@ -201,7 +201,7 @@ namespace BigBooks.UnitTest.ProviderTests
         [InlineData("A", null)]
         [InlineData(STRING_150_CHARS, null)]
         [InlineData(STRING_151_CHARS, "Title must be a string or array type with a maximum length of '150'")]
-        public async Task BookUpdateDtoTitleAsync(string updateValue, string expectedError)
+        public void BookUpdateDtoTitle(string updateValue, string expectedError)
         {
             const int BOOK_KEY = 1;
 
@@ -211,7 +211,7 @@ namespace BigBooks.UnitTest.ProviderTests
             var patchDoc = new JsonPatchDocument<BookAddUpdateDto>();
             patchDoc.Replace(p => p.Title, updateValue);
 
-            await ExecuteUpdateTest(BOOK_KEY, patchDoc, expectedError);
+            ExecuteUpdateTest(BOOK_KEY, patchDoc, expectedError);
         }
 
         [Theory]
@@ -219,7 +219,7 @@ namespace BigBooks.UnitTest.ProviderTests
         [InlineData(BOOK1_GUID, null)] // overwrite isbn with original value
         [InlineData(BOOK2_GUID, "Duplicate ISBN")]
         [InlineData("00000000-0000-0000-0000-000000000000", "invalid ISBN value")]
-        public async Task BookUpdateDtoIsbnAsync(string updateValue, string expectedError)
+        public void BookUpdateDtoIsbn(string updateValue, string expectedError)
         {
             const int BOOK_KEY = 1;
 
@@ -231,19 +231,19 @@ namespace BigBooks.UnitTest.ProviderTests
             var patchDoc = new JsonPatchDocument<BookAddUpdateDto>();
             patchDoc.Replace(p => p.Isbn, updateGuid);
 
-            await ExecuteUpdateTest(BOOK_KEY, patchDoc, expectedError);
+            ExecuteUpdateTest(BOOK_KEY, patchDoc, expectedError);
         }
 
         [Theory]
         [InlineData(1, "Book01DetailsDto.json")]
         [InlineData(11, null)]
-        public async Task CheckGetBook(int bookKey, string referenceFile)
+        public void CheckGetBook(int bookKey, string referenceFile)
         {
             // arrange
             InitializeDatabase();
 
             // act
-            var observed = await _bookPrv.GetBook(bookKey);
+            var observed = _bookPrv.GetBook(bookKey);
 
             // assert
             if (referenceFile != null)
@@ -262,13 +262,13 @@ namespace BigBooks.UnitTest.ProviderTests
         [InlineData(Genre.Childrens, new int[] { 1, 3, 4, 5 })]
         [InlineData(Genre.Romance, new int[0])]
         [InlineData(Genre.Fantasy, new int[] { 7 })]
-        public async Task CheckGetBooksByGenre(Genre searchGenre, int[] expectedKeys)
+        public void CheckGetBooksByGenre(Genre searchGenre, int[] expectedKeys)
         {
             // arrange
             InitializeDatabase(extraBooks: _extraBooks);
 
             // act
-            var obs = await _bookPrv.GetBooksByGenre(searchGenre);
+            var obs = _bookPrv.GetBooksByGenre(searchGenre);
 
             // assert
             var obsKeys = obs.Select(b => b.Key).ToList();
@@ -280,13 +280,13 @@ namespace BigBooks.UnitTest.ProviderTests
         [InlineData("Muppet", new int[] { 3, 4, 6 })]
         [InlineData("Gonzo", new int[0])]
         [InlineData("", new int[] { 1, 2, 3, 4, 5, 6, 7 })]
-        public async Task CheckGetBooksByAuthor(string searchAuthor, int[] expectedKeys)
+        public void CheckGetBooksByAuthor(string searchAuthor, int[] expectedKeys)
         {
             // arrange
             InitializeDatabase(extraBooks: _extraBooks);
 
             // act
-            var obs = await _bookPrv.GetBooks(searchAuthor);
+            var obs = _bookPrv.GetBooks(searchAuthor);
 
             // assert
             var obsKeys = obs.Select(b => b.Key).ToList();
@@ -295,7 +295,7 @@ namespace BigBooks.UnitTest.ProviderTests
         }
 
         [Fact]
-        public async Task CheckGetAuthors()
+        public void CheckGetAuthors()
         {
             // arrange
             var expectedAuthorList = new List<AuthorInfoDto>
@@ -320,7 +320,7 @@ namespace BigBooks.UnitTest.ProviderTests
             InitializeDatabase(extraBooks: _extraBooks);
 
             // act
-            var obs = await _bookPrv.GetBookAuthors();
+            var obs = _bookPrv.GetBookAuthors();
 
             // assert
             foreach (var exp in expectedAuthorList)
@@ -332,10 +332,10 @@ namespace BigBooks.UnitTest.ProviderTests
             }
         }
 
-        private async Task ExecuteUpdateTest(int bookKey, JsonPatchDocument<BookAddUpdateDto> patchDoc, string expectedError)
+        private void ExecuteUpdateTest(int bookKey, JsonPatchDocument<BookAddUpdateDto> patchDoc, string expectedError)
         {
             // act
-            var obs = await _bookPrv.UpdateBook(bookKey, patchDoc);
+            var obs = _bookPrv.UpdateBook(bookKey, patchDoc);
 
             // assert
             if (string.IsNullOrEmpty(expectedError))
