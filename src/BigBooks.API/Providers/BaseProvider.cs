@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace BigBooks.API.Providers
 {
-    public abstract class BaseProvider(IDbContextFactory<BigBookDbContext> dbContextFactory)
+    public abstract class BaseProvider
     {
         protected (bool Valid, string Error) ValidateDto(object dto)
         {

@@ -102,7 +102,6 @@ namespace BigBooks.API.Controllers
             try
             {
                 var bookDtos = bookProvider.GetBooks(name);
-
                 return Ok(bookDtos);
             }
             catch (Exception ex)
@@ -125,7 +124,6 @@ namespace BigBooks.API.Controllers
             try
             {
                 var authorDtos = bookProvider.GetBookAuthors();
-
                 return Ok(authorDtos);
             }
             catch (Exception ex)
@@ -155,13 +153,13 @@ namespace BigBooks.API.Controllers
             {
                 var response = bookProvider.AddBook(dto);
 
-                if (response.Key.HasValue)
+                if (!response.Key.HasValue)
                 {
-                    return GetBook(response.Key.Value);
+                    return InvalidRequest(statusCode: HttpStatusCode.BadRequest,
+                        errorMessage: response.Error);
                 }
 
-                return InvalidRequest(statusCode: HttpStatusCode.BadRequest,
-                    errorMessage: response.Error);
+                return GetBook(response.Key.Value);
             }
             catch (Exception ex)
             {
@@ -198,13 +196,13 @@ namespace BigBooks.API.Controllers
 
                 var response = bookProvider.UpdateBook(key, patchDoc);
 
-                if (response.Key.HasValue)
+                if (!response.Key.HasValue)
                 {
-                    return GetBook(response.Key.Value);
+                    return InvalidRequest(statusCode: HttpStatusCode.BadRequest,
+                        errorMessage: response.Error);
                 }
 
-                return InvalidRequest(statusCode: HttpStatusCode.BadRequest,
-                    errorMessage: response.Error);
+                return GetBook(response.Key.Value);
             }
             catch (Exception ex)
             {

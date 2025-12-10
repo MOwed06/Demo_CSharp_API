@@ -11,6 +11,7 @@ namespace BigBooks.IntegrationTest.Common
     {
         protected const string AUTH_URI = @"/api/authentication/authenticate";
         protected const string ACCOUNT_LIST_URI = @"/api/accounts/list";
+        protected const string USERS_URI = @"/api/users";
         protected const string BOOKS_URI = @"/api/books";
         protected const string BOOK_3_GET_URI = @"/api/books/3";
         protected const string PURCHASE_URI = @"/api/transactions/purchase";

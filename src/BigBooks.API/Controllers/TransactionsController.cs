@@ -2,7 +2,6 @@
 using BigBooks.API.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Net;
 using System.Security.Claims;
 
@@ -40,7 +39,7 @@ namespace BigBooks.API.Controllers
 
                 var response = transactionsProvider.PurchaseBooks(currentUserValue, dto);
 
-                if (response.Key == null)
+                if (!response.Key.HasValue)
                 {
                     return InvalidRequest(statusCode: HttpStatusCode.BadRequest,
                         errorMessage: response.Error);
@@ -79,7 +78,7 @@ namespace BigBooks.API.Controllers
 
                 var response = transactionsProvider.Deposit(currentUserValue, dto);
 
-                if (response.Key == null)
+                if (!response.Key.HasValue)
                 {
                     return InvalidRequest(statusCode: HttpStatusCode.BadRequest,
                         errorMessage: response.Error);

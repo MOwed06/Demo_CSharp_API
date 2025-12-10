@@ -63,18 +63,12 @@ namespace BigBooks.API.Controllers
 
             try
             {
-                if (!bookPrv.BookExists(book))
-                {
-                    return InvalidRequest(statusCode: HttpStatusCode.NotFound,
-                        errorMessage: $"No book key {book}");
-                }
-
                 // extract appUser key from active user claims
                 var currentUserValue = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
                 var response = bookReviewPrv.AddBookReview(currentUserValue, book, dto);
 
-                if (response.Key == null)
+                if (!response.Key.HasValue)
                 {
                     return InvalidRequest(statusCode: HttpStatusCode.BadRequest,
                         errorMessage: response.Error);

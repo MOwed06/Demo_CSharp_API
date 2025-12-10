@@ -104,7 +104,7 @@ namespace BigBooks.API.Controllers
             {
                 var response = usersProvider.AddUser(dto);
 
-                if (response.Key == null)
+                if (!response.Key.HasValue)
                 {
                     return InvalidRequest(statusCode: HttpStatusCode.BadRequest,
                         errorMessage: response.Error);
@@ -138,22 +138,16 @@ namespace BigBooks.API.Controllers
 
             try
             {
-                if (usersProvider.GetUser(key) == null)
-                {
-                    return InvalidRequest(statusCode: HttpStatusCode.NotFound,
-                        errorMessage: $"Invalid user key {key}");
-                }
-
                 var response = usersProvider.UpdateAccount(key, patchDoc);
 
-                if (response.Key.HasValue)
+                if (!response.Key.HasValue)
                 {
-                    var userInfo = usersProvider.GetUser(response.Key.Value);
-                    return Ok(userInfo);
+                    return InvalidRequest(statusCode: HttpStatusCode.BadRequest,
+                        errorMessage: response.Error);
                 }
 
-                return InvalidRequest(statusCode: HttpStatusCode.BadRequest,
-                    errorMessage: response.Error);
+                var userInfo = usersProvider.GetUser(response.Key.Value);
+                return Ok(userInfo);
             }
             catch (Exception ex)
             {

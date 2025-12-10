@@ -44,7 +44,7 @@ namespace BigBooks.IntegrationTest
         }
 
         /// <summary>
-        /// Confirm user with Admin role can get users
+        /// Confirm user with Admin role can get users lists
         /// </summary>
         /// <returns></returns>
         [Fact]
@@ -77,7 +77,44 @@ namespace BigBooks.IntegrationTest
         }
 
         /// <summary>
-        /// Confirm user with Customer role denied get users
+        /// Confirm user is able to see their own account details
+        /// </summary>
+        /// <param name="isSelf"></param>
+        /// <returns></returns>
+        [Fact]
+        public async Task ConfirmCustomerGetOwnAccountDetails()
+        {
+            // arrange
+            const string EXPECTED_WALLET = "$20.00";
+
+            var authRequest = new AuthRequest
+            {
+                UserId = CUSTOMER6_EMAIL,
+                Password = ApplicationConstant.USER_PASSWORD
+            };
+
+            string token = await GetAuthTokenAsync(authRequest);
+
+            // act
+            var response = await SendMessageAsync(uri: USERS_URI,
+                method: HttpMethod.Get,
+                token: token,
+                body: null);
+
+            WriteToOutput(response.StatusCode);
+            var obs = await ReadResponseContent<UserDetailsDto>(response);
+            WriteToOutput(obs, true);
+
+            // assert
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            Assert.Equal(CUSTOMER6_EMAIL, obs.UserEmail);
+            Assert.Equal(Role.Customer.ToString(), obs.Role);
+            Assert.True(obs.IsActive);
+            Assert.Equal(EXPECTED_WALLET, obs.Wallet);
+        }
+
+        /// <summary>
+        /// Confirm user with Customer role denied get all users
         /// </summary>
         /// <returns></returns>
         [Fact]
