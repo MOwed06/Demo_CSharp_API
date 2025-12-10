@@ -1,3 +1,4 @@
+using BigBooks.API.Core;
 using BigBooks.API.Interfaces;
 using BigBooks.API.Models;
 using BigBooks.API.Providers;
@@ -138,8 +139,10 @@ namespace BigBooks.UnitTest.ProviderTests
         /// This test confirms that review is added to the db
         /// by retrieving the review dto for the new entry
         /// </summary>
-        [Fact]
-        public void AddBookReview_AddsReviewDetails()
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void AddBookReview_AddsReviewDetails(bool isAnonymous)
         {
             // arrange
             const int USER_KEY_2 = 2;
@@ -155,7 +158,7 @@ namespace BigBooks.UnitTest.ProviderTests
             {
                 Score = EXPECTED_REVIEW_SCORE,
                 Description = "excellent",
-                IsAnonymous = false
+                IsAnonymous = isAnonymous
             };
 
             // act
@@ -167,8 +170,16 @@ namespace BigBooks.UnitTest.ProviderTests
 
             var obsReviewDto = _bookReviewPrv.GetBookReview(obs.Key.Value);
             Assert.Equal(dto.Score, obsReviewDto.Score);
-            Assert.Equal(CUSTOMER_2_EMAIL, obsReviewDto.User);
             Assert.Equal("Fierce Patriot: The Tangled Lives of William Tecumseh Sherman", obsReviewDto.BookTitle);
+
+            if (isAnonymous)
+            {
+                Assert.Equal(ApplicationConstant.ANONYMOUS_USER, obsReviewDto.User);
+            }
+            else
+            {
+                Assert.Equal(CUSTOMER_2_EMAIL, obsReviewDto.User);
+            }
         }
     }
 }

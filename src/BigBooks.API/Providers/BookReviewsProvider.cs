@@ -1,6 +1,7 @@
 ﻿using BigBooks.API.Entities;
 using BigBooks.API.Interfaces;
 using BigBooks.API.Models;
+using BigBooks.API.Core;
 using Microsoft.EntityFrameworkCore;
 
 namespace BigBooks.API.Providers
@@ -9,8 +10,6 @@ namespace BigBooks.API.Providers
         IUsersProvider usersProvider,
         ILogger<BookReviewsProvider> logger) : BaseProvider, IBookReviewsProvider
     {
-        private const string ANONYMOUS_USER = @"Anonymous";
-
         public List<BookReviewDto> GetBookReviews(int bookKey)
         {
             logger.LogDebug("GetBookReviews {0}", bookKey);
@@ -32,7 +31,7 @@ namespace BigBooks.API.Providers
                     Score = r.Score,
                     ReviewDate = r.ReviewDate,
                     User = (r.User == null)
-                        ? ANONYMOUS_USER
+                        ? ApplicationConstant.ANONYMOUS_USER
                         : r.User.UserEmail,
                     Description = r.Description,
                 })
@@ -64,7 +63,7 @@ namespace BigBooks.API.Providers
                     Score = review.Score,
                     ReviewDate = review.ReviewDate,
                     User = (review.User == null)
-                        ? ANONYMOUS_USER
+                        ? ApplicationConstant.ANONYMOUS_USER
                         : review.User.UserEmail,
                     Description = review.Description,
                 };
