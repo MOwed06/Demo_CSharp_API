@@ -2,7 +2,6 @@
 using BigBooks.API.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Net;
 using System.Security.Claims;
 
@@ -24,21 +23,20 @@ namespace BigBooks.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult<IEnumerable<BookReviewDto>> GetBookReviews(int book)
+        public async Task<ActionResult<IEnumerable<BookReviewDto>>> GetBookReviews(int book)
         {
             var statusMsg = $"GetBookReviews {book}";
             logger.LogTrace(statusMsg);
 
             try
             {
-                if (!bookPrv.BookExists(book))
+                if (!await bookPrv.BookExists(book))
                 {
                     return InvalidRequest(statusCode: HttpStatusCode.NotFound,
                         errorMessage: $"No book key {book}");
                 }
 
                 var reviewDtos = bookReviewPrv.GetBookReviews(book);
-
                 return Ok(reviewDtos);
             }
             catch (Exception ex)

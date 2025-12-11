@@ -236,7 +236,8 @@ namespace BigBooks.API.Providers
         {
             using (var ctx = dbContextFactory.CreateDbContext())
             {
-                return (await ctx.AppUsers.SingleAsync(u => u.Key == key)).IsActive;
+                var selectedUser = await ctx.AppUsers.SingleAsync(u => u.Key == key);
+                return selectedUser.IsActive;
             }
         }
     }

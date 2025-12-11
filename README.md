@@ -22,32 +22,35 @@ I will continue to evolve this project as my bandwidth allows. I will keep the m
 
 1. test/BigBooks.IntegrationTest
 
-
 <br>
 
 ### BigBooks.API
 
 - The project leverages a typical Web API pattern.
-    - Controller layer is intentionally light-weight
-    - Provider layer resolves data transformation and db interactions
-    - Dto objects exchanged with controllers
-    - Simplified token authorization
+
+  - Controller layer is intentionally light-weight
+  - Provider layer resolves data transformation and db interactions
+  - Dto objects exchanged with controllers
+  - Simplified token authorization
 
 - AccountsController vs UsersController
-    - Under-the-Hood, both the AccountsController and UsersController leverage the UsersProvider
-    - As implemented, these controllers differ by authorization
-        - Only an admin user (with "AccountsAccess) may globally view/add/modify Accounts
-        - Any user my view their own User details via the UsersController
+
+  - Under-the-Hood, both the AccountsController and UsersController leverage the UsersProvider
+  - As implemented, these controllers differ by authorization
+    - Only an admin user (with "AccountsAccess) may globally view/add/modify Accounts
+    - Any user my view their own User details via the UsersController
 
 - Intentional complexities
-    - The following object must possess valid Guid:
-        - AccountDepositDto.Confirmation
-        - BookAddUpdateDto.Isbn
-        - PurchaseRequestDto.TransactionConfirmation
-    - UserAddUpdateDto.UserEmail must a unique, valid email  
+
+  - The following object must possess valid Guid:
+    - AccountDepositDto.Confirmation
+    - BookAddUpdateDto.Isbn
+    - PurchaseRequestDto.TransactionConfirmation
+  - UserAddUpdateDto.UserEmail must a unique, valid email
 
 - Error handling
-    - By design (for testing), failed API requests will return the error content in the message body
+
+  - By design (for testing), failed API requests will return the error content in the message body
 
 - SQLite database, BigBooks.db
 
@@ -57,20 +60,20 @@ I will continue to evolve this project as my bandwidth allows. I will keep the m
 
 - This Postman collection holds pre-defined API calls to demonstrate operation of BigBooks.API
 - Since the BigBooks.API leverages authentication tokens, the Postman AuthenticationRequest must precede other API requests.
-    - The AuthenticationRequest will save the response token to a Postman variable which is then used in the header of subsequent requests.
-    - Example user with Customer Role: Bella.Barnes@demo.com
-    - Example user with Admin Role: Clark.Kent@demo.com
+  - The AuthenticationRequest will save the response token to a Postman variable which is then used in the header of subsequent requests.
+  - Example user with Customer Role: Bella.Barnes@demo.com
+  - Example user with Admin Role: Clark.Kent@demo.com
 
 <br>
 
 ### BigBooks.UnitTest
 
 - xUnit tests of project elements exercised in isolation.
-    - Authentication
-    - Providers
-    - Models
+  - Authentication
+  - Providers
+  - Models
 - InMemory DbContext created for each test case.
-    - Refer to BigBookTest.cs constructor
+  - Refer to BigBookTest.cs constructor
 
 <br>
 
@@ -78,8 +81,8 @@ I will continue to evolve this project as my bandwidth allows. I will keep the m
 
 - xunit project demonstrating end-to-end message scenarios leveraging an in-memory database and a WebApplicationFactory design pattern.
 - This example is significant not for the coverage it provides (which is small), but rather for the manner of test execution.
-    - BigBookWebAppFactory.cs, ConfigureWebHost() adjusts the service and configuration of the source WebApplication to spawn an internal, temporary TestServer for testing.
-    - The HttpRequests of MessageTest.cs target the TestServer to exercise system-level behaviors of the source project.
+  - BigBookWebAppFactory.cs, ConfigureWebHost() adjusts the service and configuration of the source WebApplication to spawn an internal, temporary TestServer for testing.
+  - The HttpRequests of MessageTest.cs target the TestServer to exercise system-level behaviors of the source project.
 
 <br>
 
@@ -89,12 +92,9 @@ Things yet to do ...
 
 1. Lots more unit tests
 1. Delete Account
-    - delete AppUser transactions
-    - modify user's bookreviews to become Anonymous
-1. Convert Controller methods to async.
+   - delete AppUser transactions
+   - modify user's bookreviews to become Anonymous
 1. Apply pagination to controller responses
-1. Refactor redundancies between controller-provider checks for object exists
-
 
 <br>
 

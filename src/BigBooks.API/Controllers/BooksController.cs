@@ -1,11 +1,9 @@
 using BigBooks.API.Core;
-using BigBooks.API.Entities;
 using BigBooks.API.Interfaces;
 using BigBooks.API.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Net;
 
 namespace BigBooks.API.Controllers
@@ -24,14 +22,14 @@ namespace BigBooks.API.Controllers
         [HttpGet("{key}", Name = "GetBook")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult<BookDetailsDto> GetBook(int key)
+        public async Task<ActionResult<BookDetailsDto>> GetBook(int key)
         {
             var statusMsg = $"GetBook, {key}";
             logger.LogTrace(statusMsg);
 
             try
             {
-                var bookDto = bookProvider.GetBook(key);
+                var bookDto = await bookProvider.GetBook(key);
 
                 if (bookDto == null)
                 {
@@ -59,7 +57,7 @@ namespace BigBooks.API.Controllers
         [HttpGet("genre", Name = "GetBooksByGenre")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult<IEnumerable<BookOverviewDto>> GetBooksByGenre([FromQuery] string name)
+        public async Task<ActionResult<IEnumerable<BookOverviewDto>>> GetBooksByGenre([FromQuery] string name)
         {
             var statusMsg = $"GetBooksByGenre, {name}";
             logger.LogTrace(statusMsg);
@@ -75,7 +73,7 @@ namespace BigBooks.API.Controllers
                         errorMessage: $"bad genre specification, {name}");
                 }
 
-                var bookDtos = bookProvider.GetBooksByGenre(queryGenre);
+                var bookDtos = await bookProvider.GetBooksByGenre(queryGenre);
 
                 return Ok(bookDtos);
             }
@@ -94,14 +92,14 @@ namespace BigBooks.API.Controllers
         [HttpGet("author", Name = "GetBooksByAuthor")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult<IEnumerable<BookOverviewDto>> GetBooksByAuthor([FromQuery] string name)
+        public async Task<ActionResult<IEnumerable<BookOverviewDto>>> GetBooksByAuthor([FromQuery] string name)
         {
             var statusMsg = $"GetBooksByAuthor, {name}";
             logger.LogTrace(statusMsg);
 
             try
             {
-                var bookDtos = bookProvider.GetBooks(name);
+                var bookDtos = await bookProvider.GetBooks(name);
                 return Ok(bookDtos);
             }
             catch (Exception ex)
@@ -117,13 +115,13 @@ namespace BigBooks.API.Controllers
         [HttpGet("authorlist")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult<IEnumerable<AuthorInfoDto>> GetAuthorList()
+        public async Task<ActionResult<IEnumerable<AuthorInfoDto>>> GetAuthorList()
         {
             logger.LogTrace("GetAuthorList");
 
             try
             {
-                var authorDtos = bookProvider.GetBookAuthors();
+                var authorDtos = await bookProvider.GetBookAuthors();
                 return Ok(authorDtos);
             }
             catch (Exception ex)
@@ -144,14 +142,14 @@ namespace BigBooks.API.Controllers
         [Authorize(Policy = "BookAccess")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult<BookDetailsDto> AddBook(BookAddUpdateDto dto)
+        public async Task<ActionResult<BookDetailsDto>> AddBook(BookAddUpdateDto dto)
         {
             var statusMsg = $"AddBook, {dto.Title}";
             logger.LogTrace(statusMsg);
 
             try
             {
-                var response = bookProvider.AddBook(dto);
+                var response = await bookProvider.AddBook(dto);
 
                 if (!response.Key.HasValue)
                 {
@@ -159,7 +157,7 @@ namespace BigBooks.API.Controllers
                         errorMessage: response.Error);
                 }
 
-                return GetBook(response.Key.Value);
+                return await GetBook(response.Key.Value);
             }
             catch (Exception ex)
             {
@@ -181,20 +179,20 @@ namespace BigBooks.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult<BookDetailsDto> UpdateBook(int key, JsonPatchDocument<BookAddUpdateDto> patchDoc)
+        public async Task<ActionResult<BookDetailsDto>> UpdateBook(int key, JsonPatchDocument<BookAddUpdateDto> patchDoc)
         {
             var statusMsg = $"UpdateBook, {key}";
             logger.LogTrace(statusMsg);
 
             try
             {
-                if (!bookProvider.BookExists(key))
+                if (!await bookProvider.BookExists(key))
                 {
                     return InvalidRequest(statusCode: HttpStatusCode.NotFound,
                         errorMessage: $"No book key {key}");
                 }
 
-                var response = bookProvider.UpdateBook(key, patchDoc);
+                var response = await bookProvider.UpdateBook(key, patchDoc);
 
                 if (!response.Key.HasValue)
                 {
@@ -202,7 +200,7 @@ namespace BigBooks.API.Controllers
                         errorMessage: response.Error);
                 }
 
-                return GetBook(response.Key.Value);
+                return await GetBook(response.Key.Value);
             }
             catch (Exception ex)
             {
