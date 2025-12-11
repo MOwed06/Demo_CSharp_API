@@ -10,19 +10,19 @@ namespace BigBooks.API.Providers
         IUsersProvider usersProvider,
         ILogger<BookReviewsProvider> logger) : BaseProvider, IBookReviewsProvider
     {
-        public List<BookReviewDto> GetBookReviews(int bookKey)
+        public async Task<List<BookReviewDto>> GetBookReviews(int bookKey)
         {
             logger.LogDebug("GetBookReviews {0}", bookKey);
 
             using (var ctx = dbContextFactory.CreateDbContext())
             {
-                var reviews = ctx.BookReviews
+                var reviews = await ctx.BookReviews
                 .AsNoTracking()
                 .Where(r => r.BookKey == bookKey)
                 .Include(r => r.Book)
                 .Include(r => r.User)
                 .OrderBy(r => r.ReviewDate)
-                .ToList();
+                .ToListAsync();
 
                 return reviews.Select(r => new BookReviewDto
                 {
@@ -39,17 +39,17 @@ namespace BigBooks.API.Providers
             }
         }
 
-        public BookReviewDto GetBookReview(int reviewKey)
+        public async Task<BookReviewDto> GetBookReview(int reviewKey)
         {
             logger.LogDebug("GetBookReview {0}", reviewKey);
 
             using (var ctx = dbContextFactory.CreateDbContext())
             {
-                var review = ctx.BookReviews
+                var review = await ctx.BookReviews
                 .AsNoTracking()
                 .Include(r => r.Book)
                 .Include(r => r.User)
-                .SingleOrDefault(r => r.Key == reviewKey);
+                .SingleOrDefaultAsync(r => r.Key == reviewKey);
 
                 if (review == null)
                 {

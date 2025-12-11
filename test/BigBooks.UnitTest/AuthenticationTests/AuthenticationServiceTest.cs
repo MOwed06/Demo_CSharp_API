@@ -31,7 +31,7 @@ namespace BigBooks.UnitTest.AuthenticationTests
         [InlineData("Some.Person@test.com", ApplicationConstant.USER_PASSWORD, "User not found")]
         [InlineData(null, ApplicationConstant.USER_PASSWORD, "User not found")]
         [InlineData("", ApplicationConstant.USER_PASSWORD, "User not found")]
-        public void GenerateTokenCheck(string userId, string password, string expectedError)
+        public async Task GenerateTokenCheck(string userId, string password, string expectedError)
         {
             // arrange
             InitializeDatabase();
@@ -43,7 +43,7 @@ namespace BigBooks.UnitTest.AuthenticationTests
             };
 
             // act
-            var response = _authService.GenerateToken(authRequest);
+            var response = await _authService.GenerateToken(authRequest);
 
             // assert
             if (string.IsNullOrEmpty(expectedError))
@@ -60,7 +60,7 @@ namespace BigBooks.UnitTest.AuthenticationTests
         }
 
         [Fact]
-        public void CheckTokenAuthentication()
+        public async Task CheckTokenAuthentication()
         {
             // arrange
             InitializeDatabase();
@@ -72,7 +72,7 @@ namespace BigBooks.UnitTest.AuthenticationTests
             };
 
             // act
-            var response = _authService.GenerateToken(authRequest);
+            var response = await _authService.GenerateToken(authRequest);
 
             // assert
             SecurityToken validatedToken;

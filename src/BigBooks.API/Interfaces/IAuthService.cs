@@ -4,6 +4,6 @@ namespace BigBooks.API.Interfaces
 {
     public interface IAuthService
     {
-        AuthResponse GenerateToken(AuthRequest request);
+        Task<AuthResponse> GenerateToken(AuthRequest request);
     }
 }

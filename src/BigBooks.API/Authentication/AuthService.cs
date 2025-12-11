@@ -18,7 +18,7 @@ namespace BigBooks.API.Services
         /// </summary>
         /// <param name="request">authorization request</param>
         /// <returns></returns>
-        public AuthResponse GenerateToken(AuthRequest request)
+        public async Task<AuthResponse> GenerateToken(AuthRequest request)
         {
             logger.LogDebug("GenerateToken, {0}, {1}",
                 request.UserId,
@@ -34,9 +34,9 @@ namespace BigBooks.API.Services
                 AppUser matchedUser = null;
                 using (var ctx = dbContextFactory.CreateDbContext())
                 {
-                    matchedUser = ctx.AppUsers
+                    matchedUser = await ctx.AppUsers
                         .AsNoTracking()
-                        .SingleOrDefault(u => (u.UserEmail == request.UserId));
+                        .SingleOrDefaultAsync(u => (u.UserEmail == request.UserId));
                 }
 
                 if (matchedUser == null)

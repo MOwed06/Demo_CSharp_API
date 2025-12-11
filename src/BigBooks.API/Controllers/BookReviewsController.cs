@@ -36,7 +36,7 @@ namespace BigBooks.API.Controllers
                         errorMessage: $"No book key {book}");
                 }
 
-                var reviewDtos = bookReviewPrv.GetBookReviews(book);
+                var reviewDtos = await bookReviewPrv.GetBookReviews(book);
                 return Ok(reviewDtos);
             }
             catch (Exception ex)
@@ -71,7 +71,7 @@ namespace BigBooks.API.Controllers
                     return InvalidRequest(statusCode: HttpStatusCode.BadRequest,
                         errorMessage: response.Error);
                 }
-                var reviewDto = bookReviewPrv.GetBookReview(response.Key.Value);
+                var reviewDto = await bookReviewPrv.GetBookReview(response.Key.Value);
                 return Ok(reviewDto);
             }
             catch (Exception ex)

@@ -168,7 +168,7 @@ namespace BigBooks.UnitTest.ProviderTests
             Assert.NotNull(obs.Key);
             Assert.Empty(obs.Error);
 
-            var obsReviewDto = _bookReviewPrv.GetBookReview(obs.Key.Value);
+            var obsReviewDto = await _bookReviewPrv.GetBookReview(obs.Key.Value);
             Assert.Equal(dto.Score, obsReviewDto.Score);
             Assert.Equal("Fierce Patriot: The Tangled Lives of William Tecumseh Sherman", obsReviewDto.BookTitle);
 
