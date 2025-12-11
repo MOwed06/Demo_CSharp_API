@@ -6,12 +6,12 @@ namespace BigBooks.API.Interfaces
 {
     public interface IUsersProvider
     {
-        UserDetailsDto GetUser(int key);
-        List<UserOverviewDto> GetUsers(bool? activeStatus);
-        ProviderKeyResponse AddUser(UserAddUpdateDto dto);
-        ProviderKeyResponse GetUserKeyFromToken(string currentUserValue);
-        UserDetailsDto GetCurrentUserDetails(string currentUserValue);
-        ProviderKeyResponse UpdateAccount(int key, JsonPatchDocument<UserAddUpdateDto> patchDoc);
-        bool IsUserActive(int key);
+        Task<UserDetailsDto> GetUser(int key);
+        Task<List<UserOverviewDto>> GetUsers(bool? activeStatus);
+        Task<ProviderKeyResponse> AddUser(UserAddUpdateDto dto);
+        Task<ProviderKeyResponse> GetUserKeyFromToken(string currentUserValue);
+        Task<UserDetailsDto> GetCurrentUserDetails(string currentUserValue);
+        Task<ProviderKeyResponse> UpdateAccount(int key, JsonPatchDocument<UserAddUpdateDto> patchDoc);
+        Task<bool> IsUserActive(int key);
     }
 }

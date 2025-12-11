@@ -56,7 +56,7 @@ namespace BigBooks.API.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult<BookReviewDto> AddBookReview(int book, BookReviewAddDto dto)
+        public async Task<ActionResult<BookReviewDto>> AddBookReview(int book, BookReviewAddDto dto)
         {
             var statusMsg = $"AddBookReview {book}";
             logger.LogTrace(statusMsg);
@@ -66,14 +66,13 @@ namespace BigBooks.API.Controllers
                 // extract appUser key from active user claims
                 var currentUserValue = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-                var response = bookReviewPrv.AddBookReview(currentUserValue, book, dto);
+                var response = await bookReviewPrv.AddBookReview(currentUserValue, book, dto);
 
                 if (!response.Key.HasValue)
                 {
                     return InvalidRequest(statusCode: HttpStatusCode.BadRequest,
                         errorMessage: response.Error);
                 }
-
                 var reviewDto = bookReviewPrv.GetBookReview(response.Key.Value);
                 return Ok(reviewDto);
             }

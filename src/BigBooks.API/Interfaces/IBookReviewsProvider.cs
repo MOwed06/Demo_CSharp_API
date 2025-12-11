@@ -8,6 +8,6 @@ namespace BigBooks.API.Interfaces
         List<BookReviewDto> GetBookReviews(int bookKey);
 
         BookReviewDto GetBookReview(int reviewKey);
-        ProviderKeyResponse AddBookReview(string currentUserValue, int bookKey, BookReviewAddDto dto);
+        Task<ProviderKeyResponse> AddBookReview(string currentUserValue, int bookKey, BookReviewAddDto dto);
     }
 }
