@@ -8,13 +8,13 @@ namespace BigBooks.API.Interfaces
 {
     public interface IBooksProvider
     {
-        ProviderKeyResponse AddBook(BookAddUpdateDto dto);
-        bool BookExists(int key);
-        BookDetailsDto GetBook(int key);
-        List<BookOverviewDto> GetBooks(string author);
-        List<BookOverviewDto> GetBooksByGenre(Genre genre);
-        ProviderKeyResponse UpdateBook(int key, JsonPatchDocument<BookAddUpdateDto> patchDoc);
+        Task<ProviderKeyResponse> AddBook(BookAddUpdateDto dto);
+        Task<bool> BookExists(int key);
+        Task<BookDetailsDto> GetBook(int key);
+        Task<List<BookOverviewDto>> GetBooks(string author);
+        Task<List<BookOverviewDto>> GetBooksByGenre(Genre genre);
+        Task<ProviderKeyResponse> UpdateBook(int key, JsonPatchDocument<BookAddUpdateDto> patchDoc);
         bool RemoveFromStock(BigBookDbContext ctx, int bookKey, int requestedQuantity);
-        List<AuthorInfoDto> GetBookAuthors();
+        Task<List<AuthorInfoDto>> GetBookAuthors();
     }
 }

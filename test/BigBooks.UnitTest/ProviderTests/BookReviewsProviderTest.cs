@@ -27,19 +27,19 @@ namespace BigBooks.UnitTest.ProviderTests
         /// This unit test mocks the UserProvider instead of using a test instance of the UserProvider.
         /// </summary>
         [Fact]
-        public void AddBookReview_InvalidUser_ReturnsError()
+        public async Task AddBookReview_InvalidUser_ReturnsError()
         {
             // arrange
             InitializeDatabase();
             const int BOOK_KEY = 1; // set by db initialization
 
             _mockUserPrv.Setup(u => u.GetUserKeyFromToken(It.IsAny<string>()))
-                .Returns(new ProviderKeyResponse(null, "Invalid user"));
+                .ReturnsAsync(new ProviderKeyResponse(null, "Invalid user"));
 
             var dto = new BookReviewAddDto { Score = 5, Description = "good", IsAnonymous = false };
 
             // act
-            var obs = _bookReviewPrv.AddBookReview("noone@demo.com", BOOK_KEY, dto);
+            var obs = await _bookReviewPrv.AddBookReview("noone@demo.com", BOOK_KEY, dto);
 
             // assert
             Assert.Null(obs.Key);
@@ -51,7 +51,7 @@ namespace BigBooks.UnitTest.ProviderTests
         /// This unit test mocks the UserProvider instead of using a test instance of the UserProvider.
         /// </summary>
         [Fact]
-        public void AddBookReview_InactiveUser_ReturnsError()
+        public async Task AddBookReview_InactiveUser_ReturnsError()
         {
             // arrange
             InitializeDatabase();
@@ -61,14 +61,14 @@ namespace BigBooks.UnitTest.ProviderTests
 
             // always return for deactivated user key (regardless of current user email from token)
             _mockUserPrv.Setup(u => u.GetUserKeyFromToken(It.IsAny<string>()))
-                .Returns(new ProviderKeyResponse(DEACTIVATED_USER_KEY, string.Empty));
+                .ReturnsAsync(new ProviderKeyResponse(DEACTIVATED_USER_KEY, string.Empty));
             // return false when status check for deactivated user
-            _mockUserPrv.Setup(u => u.IsUserActive(DEACTIVATED_USER_KEY)).Returns(false);
+            _mockUserPrv.Setup(u => u.IsUserActive(DEACTIVATED_USER_KEY)).ReturnsAsync(false);
 
             var dto = new BookReviewAddDto { Score = 4, Description = "meh", IsAnonymous = false };
 
             // act
-            var obs = _bookReviewPrv.AddBookReview(DEACTIVATED_USER_EMAIL, BOOK_KEY, dto);
+            var obs = await _bookReviewPrv.AddBookReview(DEACTIVATED_USER_EMAIL, BOOK_KEY, dto);
 
             // assert
             Assert.Null(obs.Key);
@@ -80,7 +80,7 @@ namespace BigBooks.UnitTest.ProviderTests
         /// This unit test mocks the UserProvider instead of using a test instance of the UserProvider.
         /// </summary>
         [Fact]
-        public void AddBookReview_InvalidBookKey_ReturnsError()
+        public async Task AddBookReview_InvalidBookKey_ReturnsError()
         {
             // arrange
             InitializeDatabase();
@@ -90,14 +90,14 @@ namespace BigBooks.UnitTest.ProviderTests
 
             // if given valid specific user email, return valid user key
             _mockUserPrv.Setup(u => u.GetUserKeyFromToken(VALID_USER_EMAIL))
-                .Returns(new ProviderKeyResponse(VALID_USER_KEY, string.Empty));
+                .ReturnsAsync(new ProviderKeyResponse(VALID_USER_KEY, string.Empty));
             // return true when status check for valid user
-            _mockUserPrv.Setup(u => u.IsUserActive(VALID_USER_KEY)).Returns(true);
+            _mockUserPrv.Setup(u => u.IsUserActive(VALID_USER_KEY)).ReturnsAsync(true);
 
             var dto = new BookReviewAddDto { Score = 3, Description = "ok", IsAnonymous = false };
 
             // act
-            var obs = _bookReviewPrv.AddBookReview(VALID_USER_EMAIL, INVALID_BOOK_KEY, dto);
+            var obs = await _bookReviewPrv.AddBookReview(VALID_USER_EMAIL, INVALID_BOOK_KEY, dto);
 
             // assert
             Assert.Null(obs.Key);
@@ -112,7 +112,7 @@ namespace BigBooks.UnitTest.ProviderTests
         /// AddBookReview_InvalidBookKey_ReturnsError).
         /// </summary>
         [Fact]
-        public void AddBookReview_UserAlreadyReviewed_ReturnsError()
+        public async Task AddBookReview_UserAlreadyReviewed_ReturnsError()
         {
             // arrange
             const int BOOK_KEY = 1;
@@ -121,14 +121,14 @@ namespace BigBooks.UnitTest.ProviderTests
 
             // regardless of user email received, return user key 1
             _mockUserPrv.Setup(u => u.GetUserKeyFromToken(It.IsAny<string>()))
-                .Returns(new ProviderKeyResponse(USER_KEY_1, string.Empty));
+                .ReturnsAsync(new ProviderKeyResponse(USER_KEY_1, string.Empty));
             // regardless of user key received, return active status
-            _mockUserPrv.Setup(u => u.IsUserActive(It.IsAny<int>())).Returns(true);
+            _mockUserPrv.Setup(u => u.IsUserActive(It.IsAny<int>())).ReturnsAsync(true);
 
             var dto = new BookReviewAddDto { Score = 8, Description = "lovely", IsAnonymous = false };
 
             // act
-            var obs = _bookReviewPrv.AddBookReview(CUSTOMER_1_EMAIL, BOOK_KEY, dto);
+            var obs = await _bookReviewPrv.AddBookReview(CUSTOMER_1_EMAIL, BOOK_KEY, dto);
 
             // assert
             Assert.Null(obs.Key);
@@ -142,7 +142,7 @@ namespace BigBooks.UnitTest.ProviderTests
         [Theory]
         [InlineData(true)]
         [InlineData(false)]
-        public void AddBookReview_AddsReviewDetails(bool isAnonymous)
+        public async Task AddBookReview_AddsReviewDetails(bool isAnonymous)
         {
             // arrange
             const int USER_KEY_2 = 2;
@@ -151,8 +151,8 @@ namespace BigBooks.UnitTest.ProviderTests
             InitializeDatabase();
 
             _mockUserPrv.Setup(u => u.GetUserKeyFromToken(It.IsAny<string>()))
-                .Returns(new ProviderKeyResponse(USER_KEY_2, string.Empty));
-            _mockUserPrv.Setup(u => u.IsUserActive(USER_KEY_2)).Returns(true);
+                .ReturnsAsync(new ProviderKeyResponse(USER_KEY_2, string.Empty));
+            _mockUserPrv.Setup(u => u.IsUserActive(USER_KEY_2)).ReturnsAsync(true);
 
             var dto = new BookReviewAddDto
             {
@@ -162,13 +162,13 @@ namespace BigBooks.UnitTest.ProviderTests
             };
 
             // act
-            var obs = _bookReviewPrv.AddBookReview(CUSTOMER_2_EMAIL, BOOK_KEY_2, dto);
+            var obs = await _bookReviewPrv.AddBookReview(CUSTOMER_2_EMAIL, BOOK_KEY_2, dto);
 
             // assert
             Assert.NotNull(obs.Key);
             Assert.Empty(obs.Error);
 
-            var obsReviewDto = _bookReviewPrv.GetBookReview(obs.Key.Value);
+            var obsReviewDto = await _bookReviewPrv.GetBookReview(obs.Key.Value);
             Assert.Equal(dto.Score, obsReviewDto.Score);
             Assert.Equal("Fierce Patriot: The Tangled Lives of William Tecumseh Sherman", obsReviewDto.BookTitle);
 

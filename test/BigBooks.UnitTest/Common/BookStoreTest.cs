@@ -9,6 +9,7 @@ namespace BigBooks.UnitTest.Common
 {
     public abstract class BookStoreTest
     {
+        protected const int TEST_TIMEOUT_MS = 2000;
         protected const string BOOK1_GUID = "AAFB14A1-676B-46D9-8485-394A189F6AE5";
         protected const string BOOK2_GUID = "D77D41ED-1A0D-4BB8-8486-07AE475D80B5";
         protected const string NEW_BOOK_GUID = "31D7C872-077A-4386-93E6-72175E23E84E";
