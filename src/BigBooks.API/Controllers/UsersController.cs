@@ -20,7 +20,7 @@ namespace BigBooks.API.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult<UserDetailsDto> GetCurrentUser()
+        public async Task<ActionResult<UserDetailsDto>> GetCurrentUser()
         {
             logger.LogTrace("GetCurrentUser");
 
@@ -30,7 +30,7 @@ namespace BigBooks.API.Controllers
                 // corresponds to JwtRegisteredClaimNames.Sub value
                 var currentUserKeyValue = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-                var userDto = usersProvider.GetCurrentUserDetails(currentUserKeyValue);
+                var userDto = await usersProvider.GetCurrentUserDetails(currentUserKeyValue);
                 return Ok(userDto);
             }
             catch (Exception ex)

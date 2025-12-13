@@ -10,19 +10,19 @@ namespace BigBooks.API.Providers
         IUsersProvider usersProvider,
         ILogger<BookReviewsProvider> logger) : BaseProvider, IBookReviewsProvider
     {
-        public List<BookReviewDto> GetBookReviews(int bookKey)
+        public async Task<List<BookReviewDto>> GetBookReviews(int bookKey)
         {
             logger.LogDebug("GetBookReviews {0}", bookKey);
 
             using (var ctx = dbContextFactory.CreateDbContext())
             {
-                var reviews = ctx.BookReviews
+                var reviews = await ctx.BookReviews
                 .AsNoTracking()
                 .Where(r => r.BookKey == bookKey)
                 .Include(r => r.Book)
                 .Include(r => r.User)
                 .OrderBy(r => r.ReviewDate)
-                .ToList();
+                .ToListAsync();
 
                 return reviews.Select(r => new BookReviewDto
                 {
@@ -39,17 +39,17 @@ namespace BigBooks.API.Providers
             }
         }
 
-        public BookReviewDto GetBookReview(int reviewKey)
+        public async Task<BookReviewDto> GetBookReview(int reviewKey)
         {
             logger.LogDebug("GetBookReview {0}", reviewKey);
 
             using (var ctx = dbContextFactory.CreateDbContext())
             {
-                var review = ctx.BookReviews
+                var review = await ctx.BookReviews
                 .AsNoTracking()
                 .Include(r => r.Book)
                 .Include(r => r.User)
-                .SingleOrDefault(r => r.Key == reviewKey);
+                .SingleOrDefaultAsync(r => r.Key == reviewKey);
 
                 if (review == null)
                 {
@@ -70,11 +70,10 @@ namespace BigBooks.API.Providers
             }
         }
 
-        public ProviderKeyResponse AddBookReview(string currentUserValue, int bookKey, BookReviewAddDto dto)
+        public async Task<ProviderKeyResponse> AddBookReview(string currentUserValue, int bookKey, BookReviewAddDto dto)
         {
             logger.LogDebug("AddBookReview {0}, {1}", currentUserValue, bookKey);
-
-            var userMatch = usersProvider.GetUserKeyFromToken(currentUserValue);
+            var userMatch = await usersProvider.GetUserKeyFromToken(currentUserValue);
 
             if (!userMatch.Key.HasValue)
             {
@@ -82,7 +81,7 @@ namespace BigBooks.API.Providers
                 return new ProviderKeyResponse(null, userMatch.Error);
             }
 
-            if (!usersProvider.IsUserActive(userMatch.Key.Value))
+            if (!await usersProvider.IsUserActive(userMatch.Key.Value))
             {
                 // inactive user, review denied
                 return new ProviderKeyResponse(null, "User is deactivated");
@@ -90,13 +89,16 @@ namespace BigBooks.API.Providers
 
             using (var ctx = dbContextFactory.CreateDbContext())
             {
-                if (!ctx.Books.Any(b => b.Key == bookKey))
+                var bookExists = await ctx.Books.AnyAsync(b => b.Key == bookKey);
+                if (!bookExists)
                 {
                     return new ProviderKeyResponse(null, $"Invalid Book Key {bookKey}");
                 }
 
-                if (ctx.BookReviews.Any(r => (r.UserKey == userMatch.Key.Value)
-                        && (r.BookKey == bookKey)))
+                var reviewExists = await ctx.BookReviews
+                    .AnyAsync(r => (r.UserKey == userMatch.Key.Value)
+                        && (r.BookKey == bookKey));
+                if (reviewExists)
                 {
                     // user has previously reviewed book
                     return new ProviderKeyResponse(null, "Existing BookReview by user");
@@ -116,7 +118,7 @@ namespace BigBooks.API.Providers
                 };
 
                 ctx.BookReviews.Add(addedReview);
-                ctx.SaveChanges();
+                await ctx.SaveChangesAsync();
 
                 return new ProviderKeyResponse(addedReview.Key, string.Empty);
             }

@@ -22,14 +22,14 @@ namespace BigBooks.API.Controllers
         [HttpPost("authenticate")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public IActionResult Authenticate(AuthRequest authRequest)
+        public async Task<IActionResult> Authenticate(AuthRequest authRequest)
         {
             var statusMsg = $"Authenticate, {authRequest.UserId}";
             logger.LogTrace(statusMsg);
 
             try
             {
-                var response = authService.GenerateToken(authRequest);
+                var response = await authService.GenerateToken(authRequest);
 
                 if (response.Token == null)
                 {

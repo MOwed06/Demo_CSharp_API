@@ -116,7 +116,7 @@ namespace BigBooks.UnitTest.ProviderTests
         [InlineData(PRE_RELEASE_BOOK_KEY, 1, "Insufficient book stock")] // no books in stock
         [InlineData(2, 3, "Insufficent funds in user wallet")]
         [InlineData(5, 1, "Invalid book")]  // book 5 does not exist
-        public void CheckPurchaseBooksInvalid(int bookKey, int reqQuantity, string expectedError)
+        public async Task CheckPurchaseBooksInvalid(int bookKey, int reqQuantity, string expectedError)
         {
             // arrange
             var purchaseDto = new PurchaseRequestDto
@@ -126,7 +126,7 @@ namespace BigBooks.UnitTest.ProviderTests
             };
 
             // act
-            var response = _transactionsPrv.PurchaseBooks(ACTIVE_CUSTOMER_EMAIL, purchaseDto);
+            var response = await _transactionsPrv.PurchaseBooks(ACTIVE_CUSTOMER_EMAIL, purchaseDto);
 
             // assert
             Assert.Contains(expectedError, response.Error);
@@ -134,7 +134,7 @@ namespace BigBooks.UnitTest.ProviderTests
         }
 
         [Fact]
-        public void CheckInactiveUserPurchaseDenied()
+        public async Task CheckInactiveUserPurchaseDenied()
         {
             // arrange
             const string EXPECTED_ERROR = "User is deactivated";
@@ -146,21 +146,23 @@ namespace BigBooks.UnitTest.ProviderTests
             };
 
             // act
-            var response = _transactionsPrv.PurchaseBooks(INACTIVE_CUSTOMER_EMAIL, purchaseDto);
+            var response = await _transactionsPrv.PurchaseBooks(INACTIVE_CUSTOMER_EMAIL, purchaseDto);
 
             // assert
             Assert.Contains(EXPECTED_ERROR, response.Error);
             Assert.Null(response.Key);
         }
 
-        [Theory]
+        [Theory(Timeout = TEST_TIMEOUT_MS)]
         [InlineData(1, 1, 28.58, 16)]  // book 1, stock = 17, cost = 11.42
         [InlineData(1, 2, 17.16, 15)]    // book 1, stock = 17, cost = 11.42
         [InlineData(2, 1, 22.89, 5)]     // book 2, stock = 6, cost = 17.11
         [InlineData(3, 1, 26.58, 0)]     // book 3, stock = 1, cost = 13.42
-        public void CheckPurchaseBooksValid(int bookKey, int reqQuantity, decimal expectedWallet, int expectedStock)
+        public async Task CheckPurchaseBooksValid(int bookKey, int reqQuantity, decimal expectedWallet, int expectedStock)
         {
             // arrange
+            var cancelToken = TestContext.Current.CancellationToken;
+
             var purchaseDto = new PurchaseRequestDto
             {
                 BookKey = bookKey,
@@ -168,18 +170,20 @@ namespace BigBooks.UnitTest.ProviderTests
             };
 
             // act
-            var response = _transactionsPrv.PurchaseBooks(ACTIVE_CUSTOMER_EMAIL, purchaseDto);
+            var response = await _transactionsPrv.PurchaseBooks(ACTIVE_CUSTOMER_EMAIL, purchaseDto);
 
             using (var ctx = TestContextFactory.CreateDbContext())
             {
-                var observedUser = ctx.AppUsers
+                var observedUser = await ctx.AppUsers
                 .AsNoTracking()
                 .Include(u => u.Transactions)
-                .Single(u => u.Key == response.Key.Value);
+                .SingleAsync((u => u.Key == response.Key.Value),
+                    cancelToken);
 
-                var observedBook = ctx.Books
+                var observedBook = await ctx.Books
                     .AsNoTracking()
-                    .Single(b => b.Key == bookKey);
+                    .SingleAsync((b => b.Key == bookKey),
+                    cancelToken);
 
                 // assert
                 var obsUserBookKeys = observedUser.Transactions
@@ -194,7 +198,7 @@ namespace BigBooks.UnitTest.ProviderTests
         }
 
         [Fact]
-        public void CheckPurchaseTransactionCreated()
+        public async Task CheckPurchaseTransactionCreated()
         {
             // arrange
             var expectedAmount = -34.22m;   // $17.11 x 2 books
@@ -206,8 +210,8 @@ namespace BigBooks.UnitTest.ProviderTests
             };
 
             // act
-            var response = _transactionsPrv.PurchaseBooks(ACTIVE_CUSTOMER_EMAIL, purchaseDto);
-            var obsUser = _usersPrv.GetUser(response.Key.Value); // get user info
+            var response = await _transactionsPrv.PurchaseBooks(ACTIVE_CUSTOMER_EMAIL, purchaseDto);
+            var obsUser = await _usersPrv.GetUser(response.Key.Value); // get user info
             var obsTransaction = obsUser.Transactions.First();  // expect most recent is first
 
             // assert
@@ -217,7 +221,7 @@ namespace BigBooks.UnitTest.ProviderTests
         [Theory]
         [InlineData("Some.Random.Person@test.com", "Invalid user")]
         [InlineData(INACTIVE_CUSTOMER_EMAIL, "User is deactivated")]
-        public void CheckDepositError(string currentUserValue, string expectedError)
+        public async Task CheckDepositError(string currentUserValue, string expectedError)
         {
             // arrange
             var dto = new AccountDepositDto
@@ -227,18 +231,20 @@ namespace BigBooks.UnitTest.ProviderTests
             };
 
             // act
-            var obs = _transactionsPrv.Deposit(currentUserValue, dto);
+            var obs = await _transactionsPrv.Deposit(currentUserValue, dto);
 
             // assert
             Assert.Null(obs.Key);
             Assert.Contains(expectedError, obs.Error);
         }
 
-        [Fact]
-        public void CheckDepositValid()
+        [Fact(Timeout = TEST_TIMEOUT_MS)]
+        public async Task CheckDepositValid()
         {
             // arrange
             const decimal EXPECTED_WALLET = 115m; // $40 + $75 deposit
+
+            var cancelToken = TestContext.Current.CancellationToken;
 
             var dto = new AccountDepositDto
             {
@@ -250,14 +256,15 @@ namespace BigBooks.UnitTest.ProviderTests
 
             using (var ctx = TestContextFactory.CreateDbContext())
             {
-                var obs = _transactionsPrv.Deposit(ACTIVE_CUSTOMER_EMAIL, dto);
-                var obsWallet = ctx.AppUsers
-                    .SingleOrDefault(u => u.Key == obs.Key)?.Wallet;
+                var obs = await _transactionsPrv.Deposit(ACTIVE_CUSTOMER_EMAIL, dto);
+                var obsUser = await ctx.AppUsers
+                    .SingleOrDefaultAsync(u => u.Key == obs.Key,
+                    cancelToken);
 
                 // assert
                 Assert.Equal(ACTIVE_CUSTOMER_KEY, obs.Key);
                 Assert.Empty(obs.Error);
-                Assert.Equal(EXPECTED_WALLET, obsWallet);
+                Assert.Equal(EXPECTED_WALLET, obsUser?.Wallet);
             }
         }
     }

@@ -22,13 +22,13 @@ namespace BigBooks.UnitTest.ProviderTests
         [Theory]
         [InlineData("Some.User@demo.com", null, "Invalid user")]               // user does not exist
         [InlineData(CUSTOMER_2_EMAIL, 2, "")]
-        public void ConfirmGetUserKeyFromToken(string userKeyValue, int? expectedKey, string expectedError)
+        public async Task ConfirmGetUserKeyFromToken(string userKeyValue, int? expectedKey, string expectedError)
         {
             // arrange
             InitializeDatabase();
 
             // act
-            var observed = _usersProvider.GetUserKeyFromToken(userKeyValue);
+            var observed = await _usersProvider.GetUserKeyFromToken(userKeyValue);
 
             // assert
             Assert.Equal(expectedKey, observed.Key);
@@ -44,7 +44,7 @@ namespace BigBooks.UnitTest.ProviderTests
         }
 
         [Fact]
-        public void CheckUserTransactionsOrder()
+        public async Task CheckUserTransactionsOrder()
         {
             // arrange
             const int USER_2_KEY = 2;
@@ -99,7 +99,7 @@ namespace BigBooks.UnitTest.ProviderTests
             InitializeDatabase(extraTransactions: extraTransactions);
 
             // act
-            var obs = _usersProvider.GetUserTransactions(USER_2_KEY);
+            var obs = await _usersProvider.GetUserTransactions(USER_2_KEY);
 
             // assert
             var obsKeys = obs.Select(o => o.TransactionKey).ToList();
@@ -110,7 +110,7 @@ namespace BigBooks.UnitTest.ProviderTests
         [Theory]
         [InlineData(CUSTOMER_2_EMAIL, "Duplicate UserEmail")]
         [InlineData("Wanda.Maximoff@demo.com", null)]
-        public void CheckAddUser(string userEmail, string expectedError)
+        public async Task CheckAddUser(string userEmail, string expectedError)
         {
             // arrange
             const int EXPECTED_NEXT_USER_KEY = 3;
@@ -127,7 +127,7 @@ namespace BigBooks.UnitTest.ProviderTests
             };
 
             // act
-            var response = _usersProvider.AddUser(addDto);
+            var response = await _usersProvider.AddUser(addDto);
 
             // assert
             if (string.IsNullOrEmpty(expectedError))
@@ -147,7 +147,7 @@ namespace BigBooks.UnitTest.ProviderTests
         [InlineData(5, "SomeNew.Guy@test.com", "12345", "Account key 5 not found")]
         [InlineData(1, "SomeNew.Guy@test.com", "123", "field Password must be a")]
         [InlineData(1, "", "12345", "UserEmail field is required")]
-        public void CheckUpdateAccountRejected(int key, string email, string password, string expectedError)
+        public async Task CheckUpdateAccountRejected(int key, string email, string password, string expectedError)
         {
             // arrange
             InitializeDatabase();
@@ -157,7 +157,7 @@ namespace BigBooks.UnitTest.ProviderTests
             patchDoc.Replace(p => p.Password, password);
 
             // act
-            var obs = _usersProvider.UpdateAccount(key, patchDoc);
+            var obs = await _usersProvider.UpdateAccount(key, patchDoc);
 
             // assert
             Assert.Null(obs.Key);
@@ -167,7 +167,7 @@ namespace BigBooks.UnitTest.ProviderTests
         [Theory]
         [InlineData("Some.Funny.Name@test.com", "SFName", 45.23)]
         [InlineData("SF.Name@test.com", "Some Very Long Name For Person", 545.23)]
-        public void CheckUpdateAccountValid(string email, string userName, decimal wallet)
+        public async Task CheckUpdateAccountValid(string email, string userName, decimal wallet)
         {
             // arrange
             const int MODIFY_USER_KEY = 2;
@@ -180,10 +180,11 @@ namespace BigBooks.UnitTest.ProviderTests
             patchDoc.Replace(p => p.Wallet, wallet);
 
             // act
-            var obs = _usersProvider.UpdateAccount(MODIFY_USER_KEY, patchDoc);
-            var updatedUser = _usersProvider.GetUser(MODIFY_USER_KEY);
+            var obs = await _usersProvider.UpdateAccount(MODIFY_USER_KEY, patchDoc);
+            var updatedUser = await _usersProvider.GetUser(obs.Key.Value);
 
             // assert
+            Assert.Empty(obs.Error);
             Assert.Equal(email, updatedUser.UserEmail);
             Assert.Equal(userName, updatedUser.UserName);
             Assert.Equal(wallet.ToString("C"), updatedUser.Wallet);
@@ -193,7 +194,7 @@ namespace BigBooks.UnitTest.ProviderTests
         [InlineData(null, new int[] { 1, 2, 3 })]
         [InlineData(true, new int[] { 1, 2 })]
         [InlineData(false, new int[] { 3 })]
-        public void GetUserList(bool? activeFilter, int[] expectedKeys)
+        public async Task GetUserList(bool? activeFilter, int[] expectedKeys)
         {
             // arrange
             var extraUsers = new List<AppUser>
@@ -213,7 +214,7 @@ namespace BigBooks.UnitTest.ProviderTests
             InitializeDatabase(extraAppUsers: extraUsers);
 
             // act
-            var obs = _usersProvider.GetUsers(activeFilter);
+            var obs = await _usersProvider.GetUsers(activeFilter);
             var obsUserKeys = obs.Select(u => u.Key).ToList();
 
             // assert
@@ -223,13 +224,13 @@ namespace BigBooks.UnitTest.ProviderTests
         [Theory]
         [InlineData(1, "User01DetailsDto.json")]
         [InlineData(6, null)]
-        public void CheckGetUser(int userKey, string referenceFile)
+        public async Task CheckGetUser(int userKey, string referenceFile)
         {
             // arrange
             InitializeDatabase();
 
             // act
-            var observed = _usersProvider.GetUser(userKey);
+            var observed = await _usersProvider.GetUser(userKey);
 
             // assert
             if (referenceFile != null)
@@ -245,7 +246,7 @@ namespace BigBooks.UnitTest.ProviderTests
         }
 
         [Fact]
-        public void CheckGetCurrentUserException()
+        public async Task CheckGetCurrentUserException()
         {
             // arrange
             var expectedError = @"Invalid user Some.Guy@test.com";
@@ -253,7 +254,7 @@ namespace BigBooks.UnitTest.ProviderTests
             var invalidUserEmail = "Some.Guy@test.com";
 
             // act & assert
-            var ex = Assert.Throws<Exception>(() => _usersProvider.GetCurrentUserDetails(invalidUserEmail));
+            var ex = await Assert.ThrowsAsync<BigBooksException>(async () => await _usersProvider.GetCurrentUserDetails(invalidUserEmail));
 
             Assert.Equal(expectedError, ex.Message);
         }
