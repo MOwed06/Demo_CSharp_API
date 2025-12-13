@@ -180,10 +180,10 @@ namespace BigBooks.UnitTest.ProviderTests
                 .SingleAsync((u => u.Key == response.Key.Value),
                     cancelToken);
 
-                var observedBook = ctx.Books
+                var observedBook = await ctx.Books
                     .AsNoTracking()
                     .SingleAsync((b => b.Key == bookKey),
-                    cancelToken)?.Result;
+                    cancelToken);
 
                 // assert
                 var obsUserBookKeys = observedUser.Transactions
@@ -257,14 +257,14 @@ namespace BigBooks.UnitTest.ProviderTests
             using (var ctx = TestContextFactory.CreateDbContext())
             {
                 var obs = await _transactionsPrv.Deposit(ACTIVE_CUSTOMER_EMAIL, dto);
-                var obsWallet = ctx.AppUsers
+                var obsUser = await ctx.AppUsers
                     .SingleOrDefaultAsync(u => u.Key == obs.Key,
-                    cancelToken)?.Result.Wallet;
+                    cancelToken);
 
                 // assert
                 Assert.Equal(ACTIVE_CUSTOMER_KEY, obs.Key);
                 Assert.Empty(obs.Error);
-                Assert.Equal(EXPECTED_WALLET, obsWallet);
+                Assert.Equal(EXPECTED_WALLET, obsUser?.Wallet);
             }
         }
     }

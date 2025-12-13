@@ -13,7 +13,7 @@ namespace BigBooks.UnitTest.ProviderTests
     {
         private readonly UsersProvider _usersProvider;
 
-        public UsersProviderTest(ITestOutputHelper outputHelper)
+        public UsersProviderTest()
         {
             var mockLogger = new Mock<ILogger<UsersProvider>>();
             _usersProvider = new UsersProvider(TestContextFactory, mockLogger.Object);
@@ -181,9 +181,10 @@ namespace BigBooks.UnitTest.ProviderTests
 
             // act
             var obs = await _usersProvider.UpdateAccount(MODIFY_USER_KEY, patchDoc);
-            var updatedUser = await _usersProvider.GetUser(MODIFY_USER_KEY);
+            var updatedUser = await _usersProvider.GetUser(obs.Key.Value);
 
             // assert
+            Assert.Empty(obs.Error);
             Assert.Equal(email, updatedUser.UserEmail);
             Assert.Equal(userName, updatedUser.UserName);
             Assert.Equal(wallet.ToString("C"), updatedUser.Wallet);

@@ -209,7 +209,7 @@ namespace BigBooks.API.Providers
                 }
 
                 // apply updates
-                var modifiedAccount = ctx.AppUsers.SingleAsync(u => u.Key == key).Result;
+                var modifiedAccount = await ctx.AppUsers.SingleAsync(u => u.Key == key);
                 modifiedAccount.UserEmail = updateDto.UserEmail;
                 modifiedAccount.UserName = updateDto.UserName;
                 modifiedAccount.IsActive = updateDto.IsActive;

@@ -137,7 +137,6 @@ namespace BigBooks.UnitTest.ProviderTests
             InitializeDatabase(extraBooks: extraBooks,
                 extraBookReviews: extraReviews);
 
-
             // act
             var obs = await _bookPrv.GetBook(BOOK_KEY);
 
