@@ -95,6 +95,7 @@ Things yet to do ...
    - delete AppUser transactions
    - modify user's bookreviews to become Anonymous
 1. Apply pagination to controller responses
+1. Add refund transaction
 
 <br>
 

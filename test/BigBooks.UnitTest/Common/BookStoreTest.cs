@@ -40,7 +40,7 @@ namespace BigBooks.UnitTest.Common
                     Author = "Sally Hopgood",
                     Isbn = Guid.Parse(BOOK1_GUID),
                     Genre = Genre.Childrens,
-                    Description = "A departing tortoise has his bags packed and is almost ready to set out on an adventure, but he can’t leave until he says good-bye to each of his animal friends. The tortoise stops for every last timid mouse and bumblebee, shouting his rhyming good-byes, making you wonder if, perhaps, he’s stalling the start of his trip.",
+                    Description = "A departing tortoise has his bags packed and is almost ready to set out on an adventure, but he cannot leave until he says good-bye to each of his animal friends. The tortoise stops for every last timid mouse and bumblebee, shouting his rhyming good-byes, making you wonder if, perhaps, he’s stalling the start of his trip.",
                     Price = 11.42m,
                     StockQuantity = 17
                 },

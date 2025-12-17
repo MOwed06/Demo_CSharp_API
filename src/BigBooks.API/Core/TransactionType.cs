@@ -3,6 +3,6 @@
     public enum TransactionType
     {
         Purchase = -1,
-        Deposit = - -2
+        Deposit = -2
     }
 }

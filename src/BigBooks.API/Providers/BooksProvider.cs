@@ -4,6 +4,7 @@ using BigBooks.API.Interfaces;
 using BigBooks.API.Models;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 
 namespace BigBooks.API.Providers
 {
@@ -46,7 +47,7 @@ namespace BigBooks.API.Providers
                     Isbn = book.Isbn.ToString("D").ToUpper(),
                     Description = book.Description,
                     Genre = book.Genre.ToString(),
-                    Price = book.Price.ToString("C"),
+                    Price = book.Price.ToString("C", CultureInfo.GetCultureInfo("en-US")),
                     InStock = book.StockQuantity > 0,
                     Rating = bookRating.HasValue
                         ? (double?)Math.Round(bookRating.Value, 2)
