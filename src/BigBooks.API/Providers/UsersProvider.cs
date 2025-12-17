@@ -4,6 +4,7 @@ using BigBooks.API.Interfaces;
 using BigBooks.API.Models;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 
 namespace BigBooks.API.Providers
 {
@@ -35,7 +36,7 @@ namespace BigBooks.API.Providers
                 UserName = matchedUser.UserName,
                 IsActive = matchedUser.IsActive,
                 Role = matchedUser.Role.ToString(),
-                Wallet = matchedUser.Wallet.ToString("C"),
+                Wallet = matchedUser.Wallet.ToString("C", CultureInfo.GetCultureInfo("en-US")),
                 Transactions = await GetUserTransactions(key)
             };
         }

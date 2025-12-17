@@ -6,6 +6,7 @@ using BigBooks.UnitTest.Common;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Extensions.Logging;
 using Moq;
+using System.Globalization;
 
 namespace BigBooks.UnitTest.ProviderTests
 {
@@ -187,7 +188,8 @@ namespace BigBooks.UnitTest.ProviderTests
             Assert.Empty(obs.Error);
             Assert.Equal(email, updatedUser.UserEmail);
             Assert.Equal(userName, updatedUser.UserName);
-            Assert.Equal(wallet.ToString("C"), updatedUser.Wallet);
+            var expectedWallet = wallet.ToString("C", CultureInfo.GetCultureInfo("en-US"));
+            Assert.Equal(expectedWallet, updatedUser.Wallet);
         }
 
         [Theory]
