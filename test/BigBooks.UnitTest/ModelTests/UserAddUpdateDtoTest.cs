@@ -48,6 +48,7 @@ namespace BigBooks.UnitTest.ModelTests
             }
         }
 
+        #pragma warning disable xUnit1012
         [Theory]
         [InlineData(null, "must be between 1 and 5000")]
         [InlineData(0.99, "must be between 1 and 5000")]
@@ -73,6 +74,7 @@ namespace BigBooks.UnitTest.ModelTests
                 Assert.Contains(expectedError, response.Error);
             }
         }
+        #pragma warning restore xUnit1012
 
         [Theory]
         [InlineData(null, "UserName field is required")]
