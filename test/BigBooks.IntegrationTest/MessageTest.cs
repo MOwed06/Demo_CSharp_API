@@ -260,7 +260,7 @@ namespace BigBooks.IntegrationTest
         public async Task ConfirmRejectedBookPurchase()
         {
             // arrange
-            const string EXPECTED_ERROR = "Insufficent funds in user wallet";
+            const string EXPECTED_ERROR = "Insufficient funds in user wallet";
             const int CUSTOMER4_USER_KEY = 4;
 
             const int PURCHASE_BOOK_KEY = 6;

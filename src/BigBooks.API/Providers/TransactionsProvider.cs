@@ -57,7 +57,7 @@ namespace BigBooks.API.Providers
 
                 if (currentUser.Wallet < purchaseAmount)
                 {
-                    return new ProviderKeyResponse(null, $"Insufficent funds in user wallet");
+                    return new ProviderKeyResponse(null, $"Insufficient funds in user wallet");
                 }
 
                 if (!booksProvider.RemoveFromStock(ctx, dto.BookKey, dto.RequestedQuantity))

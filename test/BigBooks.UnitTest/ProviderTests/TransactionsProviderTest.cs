@@ -111,10 +111,10 @@ namespace BigBooks.UnitTest.ProviderTests
         /// <param name="reqQuantity"></param>
         /// <param name="expectedError"></param>
         [Theory]
-        [InlineData(2, 7, "Insufficent funds in user wallet")]
+        [InlineData(2, 7, "Insufficient funds in user wallet")]
         [InlineData(RARE_BOOK_KEY, 2, "Insufficient book stock")] // only 1 book available
         [InlineData(PRE_RELEASE_BOOK_KEY, 1, "Insufficient book stock")] // no books in stock
-        [InlineData(2, 3, "Insufficent funds in user wallet")]
+        [InlineData(2, 3, "Insufficient funds in user wallet")]
         [InlineData(5, 1, "Invalid book")]  // book 5 does not exist
         public async Task CheckPurchaseBooksInvalid(int bookKey, int reqQuantity, string expectedError)
         {
