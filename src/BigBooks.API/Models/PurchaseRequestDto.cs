@@ -9,7 +9,7 @@ namespace BigBooks.API.Models
         public int BookKey { get; set; }
 
         [Required]
-        [Range(0, 100)]
+        [Range(1, 100)]
         public int RequestedQuantity { get; set; }
         public Guid TransactionConfirmation { get; set; }
 
