@@ -4,9 +4,7 @@
 
 ## Purpose
 
-BigBookStore solution is a sandbox that I am leveraging to showcase my capabilities with C# and test automation (xUnit).
-
-The BigBooks.API project implements a simple API for a hypothetical on-line book store.
+The BigBooks.API project implements a simple API for a hypothetical on-line book store. This exists to showcase some of my capabilities with C# and test automation (xUnit).
 
 I will continue to evolve this project as my bandwidth allows. I will keep the main branch in an operational state. (I make no promises about the dev branch.)
 
@@ -52,7 +50,7 @@ I will continue to evolve this project as my bandwidth allows. I will keep the m
 
   - By design (for testing), failed API requests will return the error content in the message body
 
-- SQLite database, BigBooks.db
+- SQLite database, Resources/BigBooks.db
 
 <br>
 
@@ -96,6 +94,7 @@ Things yet to do ...
    - modify user's bookreviews to become Anonymous
 1. Apply pagination to controller responses
 1. Add refund transaction
+1. Add tranaction for account creation, account deactivation, re-activation
 
 <br>
 
